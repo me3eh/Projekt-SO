@@ -1,3 +1,4 @@
 #include <stdio.h>
-int main()
-hihihihihihihih
+int main(){
+    return 1;
+}
