@@ -1,0 +1,24 @@
+---
+:source:
+  :path: test
+  :file: test_projekcik.c
+:successes:
+- :test: test_projekcik_NeedToImplement
+  :line: 15
+  :message: ''
+  :unity_test_time: 0
+- :test: test_projekcik_NeedToImplement2
+  :line: 21
+  :message: ''
+  :unity_test_time: 0
+:failures: []
+:ignores: []
+:counts:
+  :total: 2
+  :passed: 2
+  :failed: 0
+  :ignored: 0
+:stdout:
+- kupcklkl
+- ohho
+:time: 0.0016741630006436026
