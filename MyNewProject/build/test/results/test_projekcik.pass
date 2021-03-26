@@ -3,11 +3,11 @@
   :path: test
   :file: test_projekcik.c
 :successes:
-- :test: test_projekcik_NeedToImplement
+- :test: test_projekcik_inserting_values
   :line: 15
   :message: ''
   :unity_test_time: 0
-- :test: test_projekcik_NeedToImplement2
+- :test: test_projekcik_inserting_values2
   :line: 21
   :message: ''
   :unity_test_time: 0
@@ -19,6 +19,6 @@
   :failed: 0
   :ignored: 0
 :stdout:
-- kupcklkl
-- ohho
-:time: 0.0016741630006436026
+- 'Usage: ./minicrom <taskfile> <outfile> '
+- 'Usage: ./minicrom <taskfile> <outfile> '
+:time: 0.0013281310002639657
