@@ -1,3 +1,10 @@
 # Projekt-SO
 Projekcik do Systemow Operacyjnych
-Jakby co to zapisuj tutaj co poprawiasz i co zrobione jest
+Rzeczy do zrobienia:
+```diff
+!Projekcik do Systemów Operacyjnych
+-----------------------------------
++Rzeczy zrobione:
+obsluga argumentow wejsciowych
+
+```

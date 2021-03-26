@@ -1,7 +1,10 @@
 #include "fun.h"
 
-int main(){
-    return 1;
+int main(int argc, char **argv){
+    
+    if(amount_of_arguments(argc, argv[0]) > 0){
+        return EXIT_FAILURE;
+    }
 }
 
 //komentarz bardzo wazny

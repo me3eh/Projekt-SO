@@ -4,5 +4,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <errno.h>
+
+int amount_of_arguments(int arg, char*word);
 
 #endif

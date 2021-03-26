@@ -10,8 +10,8 @@ char* GlobalOrderError;
 /*=======External Functions This Runner Calls=====*/
 extern void setUp(void);
 extern void tearDown(void);
-extern void test_projekcik_NeedToImplement(void);
-extern void test_projekcik_NeedToImplement2(void);
+extern void test_projekcik_inserting_values(void);
+extern void test_projekcik_inserting_values2(void);
 
 
 /*=======Mock Management=====*/
@@ -76,8 +76,8 @@ static void run_test(UnityTestFunction func, const char* name, UNITY_LINE_TYPE l
 int main(void)
 {
   UnityBegin("test_projekcik.c");
-  run_test(test_projekcik_NeedToImplement, "test_projekcik_NeedToImplement", 15);
-  run_test(test_projekcik_NeedToImplement2, "test_projekcik_NeedToImplement2", 21);
+  run_test(test_projekcik_inserting_values, "test_projekcik_inserting_values", 15);
+  run_test(test_projekcik_inserting_values2, "test_projekcik_inserting_values2", 21);
 
   return UnityEnd();
 }
