@@ -7,8 +7,8 @@
   :line: 15
   :message: ''
   :unity_test_time: 0
-- :test: test_projekcik_inserting_values2
-  :line: 21
+- :test: test_projekcik_is_file_valid
+  :line: 22
   :message: ''
   :unity_test_time: 0
 :failures: []
@@ -21,4 +21,5 @@
 :stdout:
 - 'Usage: ./minicrom <taskfile> <outfile> '
 - 'Usage: ./minicrom <taskfile> <outfile> '
-:time: 0.0013281310002639657
+- 'File error: No such file or directory'
+:time: 0.0010875889997805643

@@ -11,7 +11,7 @@ char* GlobalOrderError;
 extern void setUp(void);
 extern void tearDown(void);
 extern void test_projekcik_inserting_values(void);
-extern void test_projekcik_inserting_values2(void);
+extern void test_projekcik_is_file_valid(void);
 
 
 /*=======Mock Management=====*/
@@ -77,7 +77,7 @@ int main(void)
 {
   UnityBegin("test_projekcik.c");
   run_test(test_projekcik_inserting_values, "test_projekcik_inserting_values", 15);
-  run_test(test_projekcik_inserting_values2, "test_projekcik_inserting_values2", 21);
+  run_test(test_projekcik_is_file_valid, "test_projekcik_is_file_valid", 22);
 
   return UnityEnd();
 }
