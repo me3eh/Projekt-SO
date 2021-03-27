@@ -16,10 +16,13 @@ void test_projekcik_inserting_values(void)
 {
     TEST_ASSERT_FALSE(amount_of_arguments(4, "./minicrom") == 0); 
     TEST_ASSERT_TRUE(amount_of_arguments(1, "./minicrom") != 0);
+    TEST_ASSERT_TRUE(amount_of_arguments(3, "./minicrom") == 0);
 }
 
-void test_projekcik_inserting_values2(void){
-    TEST_ASSERT_TRUE(amount_of_arguments(3, "./minicrom") == 0);
+void test_projekcik_is_file_valid(void){
+    // execlp("ls","ls", NULL);
+    TEST_ASSERT_TRUE(checking_file_valid("./test/text.txt", false) != NULL);
+    TEST_ASSERT_TRUE(checking_file_valid("./test/text123.txt", false) == NULL);
 }
 
 #endif // TEST
