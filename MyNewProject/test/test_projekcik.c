@@ -25,4 +25,10 @@ void test_projekcik_is_file_valid(void){
     TEST_ASSERT_TRUE(checking_file_valid("./test/text123.txt", false) == NULL);
 }
 
+void test_projekcik_is_file_valid(void){
+    // execlp("ls","ls", NULL);
+    FILE * file = checking_file_valid("./test/text.txt", false);
+    TEST_ASSERT_TRUE(are_3colons_presented(file) == false);
+}
+
 #endif // TEST
