@@ -25,24 +25,24 @@ int colons_in_file(FILE * file){
     int line = 1;
     char * token;
     int counter = 0;
+    regex_t regex;
+    const int n_matches = 1;
+    regmatch_t m[n_matches];
     while(fgets(pol, size, file) != NULL){
-        token = strtok(pol, ":");
-        ++counter;
-        while(token !=NULL){
-            token = strtok(NULL, ":");
-            ++counter;
-            if(counter > 5){
-                fprintf(stderr, "Too many arguments in file - line %d\nUsage: <hours>:<minutes>:<command>:<mode>\n", line);
-                return -1;
-            }
+        int value = regcomp(&regex, "^([0-2]?[0-9]):([0-5]?[0-9]):[a-zA-Z|: -]*:[0-2]$", REG_EXTENDED|REG_NEWLINE);
+    	int lk = regexec(&regex, pol, n_matches, m, 0);
+        if(lk == 0)
+            ++line;
+        else if( lk == REG_NOMATCH){
+            fprintf(stderr, "Bad format in file\n Usage: <hours>:<minutes>:<code>:<mode>");
+            return -1;
         }
-        if(counter < 4){
-                fprintf(stderr, "Too few arguments in file - line %d\nUsage: <hours>:<minutes>:<command>:<mode>\n", line);
-                return -1;
+        else{
+            fprintf(stderr, "An error occured");
+            return -1;
         }
-        counter = 0;
-        ++line;
     }
+    regfree(&regex);
     --line;
     rewind(file);
     return line;
@@ -53,7 +53,6 @@ bool file_in_good_format(FILE * file, task * array_of_programs){
     int counter = 0;
     char pol [size]; 
     char * token, *cp;
-    
     int columns = colons_in_file(file);
     if(columns == -1)
         return false;
@@ -64,6 +63,7 @@ bool file_in_good_format(FILE * file, task * array_of_programs){
     }
     
     while(fgets(pol, size, file) != NULL){ 
+        printf("%c", pol[3]);
         token = strtok(pol, ":"); 
         do{
             switch(counter){
@@ -95,10 +95,6 @@ bool file_in_good_format(FILE * file, task * array_of_programs){
             return false;
         }
         counter = 0;
-    }
-        int i;
-        for(i=0;i < 2; ++i)
-            printf("Hours:%ld, minutes:%ld, word:%s, state:%ld",array_of_programs[i].hours, array_of_programs[i].minutes, array_of_programs[i].program,array_of_programs[i].state);
-    
+    }    
     return true;
 }

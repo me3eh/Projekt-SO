@@ -7,6 +7,8 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <string.h>
+#include <regex.h>
+
 
 typedef struct task{
     long hours;
