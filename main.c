@@ -12,18 +12,28 @@ int main(int argc, char **argv){
         return errno;
     
     task * array_of_programs;
-    
-    if (!file_in_good_format(file_check, array_of_programs)){
-        fclose(file_check);
+    printf("dup");
+    if (( array_of_programs = file_in_good_format(file_check) )== NULL){
         return EINVAL;
     }
-
+    // fclose(file_check);
     // FILE * file;
     // if ((file = checking_file_valid(argv[1], false)) == NULL)
         // return errno;
-    return 1;
-}
 
+    for(int i=0; i< 2; ++i)
+        printf("%ld", array_of_programs[i].minutes);
+
+    quicksort(array_of_programs, 0,1);
+    for(int i=0; i< 2; ++i)
+        printf("%ld", array_of_programs[i].minutes);
+    free(array_of_programs);
+    // free(array_of_programs);
+    return 0;
+    // free(array_of_programs);
+// for(int i=0; i< 2; ++i)
+    // printf("%s", array_of_programs[i].program);
+}
 //komentarz bardzo wazny
 //dlk
 
