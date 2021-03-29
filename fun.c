@@ -22,67 +22,68 @@ FILE* checking_file_valid(char * naming, bool for_writing){
 int colons_in_file(FILE * file){
     int size = 200; 
     char pol [size];
-    int line = 1;
+    int line = 0;
     char * token;
     int counter = 0;
+    regex_t regex;
+    // const int n_matches = 1;
+    // regmatch_t m[n_matches];
+    int value = regcomp(&regex, "^([0-2]?[0-9]):([0-5]?[0-9]):[a-zA-Z|: -]*:[0-2]$", REG_EXTENDED|REG_NEWLINE);
     while(fgets(pol, size, file) != NULL){
-        token = strtok(pol, ":");
-        ++counter;
-        while(token !=NULL){
-            token = strtok(NULL, ":");
-            ++counter;
-            if(counter > 5){
-                fprintf(stderr, "Too many arguments in file - line %d\nUsage: <hours>:<minutes>:<command>:<mode>\n", line);
-                return -1;
-            }
+       
+    	int lk = regexec(&regex, pol, 0, NULL, 0);
+        if(lk == 0)
+            ++line;
+        else if( lk == REG_NOMATCH){
+            fprintf(stderr, "Bad format in file\n Usage: <hours>:<minutes>:<code>:<mode>");
+            return -1;
         }
-        if(counter < 4){
-                fprintf(stderr, "Too few arguments in file - line %d\nUsage: <hours>:<minutes>:<command>:<mode>\n", line);
-                return -1;
+        else{
+            fprintf(stderr, "An error occured");
+            return -1;
         }
-        counter = 0;
-        ++line;
     }
-    --line;
+    regfree(&regex);
     rewind(file);
     return line;
 }
-bool file_in_good_format(FILE * file, task * array_of_programs){
-    int line = 1;
+task*  file_in_good_format(FILE * file){
+    int line = 0;
     int size = 200;
     int counter = 0;
     char pol [size]; 
     char * token, *cp;
-    
-    int columns = colons_in_file(file);
+    // int columns = colons_in_file(file);
+    int columns = 2;
     if(columns == -1)
         return false;
-    array_of_programs = (task*)malloc(columns * sizeof(task));
+    task * array_of_programs = (task*)malloc(columns * sizeof(task));
     if(array_of_programs == NULL){
         perror("Allocation memory:");
-        return false;
+        return NULL;
     }
-    
+    // if (file == NULL)
+        // return false;
     while(fgets(pol, size, file) != NULL){ 
         token = strtok(pol, ":"); 
         do{
             switch(counter){
                 case 0:
-                    array_of_programs[line-1].hours = strtol(token, &cp, 10);
+                    array_of_programs[line].hours = strtol(token, &cp, 10);
                 break;
                 case 1:
-                    array_of_programs[line-1].minutes = strtol(token, &cp, 10);
+                    array_of_programs[line].minutes = strtol(token, &cp, 10);
                 break;
                 case 2:
-                    strcpy(array_of_programs[line-1].program, token);
+                    strcpy(array_of_programs[line].program, token);
                 break;
                 case 3:
-                    array_of_programs[line-1].state = strtol(token, &cp, 10);
+                    array_of_programs[line].state = strtol(token, &cp, 10);
                 break;
                 default:
-                    fprintf(stderr, "Incorrect format in file - line %d\nUsage: <hours>:<minutes>:<command>:<mode>\n", line);
+                    fprintf(stderr, "Incorrect format in file - line %d\nUsage: <hours>:<minutes>:<command>:<mode>\n", line + 1);
                     free(array_of_programs);
-                    return false;
+                    return NULL;
                 break;
             }
             token = strtok(NULL, ":");
@@ -90,15 +91,46 @@ bool file_in_good_format(FILE * file, task * array_of_programs){
         }while( token != NULL ); 
         
         ++line;
-        if(counter != 4){
-            free(array_of_programs);
-            return false;
-        }
         counter = 0;
+        
     }
-        int i;
-        for(i=0;i < 2; ++i)
-            printf("Hours:%ld, minutes:%ld, word:%s, state:%ld",array_of_programs[i].hours, array_of_programs[i].minutes, array_of_programs[i].program,array_of_programs[i].state);
-    
-    return true;
+    // for(int i=0; i< 1; ++i)
+            // printf("%ld", array_of_programs[0].minutes);    
+    return array_of_programs;
+}
+
+int partition(task*array, int p, int r) // dzielimy tablice na dwie czesci, w pierwszej wszystkie liczby sa mniejsze badz rowne x, w drugiej wieksze lub rowne od x
+{
+    int x = array[p].hours*60+array[p].minutes; // obieramy x
+    long i = p, j = r;
+    task w; // i, j - indeksy w tabeli
+    while (true) // petla nieskonczona - wychodzimy z niej tylko przez return j
+    {
+        while (array[j].hours*60+array[j].minutes > x) // dopoki elementy sa wieksze od x
+            j--;
+        while (array[i].hours*60+array[i].minutes < x) // dopoki elementy sa mniejsze od x
+            i++;
+        if (i < j) /* zamieniamy miejscami gdy i < j*/{
+            w = array[i];
+            array[i] = array[j];
+            array[j] = w;
+            i++;
+            j--;
+        }
+        else{ // gdy i >= j zwracamy j jako punkt podzialu tablicy
+            // free(w);
+            return  j;
+        }
+    }
+}
+ 
+void quicksort(task * array, int p, int r) // sortowanie szybkie
+{
+    int q;
+    if (p < r)
+    {  
+        q = partition(array,p,r); // dzielimy tablice na dwie czesci; q oznacza punkt podzialu
+        quicksort(array, p, q); // wywolujemy rekurencyjnie quicksort dla pierwszej czesci tablicy
+        quicksort(array, q+1, r); // wywolujemy rekurencyjnie quicksort dla drugiej czesci tablicy
+    }
 }
