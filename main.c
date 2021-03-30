@@ -11,30 +11,21 @@ int main(int argc, char **argv){
     if ((file_check = checking_file_valid(argv[1], false)) == NULL)
         return errno;
     
-    task * array_of_programs;
+    task* array_of_programs;
 
     if (( array_of_programs = file_in_good_format(file_check) )== NULL){
         return EINVAL;
     }
-    // fclose(file_check);
-    // FILE * file;
-    // if ((file = checking_file_valid(argv[1], false)) == NULL)
-        // return errno;
     int length = daj_ilosc();
-    for(int i=0; i< length; ++i){
-        printf("Godz:%ld\n", array_of_programs[i].hours);
-        printf("Minuty:%ld\n", array_of_programs[i].minutes);
-    }
+    set_time_to_exec(array_of_programs, length);
     qsort(array_of_programs, length, sizeof(*array_of_programs), comparator);
-    printf("\n");
+    set_time_to_sleep(array_of_programs, length);
+
     for(int i=0; i< length; ++i){    
         printf("Godz:%ld\n", array_of_programs[i].hours);
         printf("Minuty:%ld\n", array_of_programs[i].minutes);
+        printf("Ilosc:%ld\n", array_of_programs[i].time_to_exec);
+        printf("Ilosc snu:%ld\n\n", array_of_programs[i].time_to_sleep_before_exec);
     }
-    free(array_of_programs);
-    // free(array_of_programs);
     return 0;
 }
-//komentarz bardzo wazny
-//dlk
-

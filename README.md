@@ -6,5 +6,8 @@ Rzeczy do zrobienia:
 -----------------------------------
 +Rzeczy zrobione:
 obsluga argumentow wejsciowych
+sortowanie chronologiczne
+ustalenie ile czasu spac
+
 
 ```
