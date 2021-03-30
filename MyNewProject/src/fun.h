@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <time.h>
 int amount_of_arguments(int arg, char*word);
 
 bool equal_namings(char* naming_input, char* naming_output);

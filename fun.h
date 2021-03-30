@@ -15,6 +15,7 @@ typedef struct task{
     long minutes;
     char program[40];
     long state;
+    long time_to_exec;
 }task;
 
 int colons_in_file(FILE * file);
@@ -27,8 +28,8 @@ FILE* checking_file_valid(char * naming, bool for_writing);
 
 task * file_in_good_format(FILE * file);
 
-int partition(task*array, int p, int r);
+int comparator(const void *p, const void *q) ;
 
-void quicksort(task * array, int p, int r);
+int daj_ilosc();
 
 #endif

@@ -1,5 +1,5 @@
 #include "fun.h"
-
+int ilosc;
 int amount_of_arguments(int arg, char* word){
     if(arg != 3){
         fprintf(stderr, "Usage: %s <taskfile> <outfile> \n", word);
@@ -45,7 +45,13 @@ int colons_in_file(FILE * file){
     }
     regfree(&regex);
     rewind(file);
+    printf("%d", line);
+    ilosc = line;
     return line;
+}
+
+int daj_ilosc(){
+    return ilosc;
 }
 task*  file_in_good_format(FILE * file){
     int line = 0;
@@ -53,8 +59,8 @@ task*  file_in_good_format(FILE * file){
     int counter = 0;
     char pol [size]; 
     char * token, *cp;
-    // int columns = colons_in_file(file);
-    int columns = 2;
+    int columns = colons_in_file(file);
+    // int columns = 2;
     if(columns == -1)
         return false;
     task * array_of_programs = (task*)malloc(columns * sizeof(task));
@@ -99,38 +105,34 @@ task*  file_in_good_format(FILE * file){
     return array_of_programs;
 }
 
-int partition(task*array, int p, int r) // dzielimy tablice na dwie czesci, w pierwszej wszystkie liczby sa mniejsze badz rowne x, w drugiej wieksze lub rowne od x
+// void set_time_to_do(task * array, int length){
+//     time_t rawtime;
+//     time (&rawtime);
+//     //poprawka na juz wykonywane spanka
+//     long temp;
+//     struct tm * timeinfo = localtime(&rawtime);
+//     for (int i =0; i< length; ++i){
+//         if(timeinfo)
+//         array[i].time_to_exec = timeinfo->tm_hour; 
+//     }
+// }
+
+int comparator(const void *p, const void *q) 
 {
-    int x = array[p].hours*60+array[p].minutes; // obieramy x
-    long i = p, j = r;
-    task w; // i, j - indeksy w tabeli
-    while (true) // petla nieskonczona - wychodzimy z niej tylko przez return j
-    {
-        while (array[j].hours*60+array[j].minutes > x) // dopoki elementy sa wieksze od x
-            j--;
-        while (array[i].hours*60+array[i].minutes < x) // dopoki elementy sa mniejsze od x
-            i++;
-        if (i < j) /* zamieniamy miejscami gdy i < j*/{
-            w = array[i];
-            array[i] = array[j];
-            array[j] = w;
-            i++;
-            j--;
-        }
-        else{ // gdy i >= j zwracamy j jako punkt podzialu tablicy
-            // free(w);
-            return  j;
-        }
+    task *l = (task* )p;
+    task *r = (task *)q;
+    if(l->hours == r->hours){
+        if(l->minutes > r->minutes)
+            return +1;
+        else if(l->minutes < r->minutes)
+            return -1;
+        else
+            return 0;
     }
-}
- 
-void quicksort(task * array, int p, int r) // sortowanie szybkie
-{
-    int q;
-    if (p < r)
-    {  
-        q = partition(array,p,r); // dzielimy tablice na dwie czesci; q oznacza punkt podzialu
-        quicksort(array, p, q); // wywolujemy rekurencyjnie quicksort dla pierwszej czesci tablicy
-        quicksort(array, q+1, r); // wywolujemy rekurencyjnie quicksort dla drugiej czesci tablicy
+    else{
+        if(l->hours > r->hours)
+            return +1;
+        else if(l->hours < r->hours)
+            return -1;
     }
 }
