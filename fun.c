@@ -98,41 +98,57 @@ task*  file_in_good_format(FILE * file){
         
         ++line;
         counter = 0;
-        
     }
-    // for(int i=0; i< 1; ++i)
-            // printf("%ld", array_of_programs[0].minutes);    
     return array_of_programs;
 }
 
-// void set_time_to_do(task * array, int length){
-//     time_t rawtime;
-//     time (&rawtime);
-//     //poprawka na juz wykonywane spanka
-//     long temp;
-//     struct tm * timeinfo = localtime(&rawtime);
-//     for (int i =0; i< length; ++i){
-//         if(timeinfo)
-//         array[i].time_to_exec = timeinfo->tm_hour; 
-//     }
-// }
+//typy do korzystania z tm
+
+// struct tm {
+//     int tm_sec;         /* seconds */
+//     int tm_min;         /* minutes */
+//     int tm_hour;        /* hours */
+//     int tm_mday;        /* day of the month */
+//     int tm_mon;         /* month */
+//     int tm_year;        /* year */
+//     int tm_wday;        /* day of the week */
+//     int tm_yday;        /* day in the year */
+//     int tm_isdst;       /* daylight saving time */
+// };
+void set_time_to_exec(task * array, int length){
+
+    time_t rawtime;
+    time (&rawtime);
+
+    struct tm * timeinfo = localtime(&rawtime);
+
+    for (int i =0; i< length; ++i){
+        array[i].time_to_exec = 0;
+
+        if(timeinfo->tm_hour > array[i].hours || (timeinfo->tm_hour == array[i].hours && timeinfo->tm_min > array[i].minutes))
+            array[i].time_to_exec += 24*60;
+
+        array[i].time_to_exec += (array[i].hours * 60 + array[i].minutes);
+        array[i].time_to_exec -= (timeinfo->tm_hour * 60 + timeinfo->tm_min);
+    }
+}
+
+void set_time_to_sleep(task * array, int length){
+    long temp = 0;
+    for(int i = 0; i < length; ++i){
+        array[i].time_to_sleep_before_exec = array[i].time_to_exec - temp;
+        temp = array[i].time_to_exec;
+    }
+} 
 
 int comparator(const void *p, const void *q) 
 {
     task *l = (task* )p;
     task *r = (task *)q;
-    if(l->hours == r->hours){
-        if(l->minutes > r->minutes)
-            return +1;
-        else if(l->minutes < r->minutes)
-            return -1;
-        else
-            return 0;
-    }
-    else{
-        if(l->hours > r->hours)
-            return +1;
-        else if(l->hours < r->hours)
-            return -1;
-    }
+    if( l->time_to_exec > r->time_to_exec)
+        return +1;
+    else if( l->time_to_exec < r->time_to_exec)
+        return -1;
+    else
+        return 0;
 }
