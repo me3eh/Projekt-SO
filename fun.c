@@ -1,5 +1,9 @@
 #include "fun.h"
-int ilosc;
+
+#define GOOD_FORMAT "^(2[0-3]|[0-1]?[0-9]):([0-5]?[0-9]):[a-zA-Z|: -]*:[0-2]$"
+bool safe_to_use_pipe = true;
+int amount;
+
 int amount_of_arguments(int arg, char* word){
     if(arg != 3){
         fprintf(stderr, "Usage: %s <taskfile> <outfile> \n", word);
@@ -26,16 +30,14 @@ int colons_in_file(FILE * file){
     char * token;
     int counter = 0;
     regex_t regex;
-    // const int n_matches = 1;
-    // regmatch_t m[n_matches];
-    int value = regcomp(&regex, "^([0-2]?[0-9]):([0-5]?[0-9]):[a-zA-Z|: -]*:[0-2]$", REG_EXTENDED|REG_NEWLINE);
+    int value = regcomp(&regex, GOOD_FORMAT, REG_EXTENDED|REG_NEWLINE);
     while(fgets(pol, size, file) != NULL){
        
     	int lk = regexec(&regex, pol, 0, NULL, 0);
         if(lk == 0)
             ++line;
         else if( lk == REG_NOMATCH){
-            fprintf(stderr, "Bad format in file\n Usage: <hours>:<minutes>:<code>:<mode>");
+            fprintf(stderr, "Bad format in file - line:%d\n Usage: <hours>:<minutes>:<code>:<mode>", line);
             return -1;
         }
         else{
@@ -43,33 +45,37 @@ int colons_in_file(FILE * file){
             return -1;
         }
     }
+
     regfree(&regex);
     rewind(file);
-    printf("%d", line);
-    ilosc = line;
+    // printf("%d", line);
+    amount = line;
     return line;
 }
 
-int daj_ilosc(){
-    return ilosc;
+int length_of_file(){
+    return amount;
 }
+
 task*  file_in_good_format(FILE * file){
+    
     int line = 0;
     int size = 200;
     int counter = 0;
     char pol [size]; 
     char * token, *cp;
     int columns = colons_in_file(file);
-    // int columns = 2;
+    
     if(columns == -1)
         return false;
+    
     task * array_of_programs = (task*)malloc(columns * sizeof(task));
+    
     if(array_of_programs == NULL){
         perror("Allocation memory:");
         return NULL;
     }
-    // if (file == NULL)
-        // return false;
+    
     while(fgets(pol, size, file) != NULL){ 
         token = strtok(pol, ":"); 
         do{
@@ -102,6 +108,60 @@ task*  file_in_good_format(FILE * file){
     return array_of_programs;
 }
 
+task_temp * file_in_good_format_temp(FILE * file){
+    int line = 0;
+    int size = 200;
+    char pol [size]; 
+    char * token, *cp, *token_temp;
+    int columns = colons_in_file(file);
+    
+    if(columns == -1)
+        return false;
+    task_temp * array_of_programs = (task_temp*)malloc(columns * sizeof(task_temp));
+    
+    if(array_of_programs == NULL){
+        perror("Allocation memory:");
+        return NULL;
+    }
+    
+    while(fgets(pol, size, file) != NULL){ 
+
+        token = strtok(pol, ":"); 
+        array_of_programs[line].hours = strtol(token, &cp, 10);
+
+        token = strtok(NULL, ":");
+        array_of_programs[line].minutes = strtol(token, &cp, 10);
+        char temp[100];
+
+        int i = 0;
+        int amount_of_programs = 1; 
+
+        *(array_of_programs[line].program) = (char*)malloc(amount_of_programs * sizeof(char[60]));
+        array_of_programs[line].am_of_programs = amount_of_programs;
+        
+        while( i < (amount_of_programs-1)){
+            token = strtok(NULL, "|");
+            strcpy(array_of_programs[line].program[i], token);
+            ++i;
+        };
+
+        token = strtok(NULL, ":");
+        strcpy(array_of_programs[line].program[i], token);
+        token = strtok(NULL, ":");
+        array_of_programs[line].state = strtol(token, &cp, 10);
+
+        ++line;
+    }
+    return array_of_programs;
+}
+
+int amount_of_pipes(char* token){
+    int i = 0;
+    while((token = strtok(NULL, "|")) != NULL){
+        ++i;
+    }
+    return i;
+}
 //typy do korzystania z tm
 
 // struct tm {
