@@ -22,7 +22,7 @@ typedef struct task{
 typedef struct task_temp{
     long hours;
     long minutes;
-    char *(program[60]);
+    char **(program);
     long state;
     long time_to_exec;
     long time_to_sleep_before_exec;
@@ -49,6 +49,6 @@ void set_time_to_sleep(task * array, int legnth);
 
 task_temp * file_in_good_format_temp(FILE * file);
 
-int amount_of_pipes(char* token);
+int amount_of_pipes(char* pol);
 
 #endif
