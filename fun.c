@@ -6,7 +6,7 @@ int lines_in_file = 0;
 
 int amount_of_arguments(int arg, char* word){
     if(arg != 3){
-        fprintf(stderr, "Error function amount_of_arguments():\nUsage: %s <taskfile> <outfile> \n", word);
+        fprintf(stderr, "In function amount_of_arguments():\nUsage: %s <taskfile> <outfile> \n", word);
         return EINVAL;
     }
     return 0;
@@ -76,7 +76,7 @@ task_temp * get_array_of_tasks(FILE * file){
     
     int columns = check_format(file);
     if(columns == -1)
-        return false;
+        return NULL;
     
     task_temp * array_task = (task_temp*)malloc(columns * sizeof(task_temp));
     
@@ -217,4 +217,13 @@ int comparator_temp(const void *p, const void *q)
         return -1;
     else
         return 0;
+}
+
+void free_space(task_temp * array){
+    for(int i = 0; i < lines_in_file; ++i){
+        for(int j=0; j<array[i].amount_programs;++j)
+            free(array[i].program[j]);
+        free(array[i].program);
+    }
+    free(array);
 }

@@ -14,6 +14,8 @@ extern void test_projekcik_checkingfunction__amount_of_arguments(void);
 extern void test_projekcik_checkingfunction__checking_file_valid(void);
 extern void test_projekcik_checkingfunction__check_format(void);
 extern void test_projekcik_checking_function__equal_namings(void);
+extern void test_projekcik_checking_function__length_of_file(void);
+extern void test_projekcik__get_array_of_tasks(void);
 
 
 /*=======Mock Management=====*/
@@ -79,9 +81,11 @@ int main(void)
 {
   UnityBegin("test_projekcik.c");
   run_test(test_projekcik_checkingfunction__amount_of_arguments, "test_projekcik_checkingfunction__amount_of_arguments", 15);
-  run_test(test_projekcik_checkingfunction__checking_file_valid, "test_projekcik_checkingfunction__checking_file_valid", 22);
-  run_test(test_projekcik_checkingfunction__check_format, "test_projekcik_checkingfunction__check_format", 28);
-  run_test(test_projekcik_checking_function__equal_namings, "test_projekcik_checking_function__equal_namings", 35);
+  run_test(test_projekcik_checkingfunction__checking_file_valid, "test_projekcik_checkingfunction__checking_file_valid", 23);
+  run_test(test_projekcik_checkingfunction__check_format, "test_projekcik_checkingfunction__check_format", 29);
+  run_test(test_projekcik_checking_function__equal_namings, "test_projekcik_checking_function__equal_namings", 44);
+  run_test(test_projekcik_checking_function__length_of_file, "test_projekcik_checking_function__length_of_file", 51);
+  run_test(test_projekcik__get_array_of_tasks, "test_projekcik__get_array_of_tasks", 63);
 
   return UnityEnd();
 }

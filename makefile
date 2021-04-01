@@ -5,9 +5,5 @@ compile: main.c fun.c fun.h
 copy: main.c fun.c fun.h
 	cp fun.c ./MyNewProject/src/fun.c
 	cp fun.h ./MyNewProject/src/fun.h
-test:	main.c fun.c fun.h
-	cp fun.c ./MyNewProject/src/fun.c
-	cp fun.h ./MyNewProject/src/fun.h
-	cd MyNewProject && 	ceedling test:all
-onlytest:
+test:
 	cd MyNewProject && 	ceedling test:all

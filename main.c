@@ -34,12 +34,13 @@ int main(int argc, char **argv){
         for(int j=0; j<array_of_programs[i].amount_programs; ++j)
             printf("Pupa kupa%s\n\n", array_of_programs[i].program[j]);
     }
-    for(int i = 0; i < length; ++i){
-        for(int j=0; j<array_of_programs[i].amount_programs;++j)
-            free(array_of_programs[i].program[j]);
-        free(array_of_programs[i].program);
-    }
-    free(array_of_programs);
+    // for(int i = 0; i < length; ++i){
+    //     for(int j=0; j<array_of_programs[i].amount_programs;++j)
+    //         free(array_of_programs[i].program[j]);
+    //     free(array_of_programs[i].program);
+    // }
+    // free(array_of_programs);
+    free_space(array_of_programs);
     fclose(file);
     return 0;
 }
