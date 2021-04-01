@@ -1,166 +1,140 @@
 #include "fun.h"
 
-#define GOOD_FORMAT "^(2[0-3]|[0-1]?[0-9]):([0-5]?[0-9]):[a-zA-Z|: -]*:[0-2]$"
-int amount;
+#define GOOD_FORMAT "^(2[0-3]|[0-1]?[0-9]):([0-5]?[0-9]):[a-zA-Z\\|: -]*:[0-2]$"
+
+int lines_in_file = 0;
 
 int amount_of_arguments(int arg, char* word){
     if(arg != 3){
-        fprintf(stderr, "Usage: %s <taskfile> <outfile> \n", word);
+        fprintf(stderr, "Error function amount_of_arguments():\nUsage: %s <taskfile> <outfile> \n", word);
         return EINVAL;
     }
     return 0;
 }
 
 bool equal_namings(char* naming_input, char* naming_output){
-    return (naming_input == naming_output);
+    return (strcmp(naming_input, naming_output) == 0);
 }
 
-FILE* checking_file_valid(char * naming, bool for_writing){
-    FILE * file = for_writing ? fopen(naming, "w") : fopen(naming, "r");
+FILE* checking_file_valid(char * naming){
+    FILE * file = fopen(naming, "r");
     if(file == NULL)
-        perror("File error");
+        perror("In function checking_file_valid()\n:File error");
     return file;
 }
 
-int colons_in_file(FILE * file){
-    int size = 200; 
-    char pol [size];
+int check_format(FILE * file){
+    int size_buffer = 200; 
+    char buffer[size_buffer];
     int line = 0;
     char * token;
-    int counter = 0;
     regex_t regex;
-    int value = regcomp(&regex, GOOD_FORMAT, REG_EXTENDED|REG_NEWLINE);
-    while(fgets(pol, size, file) != NULL){
-       
-    	int lk = regexec(&regex, pol, 0, NULL, 0);
-        if(lk == 0)
+    
+    int to_find = regcomp(&regex, GOOD_FORMAT, REG_EXTENDED|REG_NEWLINE);
+    if(to_find != 0){
+        perror("In function check_format():\nRegex error:");
+        return -1;
+    }
+
+    while(fgets(buffer, size_buffer, file) != NULL){
+    	int found = regexec(&regex, buffer, 0, NULL, 0);
+        if(found == 0)
             ++line;
-        else if( lk == REG_NOMATCH){
-            fprintf(stderr, "Bad format in file - line:%d\n Usage: <hours>:<minutes>:<code>:<mode>", line);
+        else if( found == REG_NOMATCH){
+            fprintf(stderr, "In function check_format():\nBad format in file - line:%d Usage: <hours>:<minutes>:<code>:<mode>\n", line);
             return -1;
         }
         else{
-            fprintf(stderr, "An error occured");
+            fprintf(stderr, "In function check_format():\nAn error occured with regex occured:%s\n", strerror(errno));
             return -1;
         }
     }
 
     regfree(&regex);
+
+    //powrot do poczatku pliku
     rewind(file);
-    amount = line;
+    
+    //przypisanie do globalnej zmiennej
+    lines_in_file = line;
+    
     return line;
 }
 
 int length_of_file(){
-    return amount;
+    return lines_in_file;
 }
 
-task*  file_in_good_format(FILE * file){
-    
+task_temp * get_array_of_tasks(FILE * file){
     int line = 0;
-    int size = 200;
-    int counter = 0;
-    char pol [size]; 
-    char * token, *cp;
-    int columns = colons_in_file(file);
+    int size_buffer = 200;
+    char buffer[size_buffer]; 
+    char *token, *lil_buffa;
     
-    if(columns == -1)
-        return false;
-    
-    task * array_of_programs = (task*)malloc(columns * sizeof(task));
-    
-    if(array_of_programs == NULL){
-        perror("Allocation memory:");
-        return NULL;
-    }
-    
-    while(fgets(pol, size, file) != NULL){ 
-        token = strtok(pol, ":"); 
-        do{
-            switch(counter){
-                case 0:
-                    array_of_programs[line].hours = strtol(token, &cp, 10);
-                break;
-                case 1:
-                    array_of_programs[line].minutes = strtol(token, &cp, 10);
-                break;
-                case 2:
-                    strcpy(array_of_programs[line].program, token);
-                break;
-                case 3:
-                    array_of_programs[line].state = strtol(token, &cp, 10);
-                break;
-                default:
-                    fprintf(stderr, "Incorrect format in file - line %d\nUsage: <hours>:<minutes>:<command>:<mode>\n", line + 1);
-                    free(array_of_programs);
-                    return NULL;
-                break;
-            }
-            token = strtok(NULL, ":");
-            ++counter;
-        }while( token != NULL ); 
-        
-        ++line;
-        counter = 0;
-    }
-    return array_of_programs;
-}
-
-task_temp * file_in_good_format_temp(FILE * file){
-    int line = 0;
-    int size = 200;
-    char pol [size]; 
-    char *token, *cp;
-    int columns = colons_in_file(file);
-    
-    if(columns == -1)
-        return false;
-    task_temp * array_of_programs = (task_temp*)malloc(columns * sizeof(task_temp));
-    
-    if(array_of_programs == NULL){
-        perror("Allocation memory:");
-        return NULL;
-    }
     int amount_of_programs = 0;
     int i = 0;
-    while(fgets(pol, size, file) != NULL){ 
+    
+    int columns = check_format(file);
+    if(columns == -1)
+        return false;
+    
+    task_temp * array_task = (task_temp*)malloc(columns * sizeof(task_temp));
+    
+    if(array_task == NULL){
+        perror("In function get_array_of_tasks():\nAllocation memory:");
+        return NULL;
+    }
+
+    while(fgets(buffer, size_buffer, file) != NULL){ 
         
-        amount_of_programs = amount_of_pipes(pol); 
-        token = strtok(pol, ":"); 
+        amount_of_programs = amount_of_pipes(buffer); 
+        token = strtok(buffer, ":"); 
         if(token == NULL)
             return NULL;
-        array_of_programs[line].hours = strtol(token, &cp, 10);
+
+        array_task[line].hours = strtol(token, &lil_buffa, 10);
 
         token = strtok(NULL, ":");
+
         if(token == NULL)
             return NULL;
-        array_of_programs[line].minutes = strtol(token, &cp, 10);
-        char temp[100];
-        printf("\n-=-=%d: %d\n",line,amount_of_programs);
-        array_of_programs[line].program = (char**)malloc(amount_of_programs * sizeof(char*));
+        
+        array_task[line].minutes = strtol(token, &lil_buffa, 10);
+        array_task[line].program = (char**)malloc(amount_of_programs * sizeof(char*));
 
-        array_of_programs[line].am_of_programs = amount_of_programs;
+        if(array_task[line].program == NULL){
+            perror("In function get_array_of_tasks():\nAllocation error:");
+            return NULL;
+        }
 
-        while( i < (amount_of_programs-1)){
+        array_task[line].amount_programs = amount_of_programs;
+
+        while( i < (amount_of_programs - 1) ){
             token = strtok(NULL, "|");
-            if(token == NULL)
+            if(token == NULL){
+                fprintf(stderr, "In function get_array_of_tasks():\nSomething went wrong with function strtok. Line:%d", line);
                 return NULL;
-            array_of_programs[line].program[i] = (char*)malloc((strlen(token)+1) * sizeof(char));
-            strcpy(array_of_programs[line].program[i], (char*)token);
-            // array_of_programs[line].program[i] = (char*)token;
+            }
+
+            array_task[line].program[i] = (char*)malloc((strlen(token)+1) * sizeof(char));
+            if(array_task[line].program[i] == NULL){
+                perror("In function get_array_of_tasks():\nAllocation error:");
+                return NULL;
+            }
+            strcpy(array_task[line].program[i], (char*)token);
             ++i;
         };
         
         token = strtok(NULL, ":");
-        array_of_programs[line].program[i] = (char*)malloc((strlen(token)+1) * sizeof(char));
-        strcpy(array_of_programs[line].program[i], token);
-        // array_of_programs[line].program[i] = (char*)token;
+        array_task[line].program[i] = (char*)malloc((strlen(token)+1) * sizeof(char));
+        strcpy(array_task[line].program[i], token);
+        
         token = strtok(NULL, ":");
-        array_of_programs[line].state = strtol(token, &cp, 10);
+        array_task[line].state = strtol(token, &lil_buffa, 10);
         ++line;
         i = 0;
     }
-    return array_of_programs;
+    return array_task;
 }
 
 int amount_of_pipes(char* pol){
@@ -169,9 +143,9 @@ int amount_of_pipes(char* pol){
     regmatch_t m[n_matches];
     int no_of_pipes = 1;
     char * p = pol;
-    int value = regcomp(&regex, "[|]", REG_EXTENDED|REG_NEWLINE);
+    int value = regcomp(&regex, "[^\\][|]", REG_EXTENDED|REG_NEWLINE);
     if(value != 0){
-        fprintf(stderr, "Error with regex");
+        fprintf(stderr, "In function amount_of_pipes():\nError with regexcomp");
         return -1;
     }
     
@@ -186,7 +160,7 @@ int amount_of_pipes(char* pol){
         else if(nomatch == REG_NOMATCH)
             return 1;
         else{
-            fprintf(stderr, "Something with regex goes wrong");
+            fprintf(stderr, "In function amount_of_pipes():\nError with regexec");
             return -1;
         }
     regfree(&regex);
@@ -205,13 +179,15 @@ int amount_of_pipes(char* pol){
 //     int tm_yday;        /* day in the year */
 //     int tm_isdst;       /* daylight saving time */
 // };
-void set_time_to_exec(task * array, int length){
+
+
+void set_time_to_exec_temp(task_temp * array, int length){
 
     time_t rawtime;
     time (&rawtime);
 
     struct tm * timeinfo = localtime(&rawtime);
-
+    
     for (int i =0; i< length; ++i){
         array[i].time_to_exec = 0;
 
@@ -223,7 +199,7 @@ void set_time_to_exec(task * array, int length){
     }
 }
 
-void set_time_to_sleep(task * array, int length){
+void set_time_to_sleep_temp(task_temp * array, int length){
     long temp = 0;
     for(int i = 0; i < length; ++i){
         array[i].time_to_sleep_before_exec = array[i].time_to_exec - temp;
@@ -231,10 +207,10 @@ void set_time_to_sleep(task * array, int length){
     }
 } 
 
-int comparator(const void *p, const void *q) 
+int comparator_temp(const void *p, const void *q) 
 {
-    task *l = (task* )p;
-    task *r = (task *)q;
+    task_temp *l = (task_temp* )p;
+    task_temp *r = (task_temp *)q;
     if( l->time_to_exec > r->time_to_exec)
         return +1;
     else if( l->time_to_exec < r->time_to_exec)

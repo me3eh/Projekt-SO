@@ -10,14 +10,14 @@
 #include <regex.h>
 #include <time.h>
 
-typedef struct task{
-    long hours;
-    long minutes;
-    char program[40];
-    long state;
-    long time_to_exec;
-    long time_to_sleep_before_exec;
-}task;
+// typedef struct task{
+//     long hours;
+//     long minutes;
+//     char program[40];
+//     long state;
+//     long time_to_exec;
+//     long time_to_sleep_before_exec;
+// }task;
 
 typedef struct task_temp{
     long hours;
@@ -26,29 +26,29 @@ typedef struct task_temp{
     long state;
     long time_to_exec;
     long time_to_sleep_before_exec;
-    int am_of_programs;
+    int amount_programs;
 }task_temp;
 
-int colons_in_file(FILE * file);
+int check_format(FILE * file);
 
 int amount_of_arguments(int arg, char*word);
 
 bool equal_namings(char* naming_input, char* naming_output);
 
-FILE* checking_file_valid(char * naming, bool for_writing);
-
-task * file_in_good_format(FILE * file);
-
-int comparator(const void *p, const void *q) ;
+FILE* checking_file_valid(char * naming);
 
 int length_of_file();
 
-void set_time_to_exec(task * array, int length);
-
-void set_time_to_sleep(task * array, int legnth);
-
-task_temp * file_in_good_format_temp(FILE * file);
+task_temp * get_array_of_tasks(FILE * file);
 
 int amount_of_pipes(char* pol);
+
+
+//te trzy funkcje do prawidlowego posortowania chronologicznego
+void set_time_to_exec_temp(task_temp * array, int length);
+
+void set_time_to_sleep_temp(task_temp * array, int length);
+
+int comparator_temp(const void *p, const void *q);
 
 #endif

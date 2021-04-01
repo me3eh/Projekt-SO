@@ -10,8 +10,10 @@ char* GlobalOrderError;
 /*=======External Functions This Runner Calls=====*/
 extern void setUp(void);
 extern void tearDown(void);
-extern void test_projekcik_inserting_values(void);
-extern void test_projekcik_is_file_valid(void);
+extern void test_projekcik_checkingfunction__amount_of_arguments(void);
+extern void test_projekcik_checkingfunction__checking_file_valid(void);
+extern void test_projekcik_checkingfunction__check_format(void);
+extern void test_projekcik_checking_function__equal_namings(void);
 
 
 /*=======Mock Management=====*/
@@ -76,8 +78,10 @@ static void run_test(UnityTestFunction func, const char* name, UNITY_LINE_TYPE l
 int main(void)
 {
   UnityBegin("test_projekcik.c");
-  run_test(test_projekcik_inserting_values, "test_projekcik_inserting_values", 15);
-  run_test(test_projekcik_is_file_valid, "test_projekcik_is_file_valid", 22);
+  run_test(test_projekcik_checkingfunction__amount_of_arguments, "test_projekcik_checkingfunction__amount_of_arguments", 15);
+  run_test(test_projekcik_checkingfunction__checking_file_valid, "test_projekcik_checkingfunction__checking_file_valid", 22);
+  run_test(test_projekcik_checkingfunction__check_format, "test_projekcik_checkingfunction__check_format", 28);
+  run_test(test_projekcik_checking_function__equal_namings, "test_projekcik_checking_function__equal_namings", 35);
 
   return UnityEnd();
 }
