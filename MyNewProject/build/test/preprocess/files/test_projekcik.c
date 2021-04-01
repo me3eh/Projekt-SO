@@ -23,7 +23,7 @@ void tearDown(void)
 
 
 
-void test_projekcik_inserting_values(void)
+void test_projekcik_checkingfunction__amount_of_arguments(void)
 
 {
 
@@ -37,28 +37,46 @@ void test_projekcik_inserting_values(void)
 
 
 
-void test_projekcik_is_file_valid(void){
+void test_projekcik_checkingfunction__checking_file_valid(void){
 
 
 
-    do {if ((checking_file_valid("./test/text.txt", 
-
-   0
-
-   ) != 
+    do {if ((checking_file_valid("./test/text.txt") != 
 
    ((void *)0)
 
    )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(24)));}} while(0);
 
-    do {if ((checking_file_valid("./test/text123.txt", 
-
-   0
-
-   ) == 
+    do {if ((checking_file_valid("./test/text123.txt") == 
 
    ((void *)0)
 
    )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(25)));}} while(0);
+
+}
+
+
+
+void test_projekcik_checkingfunction__check_format(void){
+
+
+
+    FILE * file = checking_file_valid("./test/text.txt");
+
+    do {if ((check_format(file) == -1)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(31)));}} while(0);
+
+    FILE * test_file = checking_file_valid("./test/perfect.txt");
+
+    do {if ((check_format(test_file) > 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(33)));}} while(0);
+
+}
+
+void test_projekcik_checking_function__equal_namings(void){
+
+    do {if ((equal_namings("pol", "pol"))) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(36)));}} while(0);
+
+    do {if (!(equal_namings("epicki", "polak"))) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(37)));}} while(0);
+
+    do {if (!(equal_namings("poIak", "polak"))) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(38)));}} while(0);
 
 }

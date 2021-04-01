@@ -1,0 +1,89 @@
+
+// void set_time_to_exec(task * array, int length){
+
+//     time_t rawtime;
+//     time (&rawtime);
+
+//     struct tm * timeinfo = localtime(&rawtime);
+
+//     for (int i =0; i< length; ++i){
+//         array[i].time_to_exec = 0;
+
+//         if(timeinfo->tm_hour > array[i].hours || (timeinfo->tm_hour == array[i].hours && timeinfo->tm_min > array[i].minutes))
+//             array[i].time_to_exec += 24*60;
+
+//         array[i].time_to_exec += (array[i].hours * 60 + array[i].minutes);
+//         array[i].time_to_exec -= (timeinfo->tm_hour * 60 + timeinfo->tm_min);
+//     }
+// }
+
+// void set_time_to_sleep(task * array, int length){
+//     long temp = 0;
+//     for(int i = 0; i < length; ++i){
+//         array[i].time_to_sleep_before_exec = array[i].time_to_exec - temp;
+//         temp = array[i].time_to_exec;
+//     }
+// } 
+
+// int comparator(const void *p, const void *q) 
+// {
+//     task *l = (task* )p;
+//     task *r = (task *)q;
+//     if( l->time_to_exec > r->time_to_exec)
+//         return +1;
+//     else if( l->time_to_exec < r->time_to_exec)
+//         return -1;
+//     else
+//         return 0;
+// }
+
+// task*  file_in_good_format(FILE * file){
+    
+//     int line = 0;
+//     int size = 200;
+//     int counter = 0;
+//     char pol [size]; 
+//     char * token, *cp;
+//     int columns = colons_in_file(file);
+    
+//     if(columns == -1)
+//         return false;
+    
+//     task * array_of_programs = (task*)malloc(columns * sizeof(task));
+    
+//     if(array_of_programs == NULL){
+//         perror("Allocation memory:");
+//         return NULL;
+//     }
+    
+//     while(fgets(pol, size, file) != NULL){ 
+//         token = strtok(pol, ":"); 
+//         do{
+//             switch(counter){
+//                 case 0:
+//                     array_of_programs[line].hours = strtol(token, &cp, 10);
+//                 break;
+//                 case 1:
+//                     array_of_programs[line].minutes = strtol(token, &cp, 10);
+//                 break;
+//                 case 2:
+//                     strcpy(array_of_programs[line].program, token);
+//                 break;
+//                 case 3:
+//                     array_of_programs[line].state = strtol(token, &cp, 10);
+//                 break;
+//                 default:
+//                     fprintf(stderr, "Incorrect format in file - line %d\nUsage: <hours>:<minutes>:<command>:<mode>\n", line + 1);
+//                     free(array_of_programs);
+//                     return NULL;
+//                 break;
+//             }
+//             token = strtok(NULL, ":");
+//             ++counter;
+//         }while( token != NULL ); 
+        
+//         ++line;
+//         counter = 0;
+//     }
+//     return array_of_programs;
+// }
