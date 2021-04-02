@@ -351,23 +351,11 @@ void test_projekcik__amount_of_pipes(void){
 
                  , "\n\nfun__amount_of_pipes():\n------------------\n");
 
-    fprintf(
 
-           stderr
 
-                 , "-->%d",amount_of_pipes("pol  lkok"));
 
-    fprintf(
 
-           stderr
 
-                 , "===>%d",amount_of_pipes("pol | lkok"));
-
-    fprintf(
-
-           stderr
-
-                 , "===>%d",amount_of_pipes("pol \\| lkok"));
 
 
 
@@ -375,6 +363,9 @@ void test_projekcik__amount_of_pipes(void){
 
 
 
+    do {if (!(amount_of_pipes(" pol \\| lkok") == 4)) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(125)));}} while(0);
+
+    do {if ((amount_of_pipes("lk | grep \\| | hihi") == 3)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(126)));}} while(0);
 
 
 
@@ -382,9 +373,6 @@ void test_projekcik__amount_of_pipes(void){
 
 
 
-
-
-
-
+    do {if ((amount_of_pipes("lk | grep \\| | hihi") == 3)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(130)));}} while(0);
 
 }
