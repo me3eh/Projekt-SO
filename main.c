@@ -39,6 +39,8 @@ int main(int argc, char **argv){
     //     free(array_of_programs[i].program);
     // }
     // free(array_of_programs);
+    char *array[] ={"ls -l","grep p"};
+    pipe_fork_stuff(array, 2, "polko.txt");
     free_space(array_of_programs);
     fclose(file);
     return 0;
