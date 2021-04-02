@@ -6,7 +6,6 @@ int main(int argc, char **argv){
         return EXIT_FAILURE;
 
     if(equal_namings(argv[1], argv[0])){
-        fprintf(stderr,"Input and output file cannot have the same namings");
         return EINVAL;
     }
 

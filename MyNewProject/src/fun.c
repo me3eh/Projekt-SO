@@ -13,6 +13,7 @@ int amount_of_arguments(int arg, char* word){
 }
 
 bool equal_namings(char* naming_input, char* naming_output){
+    fprintf(stderr,"Input and output file cannot have the same namings");
     return (strcmp(naming_input, naming_output) == 0);
 }
 
@@ -24,6 +25,10 @@ FILE* checking_file_valid(char * naming){
 }
 
 int check_format(FILE * file){
+    if(file == NULL){
+        perror("In function check_format: File is not found");
+        return -1;
+    }
     int size_buffer = 200; 
     char buffer[size_buffer];
     int line = 0;
@@ -54,7 +59,10 @@ int check_format(FILE * file){
 
     //powrot do poczatku pliku
     rewind(file);
-    
+    if(line == 0){
+        fprintf(stderr,"In function check_format(): File is empty");
+        return -1;
+    }
     //przypisanie do globalnej zmiennej
     lines_in_file = line;
     
@@ -66,6 +74,10 @@ int length_of_file(){
 }
 
 task_temp * get_array_of_tasks(FILE * file){
+    if(file == NULL){
+        perror("In function get_array_of_tasks: File is not found:");
+        return NULL;
+    }
     int line = 0;
     int size_buffer = 200;
     char buffer[size_buffer]; 
@@ -143,28 +155,44 @@ int amount_of_pipes(char* pol){
     regmatch_t m[n_matches];
     int no_of_pipes = 1;
     char * p = pol;
+    // int value = regcomp(&regex, "[|]", REG_EXTENDED|REG_NEWLINE);
     int value = regcomp(&regex, "[^\\][|]", REG_EXTENDED|REG_NEWLINE);
     if(value != 0){
         fprintf(stderr, "In function amount_of_pipes():\nError with regexcomp");
         return -1;
     }
-    
+    while (1) {
+        int i = 0;
         int nomatch = regexec (&regex, p, n_matches, m, 0);
-        if (nomatch == 0)
-            for(int i = 0; i < n_matches; ++i){
-                if(m[i].rm_so == -1)
-                    break;
-                else
-                    ++no_of_pipes;
-            }
-        else if(nomatch == REG_NOMATCH)
-            return 1;
-        else{
-            fprintf(stderr, "In function amount_of_pipes():\nError with regexec");
-            return -1;
+        if (nomatch) {
+            printf ("No more matches.\n");
+            break;
         }
+        for (i = 0; i < n_matches; i++) {
+            if (m[i].rm_so != -1)
+                ++no_of_pipes;
+            else
+                break;
+        }
+        p += m[0].rm_eo;
+    }
     regfree(&regex);
     return no_of_pipes;
+
+    // int nomatch = regexec (&regex, p, n_matches, m, 0);
+    // if (nomatch == 0)
+    //     for(int i = 0; i < n_matches; ++i){
+    //         if(m[i].rm_so != -1)
+    //             ++no_of_pipes;
+    //     }
+    // else if(nomatch == REG_NOMATCH)
+    //     return 1;
+    // else{
+    //     fprintf(stderr, "In function amount_of_pipes():\nError with regexec");
+    //     return -1;
+    // }
+    // regfree(&regex);
+    // return no_of_pipes;
 }
 //typy do korzystania z tm
 
