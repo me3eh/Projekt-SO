@@ -243,3 +243,46 @@ void free_space(task_temp * array){
     }
     free(array);
 }
+
+int pipe_fork_stuff(char ** array, int length, char * outfile){
+    int p[2];
+    pid_t pid;
+    int fd_in = 0;
+    int file;
+    for(int i = 0 ; i < length ; ++i){
+        pipe(p);
+        if ((pid = fork()) == -1)
+            exit(EXIT_FAILURE);
+        else if (pid == 0){
+            
+            dup2(fd_in, 0);
+            dup2(p[1], 1);
+            
+            close(p[0]);      
+            
+            execlp(array[i], array[i], NULL);
+            exit(EXIT_FAILURE);
+        }
+      else
+        {
+          wait(NULL);
+          close(p[1]);
+          fd_in = p[0]; //save the input for the next command
+        }
+    }
+        if ((file = open(outfile, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR)) < 0){
+            perror("Open to-write file");
+            return -1;
+        }
+        if (dup2 (file, STDOUT_FILENO) < 0){
+            perror("Duplicating for file:");
+            return -1;
+        }
+        if (execlp("cat", "cat", NULL) < 0){
+            perror("Shell command:");
+            return errno;
+        }
+        // execlp("cat", "cat", NULL);
+        close(file);
+    return 0;
+}

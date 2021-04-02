@@ -9,7 +9,10 @@
 #include <string.h>
 #include <regex.h>
 #include <time.h>
-
+#include <sys/wait.h>
+#include <fcntl.h>
+#include <sys/types.h>
+#include <unistd.h>
 // typedef struct task{
 //     long hours;
 //     long minutes;
@@ -57,5 +60,7 @@ void set_time_to_sleep_temp(task_temp * array, int length);
 int comparator_temp(const void *p, const void *q);
 
 void free_space(task_temp * array);
+
+int pipe_fork_stuff(char ** array, int length, char * outfile);
 
 #endif
