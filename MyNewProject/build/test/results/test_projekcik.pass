@@ -85,12 +85,5 @@
 - ''
 - 'fun__amount_of_pipes():'
 - "------------------"
-- No more matches.
-- No more matches.
-- No more matches.
-- No more matches.
-- No more matches.
-- '4'
-- No more matches.
-- '54'
-:time: 0.0012262670002201048
+- "-->1===>2===>1"
+:time: 0.005449023000437592

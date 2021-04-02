@@ -116,11 +116,16 @@ void test_projekcik__get_array_of_tasks(void){
 }
 void test_projekcik__amount_of_pipes(void){
     fprintf(stderr, "\n\nfun__amount_of_pipes():\n------------------\n");
+    fprintf(stderr, "-->%d",amount_of_pipes("pol  lkok"));
+    fprintf(stderr, "===>%d",amount_of_pipes("pol | lkok"));
+    fprintf(stderr, "===>%d",amount_of_pipes("pol \\| lkok"));
+    
     TEST_ASSERT_TRUE(amount_of_pipes(" pol | lkok") == 2);
-    TEST_ASSERT_FALSE(amount_of_pipes(" pol \| lkok") == 1);
-    printf("%d\n",amount_of_pipes("lk | grep \| | hihi"));
-    printf("%d",amount_of_pipes("lk | grep | hihi | pol | d"));
-    printf("4");
+    // fprintf(stderr, "%d",amount_of_pipes(" pol | lkok"));
+    // TEST_ASSERT_FALSE(amount_of_pipes(" pol \| lkok") == 4);
+    // TEST_ASSERT_TRUE(amount_of_pipes("lk | grep \| | hihi") == 3);
+    // printf("%d\n",amount_of_pipes("lk | grep \| | hihi"));
+    // printf("%d",amount_of_pipes("lk | grep | hihi | pol | d"));
 
     // TEST_ASSERT_TRUE(amount_of_pipes("lk | grep \| | hihi") == 3);
 }

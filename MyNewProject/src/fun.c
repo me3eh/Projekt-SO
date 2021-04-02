@@ -151,12 +151,18 @@ task_temp * get_array_of_tasks(FILE * file){
 
 int amount_of_pipes(char* pol){
     regex_t regex;
+    regex_t regex2;
     const int n_matches = 20;
     regmatch_t m[n_matches];
+    // regmatch_t mm[n_matches];
+
     int no_of_pipes = 1;
     char * p = pol;
-    // int value = regcomp(&regex, "[|]", REG_EXTENDED|REG_NEWLINE);
-    int value = regcomp(&regex, "[^\\][|]", REG_EXTENDED|REG_NEWLINE);
+    // char * r = pol;
+    // int minus = 0;
+    // int value = regcomp(&regex, "", REG_EXTENDED|REG_NEWLINE);
+    int value = regcomp(&regex, "[a-zA-Z ][|]", REG_EXTENDED|REG_NEWLINE);
+    // int value2 = regcomp(&regex2, "[\\|]", REG_EXTENDED|REG_NEWLINE);
     if(value != 0){
         fprintf(stderr, "In function amount_of_pipes():\nError with regexcomp");
         return -1;
@@ -164,19 +170,49 @@ int amount_of_pipes(char* pol){
     while (1) {
         int i = 0;
         int nomatch = regexec (&regex, p, n_matches, m, 0);
-        if (nomatch) {
-            printf ("No more matches.\n");
+        if (nomatch == REG_NOMATCH) {
+            // printf ("No more matches.\n");
             break;
         }
-        for (i = 0; i < n_matches; i++) {
-            if (m[i].rm_so != -1)
-                ++no_of_pipes;
-            else
-                break;
+        else if(nomatch == 0){
+            for (i = 0; i < n_matches; i++) {
+                if (m[i].rm_so != -1)
+                    ++no_of_pipes;
+                else
+                    break;
+            }
+            p += m[0].rm_eo;
         }
-        p += m[0].rm_eo;
+        else{
+            fprintf(stderr, "In function amount_of_pipes():\nError with regexec");
+            return -1;            
+        }
     }
-    regfree(&regex);
+    // regfree(&regex);
+    // while (1) {
+    //     int i = 0;
+    //     int nomatch = regexec (&regex2, r, n_matches, mm, 0);
+    //     if (nomatch == REG_NOMATCH) {
+    //         // printf ("No more matches.\n");
+    //         break;
+    //     }
+    //     else if(nomatch == 0){
+    //         for (i = 0; i < n_matches; i++) {
+    //             if (mm[i].rm_so != -1)
+    //                 ++minus;
+    //             else
+    //                 break;
+    //         }
+    //         r += mm[0].rm_eo;
+    //     }
+    //     else{
+    //         fprintf(stderr, "In function amount_of_pipes():\nError with regexec");
+    //         return -1;            
+    //     }
+    // }
+    // regfree(&regex2);
+    // printf("-=-=%d",no_of_pipes);
+    // printf("=->%d", minus);
     return no_of_pipes;
 
     // int nomatch = regexec (&regex, p, n_matches, m, 0);

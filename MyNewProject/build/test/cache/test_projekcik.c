@@ -351,15 +351,37 @@ void test_projekcik__amount_of_pipes(void){
 
                  , "\n\nfun__amount_of_pipes():\n------------------\n");
 
-    do {if ((amount_of_pipes(" pol | lkok") == 2)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(119)));}} while(0);
+    fprintf(
 
-    do {if (!(amount_of_pipes(" pol \| lkok") == 1)) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(120)));}} while(0);
+           stderr
 
-    printf("%d\n",amount_of_pipes("lk | grep \| | hihi"));
+                 , "-->%d",amount_of_pipes("pol  lkok"));
 
-    printf("%d",amount_of_pipes("lk | grep | hihi | pol | d"));
+    fprintf(
 
-    printf("4");
+           stderr
+
+                 , "===>%d",amount_of_pipes("pol | lkok"));
+
+    fprintf(
+
+           stderr
+
+                 , "===>%d",amount_of_pipes("pol \\| lkok"));
+
+
+
+    do {if ((amount_of_pipes(" pol | lkok") == 2)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(123)));}} while(0);
+
+
+
+
+
+
+
+
+
+
 
 
 
