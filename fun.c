@@ -244,45 +244,65 @@ void free_space(task_temp * array){
     free(array);
 }
 
-int pipe_fork_stuff(char ** array, int length, char * outfile){
-    int p[2];
+
+int pipe_fork_stuff(char *** array, int length, char * outfile){
     pid_t pid;
-    int fd_in = 0;
     int file;
+    int fd[length-1][2];
+    int flk[0];
+    int fp[2];
+    int sp[2];
+    perror("555");
+    for(int i = 0 ; i < length-1 ; ++i){
+        pipe(fd[i]);
+    }
     for(int i = 0 ; i < length ; ++i){
-        pipe(p);
-        if ((pid = fork()) == -1)
-            exit(EXIT_FAILURE);
-        else if (pid == 0){
-            
-            dup2(fd_in, 0);
-            dup2(p[1], 1);
-            
-            close(p[0]);      
-            
-            execlp(array[i], array[i], NULL);
-            exit(EXIT_FAILURE);
+        pid = fork();
+        if(pid == 0){
+            if((i == length - 1) && (i == 0)){
+                if((file = open("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777)) == 0){
+                    return 55;
+                }
+                dup2(file, STDOUT_FILENO);
+                perror("101");
+                execvp(array[0][0], array[0]);
+                close(file);
+            }
+            else if(( i == length - 1 ) && ( i != 0 )){
+                perror("1");
+                dup2(fd[i-1][READ_END], STDIN_FILENO);
+                file = open("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777);
+                perror("2");
+                dup2(file, STDOUT_FILENO);
+                perror("3");
+
+                execvp(array[i][0], array[i]);
+                perror("kup");
+            }
+            else{
+                
+                perror("101");
+                if(i != 0){
+                    dup2(fd[i-1][READ_END], STDIN_FILENO);
+                }
+
+                close(fd[i][READ_END]);
+                dup2(fd[i][WRITE_END], STDOUT_FILENO);
+                perror("666");
+                execvp(array[i][0], array[i]);
+                return -1;
+            }
         }
-      else
-        {
-          wait(NULL);
-          close(p[1]);
-          fd_in = p[0]; //save the input for the next command
+        else if(pid > 0){
+            int status;
+            waitpid(pid, &status, 0);
+                if( i != (length-1))
+                    close(fd[i][WRITE_END]);
+                perror("kontrolne");
+            if((i == length - 1)){
+                perror("Po");
+                close(file);
+            }
         }
     }
-        if ((file = open(outfile, O_WRONLY | O_CREAT, S_IRUSR | S_IWUSR)) < 0){
-            perror("Open to-write file");
-            return -1;
-        }
-        if (dup2 (file, STDOUT_FILENO) < 0){
-            perror("Duplicating for file:");
-            return -1;
-        }
-        if (execlp("cat", "cat", NULL) < 0){
-            perror("Shell command:");
-            return errno;
-        }
-        // execlp("cat", "cat", NULL);
-        close(file);
-    return 0;
 }
