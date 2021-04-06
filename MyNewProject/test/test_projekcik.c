@@ -116,17 +116,26 @@ void test_projekcik__get_array_of_tasks(void){
 }
 void test_projekcik__amount_of_pipes(void){
     fprintf(stderr, "\n\nfun__amount_of_pipes():\n------------------\n");
-    // fprintf(stderr, "-->%d",amount_of_pipes("pol  lkok"));
-    // fprintf(stderr, "===>%d",amount_of_pipes("pol | lkok"));
-    // fprintf(stderr, "===>%d",amount_of_pipes("pol \\| lkok"));
     
     TEST_ASSERT_TRUE(amount_of_pipes(" pol | lkok") == 2);
-    // fprintf(stderr, "%d",amount_of_pipes(" pol | lkok"));
     TEST_ASSERT_FALSE(amount_of_pipes(" pol \\| lkok") == 4);
     TEST_ASSERT_TRUE(amount_of_pipes("lk | grep \\| | hihi") == 3);
-    // printf("%d\n",amount_of_pipes("lk | grep \| | hihi"));
-    // printf("%d",amount_of_pipes("lk | grep | hihi | pol | d"));
-
-    TEST_ASSERT_TRUE(amount_of_pipes("lk | grep \\| | hihi") == 3);
 }
+void test_projekcik__string_to_array(void){
+    char pol[] ="           never gonna give you up";
+    int size_free[2];
+    size_free[0] = 1;
+    size_free[1] = 1;
+    char ** array = string_to_array(pol, &size_free[0]);
+    TEST_ASSERT_TRUE(strcmp(array[0], "never") == 0);
+    TEST_ASSERT_TRUE(strcmp(array[1], "gonna") == 0);
+    TEST_ASSERT_TRUE(strcmp(array[2], "give") == 0);
+    TEST_ASSERT_TRUE(strcmp(array[3], "you") == 0);
+    TEST_ASSERT_TRUE(strcmp(array[4], "up") == 0);
+    printf("%d",size_free[0]);
+    for(int i = 0 ; i < size_free[0] ; ++i)
+        free(array[i]);
+    free(array);
+}
+
 #endif // TEST
