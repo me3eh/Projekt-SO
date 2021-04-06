@@ -1,7 +1,9 @@
 #include "fun.h"
 
 #define GOOD_FORMAT "^(2[0-3]|[0-1]?[0-9]):([0-5]?[0-9]):[a-zA-Z\\|: -]*:[0-2]$"
-
+#define WRITE_END 1
+#define READ_END 0
+bool first_time = true;
 int lines_in_file = 0;
 
 int amount_of_arguments(int arg, char* word){
@@ -127,7 +129,6 @@ task_temp * get_array_of_tasks(FILE * file){
                 fprintf(stderr, "In function get_array_of_tasks():\nSomething went wrong with function strtok. Line:%d", line);
                 return NULL;
             }
-
             array_task[line].program[i] = (char*)malloc((strlen(token)+1) * sizeof(char));
             if(array_task[line].program[i] == NULL){
                 perror("In function get_array_of_tasks():\nAllocation error:");
@@ -151,27 +152,19 @@ task_temp * get_array_of_tasks(FILE * file){
 
 int amount_of_pipes(char* pol){
     regex_t regex;
-    regex_t regex2;
     const int n_matches = 20;
     regmatch_t m[n_matches];
-    // regmatch_t mm[n_matches];
-
     int no_of_pipes = 1;
     char * p = pol;
-    // char * r = pol;
-    // int minus = 0;
-    // int value = regcomp(&regex, "", REG_EXTENDED|REG_NEWLINE);
     int value = regcomp(&regex, "[a-zA-Z ][|]", REG_EXTENDED|REG_NEWLINE);
-    // int value2 = regcomp(&regex2, "[\\|]", REG_EXTENDED|REG_NEWLINE);
     if(value != 0){
-        fprintf(stderr, "In function amount_of_pipes():\nError with regexcomp");
+        fprintf(stderr, "In function amount_of_pipes():\n");
         return -1;
     }
     while (1) {
         int i = 0;
         int nomatch = regexec (&regex, p, n_matches, m, 0);
         if (nomatch == REG_NOMATCH) {
-            // printf ("No more matches.\n");
             break;
         }
         else if(nomatch == 0){
@@ -184,53 +177,13 @@ int amount_of_pipes(char* pol){
             p += m[0].rm_eo;
         }
         else{
-            fprintf(stderr, "In function amount_of_pipes():\nError with regexec");
+            fprintf(stderr, "In function amount_of_pipes():\n");
             return -1;            
         }
     }
-    // regfree(&regex);
-    // while (1) {
-    //     int i = 0;
-    //     int nomatch = regexec (&regex2, r, n_matches, mm, 0);
-    //     if (nomatch == REG_NOMATCH) {
-    //         // printf ("No more matches.\n");
-    //         break;
-    //     }
-    //     else if(nomatch == 0){
-    //         for (i = 0; i < n_matches; i++) {
-    //             if (mm[i].rm_so != -1)
-    //                 ++minus;
-    //             else
-    //                 break;
-    //         }
-    //         r += mm[0].rm_eo;
-    //     }
-    //     else{
-    //         fprintf(stderr, "In function amount_of_pipes():\nError with regexec");
-    //         return -1;            
-    //     }
-    // }
-    // regfree(&regex2);
-    // printf("-=-=%d",no_of_pipes);
-    // printf("=->%d", minus);
+    regfree(&regex);
     return no_of_pipes;
-
-    // int nomatch = regexec (&regex, p, n_matches, m, 0);
-    // if (nomatch == 0)
-    //     for(int i = 0; i < n_matches; ++i){
-    //         if(m[i].rm_so != -1)
-    //             ++no_of_pipes;
-    //     }
-    // else if(nomatch == REG_NOMATCH)
-    //     return 1;
-    // else{
-    //     fprintf(stderr, "In function amount_of_pipes():\nError with regexec");
-    //     return -1;
-    // }
-    // regfree(&regex);
-    // return no_of_pipes;
 }
-//typy do korzystania z tm
 
 // struct tm {
 //     int tm_sec;         /* seconds */
@@ -290,4 +243,89 @@ void free_space(task_temp * array){
         free(array[i].program);
     }
     free(array);
+}
+char ** string_to_array(char * text, int * size){
+    char ** array = (char**)malloc(1 * sizeof(char*));
+    char * token = strtok(text, " ");
+    int i=0;
+    for(i = 0; token != NULL; ++i){
+        if(i != 0){
+            if((array = (char**)realloc( array, (i + 1) * sizeof(char*))) == NULL){
+                fprintf(stderr, "In function string_to_array: %s", strerror(errno));
+                return NULL;
+            }
+        }
+        if(( array[i] = (char*)malloc( (strlen(token) + 1) * sizeof(char))) == NULL){
+            fprintf(stderr, "In function string_to_array: %s", strerror(errno));
+            return NULL;
+        }
+        strcpy(array[i], token);
+        token = strtok(NULL, " ");
+    }
+    *size = i;
+    return array;
+}
+
+int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
+    pid_t pid;
+    int file;
+    int fd[length-1][2];
+    int flk[0];
+    for(int i = 0 ; i < length-1 ; ++i){
+        pipe(fd[i]);
+    }
+    for(int i = 0 ; i < length ; ++i){
+        pid = fork();
+        if(pid == 0){
+            if((i == length - 1) && (i == 0)){
+                //first_time zmienna globalna
+                if(first_time){
+                    first_time = false;
+                    if((file = open("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
+                        perror("Error");
+                        return 55;
+                    }
+                }
+                else
+                    if((file = open("polko.txt", O_WRONLY | O_APPEND, 0777)) < 0){
+                        perror("Error");
+                        return 55;
+                    }
+                dup2(file, STDOUT_FILENO);
+                // execvp(k[0], k, NULL);
+                execvp(array[0][0], array[0]);
+                close(file);
+            }
+            else if(( i == length - 1 ) && ( i != 0 )){
+                dup2(fd[i-1][READ_END], STDIN_FILENO);
+                if(first_time){
+                    first_time = false;
+                    if(file = open("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777) < 0){
+                        perror("Error");
+                        return 55;
+                    }
+                }
+                dup2(file, STDOUT_FILENO);
+                execvp(array[i][0], array[i]);
+            }
+            else{
+                if(i != 0)
+                    dup2(fd[i-1][READ_END], STDIN_FILENO);
+
+                close(fd[i][READ_END]);
+                dup2(fd[i][WRITE_END], STDOUT_FILENO);
+                execvp(array[i][0], array[i]);
+                return -1;
+            }
+        }
+        else if(pid > 0){
+            int status;
+            waitpid(pid, &status, 0);
+            if( i != (length-1))
+                close(fd[i][WRITE_END]);
+            if((i == length - 1)){
+                close(file);
+            }
+        }
+    }
 }

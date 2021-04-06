@@ -31,11 +31,15 @@
   :line: 117
   :message: ''
   :unity_test_time: 0
+- :test: test_projekcik__string_to_array
+  :line: 124
+  :message: ''
+  :unity_test_time: 0
 :failures: []
 :ignores: []
 :counts:
-  :total: 7
-  :passed: 7
+  :total: 8
+  :passed: 8
   :failed: 0
   :ignored: 0
 :stdout:
@@ -85,4 +89,5 @@
 - ''
 - 'fun__amount_of_pipes():'
 - "------------------"
-:time: 0.001648692999879131
+- '5'
+:time: 0.0017736780009727227

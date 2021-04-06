@@ -129,7 +129,6 @@ task_temp * get_array_of_tasks(FILE * file){
                 fprintf(stderr, "In function get_array_of_tasks():\nSomething went wrong with function strtok. Line:%d", line);
                 return NULL;
             }
-
             array_task[line].program[i] = (char*)malloc((strlen(token)+1) * sizeof(char));
             if(array_task[line].program[i] == NULL){
                 perror("In function get_array_of_tasks():\nAllocation error:");
@@ -159,7 +158,7 @@ int amount_of_pipes(char* pol){
     char * p = pol;
     int value = regcomp(&regex, "[a-zA-Z ][|]", REG_EXTENDED|REG_NEWLINE);
     if(value != 0){
-        fprintf(stderr, "In function amount_of_pipes():\nError with regexcomp");
+        fprintf(stderr, "In function amount_of_pipes():\n");
         return -1;
     }
     while (1) {
@@ -178,7 +177,7 @@ int amount_of_pipes(char* pol){
             p += m[0].rm_eo;
         }
         else{
-            fprintf(stderr, "In function amount_of_pipes():\nError with regexec");
+            fprintf(stderr, "In function amount_of_pipes():\n");
             return -1;            
         }
     }
@@ -245,7 +244,27 @@ void free_space(task_temp * array){
     }
     free(array);
 }
-
+char ** string_to_array(char * text, int * size){
+    char ** array = (char**)malloc(1 * sizeof(char*));
+    char * token = strtok(text, " ");
+    int i=0;
+    for(i = 0; token != NULL; ++i){
+        if(i != 0){
+            if((array = (char**)realloc( array, (i + 1) * sizeof(char*))) == NULL){
+                fprintf(stderr, "In function string_to_array: %s", strerror(errno));
+                return NULL;
+            }
+        }
+        if(( array[i] = (char*)malloc( (strlen(token) + 1) * sizeof(char))) == NULL){
+            fprintf(stderr, "In function string_to_array: %s", strerror(errno));
+            return NULL;
+        }
+        strcpy(array[i], token);
+        token = strtok(NULL, " ");
+    }
+    *size = i;
+    return array;
+}
 
 int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
     pid_t pid;
@@ -262,17 +281,18 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
                 //first_time zmienna globalna
                 if(first_time){
                     first_time = false;
-                    if((file = first_timeopen("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
+                    if((file = open("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
                         perror("Error");
                         return 55;
                     }
                 }
                 else
-                    if((file = first_timeopen("polko.txt", O_WRONLY | O_APPEND, 0777)) < 0){
+                    if((file = open("polko.txt", O_WRONLY | O_APPEND, 0777)) < 0){
                         perror("Error");
                         return 55;
                     }
                 dup2(file, STDOUT_FILENO);
+                // execvp(k[0], k, NULL);
                 execvp(array[0][0], array[0]);
                 close(file);
             }
