@@ -1,7 +1,8 @@
 #include "fun.h"
 
 int main(int argc, char **argv){
-    
+    signal(SIGINT, handler);
+
     if(amount_of_arguments(argc, argv[0]) > 0)
         return EXIT_FAILURE;
 

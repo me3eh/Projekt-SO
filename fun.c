@@ -1,7 +1,9 @@
 #include "fun.h"
 
 #define GOOD_FORMAT "^(2[0-3]|[0-1]?[0-9]):([0-5]?[0-9]):[a-zA-Z\\|: -]*:[0-2]$"
-
+#define WRITE_END 1
+#define READ_END 0
+bool first_time = true;
 int lines_in_file = 0;
 
 int amount_of_arguments(int arg, char* word){
@@ -245,14 +247,11 @@ void free_space(task_temp * array){
 }
 
 
-int pipe_fork_stuff(char *** array, int length, char * outfile){
+int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
     pid_t pid;
     int file;
     int fd[length-1][2];
     int flk[0];
-    int fp[2];
-    int sp[2];
-    perror("555");
     for(int i = 0 ; i < length-1 ; ++i){
         pipe(fd[i]);
     }
@@ -260,35 +259,41 @@ int pipe_fork_stuff(char *** array, int length, char * outfile){
         pid = fork();
         if(pid == 0){
             if((i == length - 1) && (i == 0)){
-                if((file = open("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777)) == 0){
-                    return 55;
+                //first_time zmienna globalna
+                if(first_time){
+                    first_time = false;
+                    if((file = first_timeopen("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
+                        perror("Error");
+                        return 55;
+                    }
                 }
+                else
+                    if((file = first_timeopen("polko.txt", O_WRONLY | O_APPEND, 0777)) < 0){
+                        perror("Error");
+                        return 55;
+                    }
                 dup2(file, STDOUT_FILENO);
-                perror("101");
                 execvp(array[0][0], array[0]);
                 close(file);
             }
             else if(( i == length - 1 ) && ( i != 0 )){
-                perror("1");
                 dup2(fd[i-1][READ_END], STDIN_FILENO);
-                file = open("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777);
-                perror("2");
+                if(first_time){
+                    first_time = false;
+                    if(file = open("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777) < 0){
+                        perror("Error");
+                        return 55;
+                    }
+                }
                 dup2(file, STDOUT_FILENO);
-                perror("3");
-
                 execvp(array[i][0], array[i]);
-                perror("kup");
             }
             else{
-                
-                perror("101");
-                if(i != 0){
+                if(i != 0)
                     dup2(fd[i-1][READ_END], STDIN_FILENO);
-                }
 
                 close(fd[i][READ_END]);
                 dup2(fd[i][WRITE_END], STDOUT_FILENO);
-                perror("666");
                 execvp(array[i][0], array[i]);
                 return -1;
             }
@@ -296,11 +301,9 @@ int pipe_fork_stuff(char *** array, int length, char * outfile){
         else if(pid > 0){
             int status;
             waitpid(pid, &status, 0);
-                if( i != (length-1))
-                    close(fd[i][WRITE_END]);
-                perror("kontrolne");
+            if( i != (length-1))
+                close(fd[i][WRITE_END]);
             if((i == length - 1)){
-                perror("Po");
                 close(file);
             }
         }
