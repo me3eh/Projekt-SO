@@ -28,11 +28,11 @@
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__amount_of_pipes
-  :line: 117
+  :line: 119
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__string_to_array
-  :line: 124
+  :line: 126
   :message: ''
   :unity_test_time: 0
 :failures: []
@@ -80,6 +80,8 @@
 - ''
 - 'fun__get_array_of_tasks():'
 - "------------------"
+- '666: No such file or directory'
+- '667: No such file or directory'
 - 'In function check_format():'
 - 'Bad format in file - line:0 Usage: <hours>:<minutes>:<code>:<mode>'
 - In function checking_file_valid()
@@ -89,5 +91,9 @@
 - ''
 - 'fun__amount_of_pipes():'
 - "------------------"
+- ''
+- "***** ***->14"
+- ''
+- "***** ***->10"
 - '5'
-:time: 0.0017736780009727227
+:time: 0.030170625999744516

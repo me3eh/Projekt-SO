@@ -25,7 +25,8 @@
 typedef struct task_temp{
     long hours;
     long minutes;
-    char **(program);
+    char ***program;
+    int *how_many_arguments_in_program;
     long state;
     long time_to_exec;
     long time_to_sleep_before_exec;

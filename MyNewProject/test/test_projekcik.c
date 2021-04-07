@@ -81,9 +81,11 @@ void test_projekcik__get_array_of_tasks(void){
     FILE * test_file2 = checking_file_valid("./test/perfect.txt");
     TEST_ASSERT_TRUE(test_file2 != NULL);
     task_temp * array;
+    perror("666");
     TEST_ASSERT_TRUE((array = get_array_of_tasks(test_file2)) != NULL);
     if(array != NULL)
         free_space(array);
+    perror("667");
     if(test_file2 != NULL)
         fclose(test_file2);
     
@@ -132,6 +134,7 @@ void test_projekcik__string_to_array(void){
     TEST_ASSERT_TRUE(strcmp(array[2], "give") == 0);
     TEST_ASSERT_TRUE(strcmp(array[3], "you") == 0);
     TEST_ASSERT_TRUE(strcmp(array[4], "up") == 0);
+    TEST_ASSERT_TRUE(size_free[0] == 5);
     printf("%d",size_free[0]);
     for(int i = 0 ; i < size_free[0] ; ++i)
         free(array[i]);
