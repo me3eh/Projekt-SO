@@ -83,11 +83,15 @@ task_temp * get_array_of_tasks(FILE * file){
     int line = 0;
     int size_buffer = 200;
     char buffer[size_buffer]; 
+    int length_of_everything = 0;
     char *token, *lil_buffa;
-    
+    char pol[200] = "";
+    //zmienna pomocnicza do zmiennej buffer
+    char *save_buffer = NULL;
     int amount_of_programs = 0;
     int i = 0;
-    
+    int j = 0;
+    bool in = false;
     int columns = check_format(file);
     if(columns == -1)
         return NULL;
@@ -101,48 +105,79 @@ task_temp * get_array_of_tasks(FILE * file){
 
     while(fgets(buffer, size_buffer, file) != NULL){ 
         
+        length_of_everything = strlen(buffer);
+        printf("\n***** ***->%d\n", length_of_everything);
         amount_of_programs = amount_of_pipes(buffer); 
-        token = strtok(buffer, ":"); 
-        if(token == NULL)
+        //wczytanie godziny o ktorej uruchomić polecenie
+        token = strtok_r(buffer, ":", &save_buffer); 
+        if(token == NULL){
+            perror("Sprawdzenie");
             return NULL;
-
+        }
+        length_of_everything -= (strlen(token) + 1);
         array_task[line].hours = strtol(token, &lil_buffa, 10);
-
-        token = strtok(NULL, ":");
-
-        if(token == NULL)
+        token = strtok_r(NULL, ":", &save_buffer);
+        if(token == NULL){
+            perror("Sprawdzenie");
             return NULL;
-        
+        }
+        length_of_everything -= (strlen(token) + 1);
         array_task[line].minutes = strtol(token, &lil_buffa, 10);
-        array_task[line].program = (char**)malloc(amount_of_programs * sizeof(char*));
-
+        
+        //wczytanie programow oraz alokacja pamieci
+        array_task[line].program = (char***)malloc(amount_of_programs * sizeof(char**));
+        array_task[line].how_many_arguments_in_program = (int*)malloc(amount_of_programs * sizeof(int));
         if(array_task[line].program == NULL){
             perror("In function get_array_of_tasks():\nAllocation error:");
             return NULL;
         }
-
+        if(array_task[line].how_many_arguments_in_program == NULL){
+            perror("In function get_array_of_tasks():\nAllocation error:");
+            return NULL;
+        }
         array_task[line].amount_programs = amount_of_programs;
 
         while( i < (amount_of_programs - 1) ){
-            token = strtok(NULL, "|");
+            token = strtok_r(NULL, "|", &save_buffer);
+            strcpy(pol, token);
+            in = false;
+            while(pol[strlen(pol)-1] == '\\'){
+                if(in == false){
+                    strcat(pol, "|");
+                    in = true;
+                }
+                else{
+                    strcat(pol, token);
+                    strcat(pol, "|");
+                }
+                token = strtok_r(NULL, "|", &save_buffer);
+            }
             if(token == NULL){
                 fprintf(stderr, "In function get_array_of_tasks():\nSomething went wrong with function strtok. Line:%d", line);
                 return NULL;
             }
-            array_task[line].program[i] = (char*)malloc((strlen(token)+1) * sizeof(char));
+
+            array_task[line].program[i] = string_to_array(pol, &array_task[line].how_many_arguments_in_program[i]);
             if(array_task[line].program[i] == NULL){
                 perror("In function get_array_of_tasks():\nAllocation error:");
                 return NULL;
             }
-            strcpy(array_task[line].program[i], (char*)token);
+            length_of_everything -= (strlen(pol) + 1);
             ++i;
         };
-        
-        token = strtok(NULL, ":");
-        array_task[line].program[i] = (char*)malloc((strlen(token)+1) * sizeof(char));
-        strcpy(array_task[line].program[i], token);
-        
-        token = strtok(NULL, ":");
+        length_of_everything -= 2;
+        token = strtok_r(NULL, ":", &save_buffer);
+        if(token == NULL){
+            perror("Something goes wrong");
+            return NULL;
+        }
+
+        array_task[line].program[i]= string_to_array(token,&array_task[line].how_many_arguments_in_program[i]);
+        if(array_task[line].program[i] == NULL){
+            perror("In function get_array_of_tasks():\n");
+            return NULL;
+        }
+        token = strtok_r(NULL, ":", &save_buffer);
         array_task[line].state = strtol(token, &lil_buffa, 10);
         ++line;
         i = 0;
@@ -238,31 +273,41 @@ int comparator_temp(const void *p, const void *q)
 
 void free_space(task_temp * array){
     for(int i = 0; i < lines_in_file; ++i){
-        for(int j=0; j<array[i].amount_programs;++j)
+        for(int j=0; j<array[i].amount_programs;++j){
+            for(int t=0; t<array[i].how_many_arguments_in_program[j]; ++t)
+                free(array[i].program[j][t]);
             free(array[i].program[j]);
+        }
+        free(array[i].how_many_arguments_in_program);
         free(array[i].program);
     }
     free(array);
 }
 char ** string_to_array(char * text, int * size){
     char ** array = (char**)malloc(1 * sizeof(char*));
-    char * token = strtok(text, " ");
-    int i=0;
-    for(i = 0; token != NULL; ++i){
-        if(i != 0){
-            if((array = (char**)realloc( array, (i + 1) * sizeof(char*))) == NULL){
-                fprintf(stderr, "In function string_to_array: %s", strerror(errno));
-                return NULL;
-            }
-        }
-        if(( array[i] = (char*)malloc( (strlen(token) + 1) * sizeof(char))) == NULL){
+    char * save_text = NULL;
+    char * token1 = strtok_r(text, " ", &save_text);
+    int i = 0;
+    if(( array[i] = (char*)malloc( (strlen(token1) + 1) * sizeof(char))) == NULL){
+        fprintf(stderr, "In function string_to_array: %s", strerror(errno));
+        return NULL;
+    }
+    strcpy(array[i], token1);
+    token1 =strtok_r(NULL, " ", &save_text);
+    while(token1 != NULL){
+        ++i;
+        if((array = (char**)realloc( array, (i + 1) * sizeof(char*))) == NULL){
             fprintf(stderr, "In function string_to_array: %s", strerror(errno));
             return NULL;
         }
-        strcpy(array[i], token);
-        token = strtok(NULL, " ");
+        if(( array[i] = (char*)malloc( (strlen(token1) + 1) * sizeof(char))) == NULL){
+            fprintf(stderr, "In function string_to_array: %s", strerror(errno));
+            return NULL;
+        }
+        strcpy(array[i], token1);
+        token1 =strtok_r(NULL, " ", &save_text);
     }
-    *size = i;
+    *size = (i+1);
     return array;
 }
 
@@ -270,10 +315,8 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
     pid_t pid;
     int file;
     int fd[length-1][2];
-    int flk[0];
-    for(int i = 0 ; i < length-1 ; ++i){
+    for(int i = 0 ; i < length-1 ; ++i)
         pipe(fd[i]);
-    }
     for(int i = 0 ; i < length ; ++i){
         pid = fork();
         if(pid == 0){
@@ -292,7 +335,6 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
                         return 55;
                     }
                 dup2(file, STDOUT_FILENO);
-                // execvp(k[0], k, NULL);
                 execvp(array[0][0], array[0]);
                 close(file);
             }
