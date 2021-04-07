@@ -64,6 +64,7 @@ void test_projekcik_checking_function__length_of_file(void){
     FILE * test_file2 = checking_file_valid("./test/perfect.txt");
     TEST_ASSERT_TRUE(check_format(test_file2) == 2);
     TEST_ASSERT_TRUE(length_of_file(test_file2) == 2);
+    perror("siusiak");
     if(test_file2 != NULL)
         fclose(test_file2);
    
@@ -81,7 +82,7 @@ void test_projekcik__get_array_of_tasks(void){
     FILE * test_file2 = checking_file_valid("./test/perfect.txt");
     TEST_ASSERT_TRUE(test_file2 != NULL);
     task_temp * array;
-    perror("666");
+    // perror("666");
     TEST_ASSERT_TRUE((array = get_array_of_tasks(test_file2)) != NULL);
     if(array != NULL)
         free_space(array);

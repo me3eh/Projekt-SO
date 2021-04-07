@@ -1,7 +1,7 @@
 #include "fun.h"
 
 int main(int argc, char **argv){
-    signal(SIGINT, handler);
+    // signal(SIGINT, handler);
 
     if(amount_of_arguments(argc, argv[0]) > 0)
         return EXIT_FAILURE;
@@ -31,8 +31,8 @@ int main(int argc, char **argv){
         printf("Minuty:%ld\n", array_of_programs[i].minutes);
         printf("Ilosc:%ld\n", array_of_programs[i].time_to_exec);
         printf("Ilosc snu:%ld\n", array_of_programs[i].time_to_sleep_before_exec);
-        for(int j=0; j<array_of_programs[i].amount_programs; ++j)
-            printf("Pupa kupa%s\n\n", array_of_programs[i].program[j]);
+        // for(int j=0; j<array_of_programs[i].amount_programs; ++j)
+            // printf("Pupa kupa%s\n\n", array_of_programs[i].program[j]);
     }
     // for(int i = 0; i < length; ++i){
     //     for(int j=0; j<array_of_programs[i].amount_programs;++j)
@@ -40,8 +40,8 @@ int main(int argc, char **argv){
     //     free(array_of_programs[i].program);
     // }
     // free(array_of_programs);
-    char *array[] ={"ls -l","grep p"};
-    pipe_fork_stuff(array, 2, "polko.txt");
+    // char *array[] ={"ls -l","grep p"};
+    // pipe_fork_stuff(array, 2, "polko.txt");
     free_space(array_of_programs);
     fclose(file);
     return 0;

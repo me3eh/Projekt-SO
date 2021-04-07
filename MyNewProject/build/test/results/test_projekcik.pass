@@ -24,15 +24,15 @@
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__get_array_of_tasks
-  :line: 77
+  :line: 78
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__amount_of_pipes
-  :line: 119
+  :line: 120
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__string_to_array
-  :line: 126
+  :line: 127
   :message: ''
   :unity_test_time: 0
 :failures: []
@@ -68,11 +68,11 @@
 - ''
 - 'fun__equal_namings():'
 - "------------------"
-- Input and output file cannot have the same namingsInput and output file cannot have
-  the same namingsInput and output file cannot have the same namings
+- Input and output file cannot have the same namings
 - ''
 - 'fun__length_of_file():'
 - "------------------"
+- 'siusiak: No such file or directory'
 - In function checking_file_valid()
 - ":File error: No such file or directory"
 - 'In function check_format: File is not found: No such file or directory'
@@ -80,20 +80,16 @@
 - ''
 - 'fun__get_array_of_tasks():'
 - "------------------"
-- '666: No such file or directory'
+- '1: No such file or directory'
 - '667: No such file or directory'
 - 'In function check_format():'
 - 'Bad format in file - line:0 Usage: <hours>:<minutes>:<code>:<mode>'
 - In function checking_file_valid()
 - ":File error: No such file or directory"
-- 'In function get_array_of_tasks: File is not found:: No such file or directory'
+- 'In function get_array_of_tasks:: No such file or directory'
 - 'In function check_format(): File is empty'
 - ''
 - 'fun__amount_of_pipes():'
 - "------------------"
-- ''
-- "***** ***->14"
-- ''
-- "***** ***->10"
 - '5'
-:time: 0.030170625999744516
+:time: 0.03229178099991259
