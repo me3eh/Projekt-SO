@@ -87,9 +87,9 @@ int main(void)
   run_test(test_projekcik_checkingfunction__check_format, "test_projekcik_checkingfunction__check_format", 31);
   run_test(test_projekcik_checking_function__equal_namings, "test_projekcik_checking_function__equal_namings", 51);
   run_test(test_projekcik_checking_function__length_of_file, "test_projekcik_checking_function__length_of_file", 60);
-  run_test(test_projekcik__get_array_of_tasks, "test_projekcik__get_array_of_tasks", 77);
-  run_test(test_projekcik__amount_of_pipes, "test_projekcik__amount_of_pipes", 119);
-  run_test(test_projekcik__string_to_array, "test_projekcik__string_to_array", 126);
+  run_test(test_projekcik__get_array_of_tasks, "test_projekcik__get_array_of_tasks", 78);
+  run_test(test_projekcik__amount_of_pipes, "test_projekcik__amount_of_pipes", 120);
+  run_test(test_projekcik__string_to_array, "test_projekcik__string_to_array", 127);
 
   return UnityEnd();
 }

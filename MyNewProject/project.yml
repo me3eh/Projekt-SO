@@ -75,6 +75,19 @@
     :html_medium_threshold: 75
     :html_high_threshold: 90
 
+# tools:
+#   :pre_test_fixture_execute:
+#     :executable: valgrind
+#     :arguments:
+#       - --track-origins=yes
+#       - --leak-check=full
+#       - --show-leak-kinds=all
+#       - --errors-for-leak-kinds=all
+#       - --error-exitcode=10
+#       - ${1}
+# :plugins:
+#   :enabled:
+#     - command_hooks
 #:tools:
 # Ceedling defaults to using gcc for compiling, linking, etc.
 # As [:tools] is blank, gcc will be used (so long as it's in your system path)
