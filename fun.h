@@ -39,7 +39,7 @@ typedef struct task_temp{
     long time_to_sleep_before_exec;
     
     //ile potoków
-    int amount_programs;
+    int no_pipes;
 }task_temp;
 
 int amount_of_arguments(int arg, char*word);
@@ -76,5 +76,5 @@ void free_space(task_temp * array);
 char ** string_to_array(char * text, int * size);
 int title_in_file(char*original_line_in_file, char*outfile, bool first_time);
 
-int pipe_fork_stuff(char *** array, int length, char*outfile, int state);
+int pipe_fork_stuff(char *** array, int length, char*outfile, int state, task_temp *ar);
 #endif

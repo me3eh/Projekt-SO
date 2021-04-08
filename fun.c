@@ -145,7 +145,7 @@ task_temp * get_array_of_tasks(FILE * file){
             perror("In function get_array_of_tasks():");
             return NULL;
         }
-        array_task[line].amount_programs = amount_of_programs;
+        array_task[line].no_pipes = amount_of_programs;
         while( i < (amount_of_programs - 1) ){
             token = strtok_r(NULL, "|", &save_buffer);
             strcpy(pol, token);
@@ -299,7 +299,7 @@ int comparator_temp(const void *p, const void *q)
 
 void free_space(task_temp * array){
     for(int i = 0; i < lines_in_file; ++i){
-        for(int j=0; j<array[i].amount_programs;++j){
+        for(int j=0; j<array[i].no_pipes;++j){
             for(int t=0; t<array[i].how_many_arguments_in_program[j]; ++t)
                 free(array[i].program[j][t]);
             free(array[i].program[j]);
@@ -340,82 +340,11 @@ char ** string_to_array(char * text, int * size){
         fprintf(stderr, "In function string_to_array: %s", strerror(errno));
         return NULL;
     }
-    // if(( array[i] = (char*)malloc( 1 * sizeof(char))) == NULL){
-    //         fprintf(stderr, "In function string_to_array: %s", strerror(errno));
-    //         return NULL;
-    // }
     array[i] = NULL;
     // i bylo liczone od 0, dlatego zwracany size + 1
     *size = (i+1);
     return array;
 }
-
-// int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
-//     pid_t pid;
-//     int file;
-//     int fd[length-1][2];
-//     if(first_time){
-//         first_time = false;
-//         if((file = open("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
-//             perror("Error");
-//             return 55;
-//         }
-//     }
-//     else
-//         if((file = open("polko.txt", O_WRONLY | O_APPEND, 0777)) < 0){
-//             perror("Error");
-//             return 55;
-//         }
-//     if( state > 0){
-//         if(dup2(file, STDERR_FILENO) != 0)
-//     }
-//     for(int i = 0 ; i < length-1 ; ++i)
-//         pipe(fd[i]);
-//     for(int i = 0 ; i < length ; ++i){
-//         pid = fork();
-//         if(pid == 0){
-//             if((i == length - 1) && (i == 0)){
-//                 dup2(file, STDOUT_FILENO);
-//                 if(execvp(array[0][0], array[0]) < 0){
-
-//                 }
-//                 close(file);
-//             }
-//             else if(( i == length - 1 ) && ( i != 0 )){
-//                 dup2(fd[i-1][READ_END], STDIN_FILENO);
-//                 if(first_time){
-//                     first_time = false;
-//                     if(file = open("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777) < 0){
-//                         perror("Error");
-//                         return 55;
-//                     }
-//                 }
-//                 dup2(file, STDOUT_FILENO);
-//                 execvp(array[i][0], array[i]);
-//             }
-//             else{
-//                 if(i != 0)
-//                     dup2(fd[i-1][READ_END], STDIN_FILENO);
-
-//                 close(fd[i][READ_END]);
-//                 dup2(fd[i][WRITE_END], STDOUT_FILENO);
-//                 execvp(array[i][0], array[i]);
-//                 return -1;
-//             }
-//         }
-//         else if(pid > 0){
-//             int status;
-//             waitpid(pid, &status, 0);
-//             if(WIFEXITED(status))
-//                 printf("child exited with = %d\n",WEXITSTATUS(status));
-//             if( i != (length-1))
-//                 close(fd[i][WRITE_END]);
-//             if((i == length - 1)){
-//                 close(file);
-//             }
-//         }
-//     }
-// }
 int title_in_file(char*original_line_in_file, char*outfile, bool first_time){
     int file;
     if(first_time){
@@ -446,7 +375,7 @@ int title_in_file(char*original_line_in_file, char*outfile, bool first_time){
 }
 
 
-int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
+int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_temp*ar){
     
     bool something_bad = false;
     pid_t pid;
@@ -455,7 +384,7 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
     if((file = open(outfile, O_WRONLY | O_APPEND, 0777)) < 0){
         return -1;
     }
-    if((file_null = open("/dev/null", O_WRONLY)) < 0){
+    if((file_null = open("/dev/null", O_WRONLY, 0777)) < 0){
         return -1;
     }
     if(state >= 1)
@@ -478,6 +407,8 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
                 execvp(array[0][0], array[0]);
                 fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
                 something_bad = true;
+                free_space(ar);
+                // free(array);
                 exit(EXIT_FAILURE);
                 close(file);
                 close(file_null);
@@ -495,6 +426,8 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
                 execvp(array[i][0], array[i]);
                 fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
                 something_bad = true;
+                // free(array);
+                free_space(ar);
                 exit(EXIT_FAILURE);
                 close(file);
                 close(file_null);
@@ -503,14 +436,16 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
                 if(i != 0)
                     dup2(fd[i-1][READ_END], STDIN_FILENO);
 
-                close(fd[i][READ_END]);
+                // close(fd[i][READ_END]);
                 // perror("555");
                 dup2(fd[i][WRITE_END], STDOUT_FILENO);
                 if(state == 0)
                     dup2(file_null, STDERR_FILENO);
                 execvp(array[i][0], array[i]);
+                // free(array);
                 fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
                 something_bad = true;
+                free_space(ar);
                 exit(EXIT_FAILURE);
                 close(file);
                 close(file_null);
