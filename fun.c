@@ -416,26 +416,32 @@ char ** string_to_array(char * text, int * size){
 //         }
 //     }
 // }
-int title_in_file(char*original_line_in_file, char*outfile, bool*first_time){
-    FILE * file;
-    if(*first_time){
-        if((file = fopen(outfile, "w")) == NULL){
+int title_in_file(char*original_line_in_file, char*outfile, bool first_time){
+    int file;
+    if(first_time){
+        if((file = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
             perror("Function title_in_file:");
             return -1;
         }
     }
     else{
-        if((file = fopen(outfile, "a")) == NULL){
+        if((file = open(outfile, O_WRONLY | O_APPEND, 0777)) < 0){
             perror("Function title_in_file:");
             return -1;
         }
     }
-    if(*first_time)
-        fprintf(file, "%s\n----------------------------\n", original_line_in_file);
-    else
-        fprintf(file, "\n%s\n----------------------------\n", original_line_in_file);
-    *first_time = false;
-    fclose(file);
+    if(first_time){
+        write(file, original_line_in_file, strlen(original_line_in_file));
+        char p [] = "\n----------------------------\n";
+        write(file, p, strlen(p));
+    }
+    else{
+        write(file, "\n\n", 2);
+        write(file, original_line_in_file, strlen(original_line_in_file));
+        char p [] = "----------------------------\n";
+        write(file, p, strlen(p));
+    }
+    close(file);
     return 0;
 }
 
@@ -446,7 +452,6 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
     pid_t pid;
     int file, file_null;
     int fd[length-1][2];
-
     if((file = open(outfile, O_WRONLY | O_APPEND, 0777)) < 0){
         return -1;
     }
@@ -470,51 +475,62 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
                 if(state == 2)
                     dup2(file, STDOUT_FILENO);
                 
-                if(execvp(array[0][0], array[0]) < 0){
-                    fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
-                    something_bad = true;
-                    return -1;
-                }
+                execvp(array[0][0], array[0]);
+                fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
+                something_bad = true;
+                exit(EXIT_FAILURE);
                 close(file);
+                close(file_null);
             }
             else if(( i == length - 1 ) && ( i != 0 )){
                 dup2(fd[i-1][READ_END], STDIN_FILENO);
                 
                 if(state  == 0){
                     dup2(file, STDOUT_FILENO);
-                    dup2(file_null, STDERR_FILENO);
                 }
                 if(state == 1)
                     dup2(file_null, STDOUT_FILENO);
                 if(state == 2)
                     dup2(file, STDOUT_FILENO);
-
-                if(execvp(array[i][0], array[i]) < 0){
-                    something_bad = true;
-                    return -1;
-                }
+                execvp(array[i][0], array[i]);
+                fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
+                something_bad = true;
+                exit(EXIT_FAILURE);
+                close(file);
+                close(file_null);
             }
             else{
                 if(i != 0)
                     dup2(fd[i-1][READ_END], STDIN_FILENO);
 
                 close(fd[i][READ_END]);
+                // perror("555");
                 dup2(fd[i][WRITE_END], STDOUT_FILENO);
                 if(state == 0)
                     dup2(file_null, STDERR_FILENO);
-                if(execvp(array[i][0], array[i]) < 0){
-                    something_bad = true;
-                    return -1;
-                }
-                return -1;
+                execvp(array[i][0], array[i]);
+                fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
+                something_bad = true;
+                exit(EXIT_FAILURE);
+                close(file);
+                close(file_null);
             }
         }
         else if(pid > 0){
             int status;
             waitpid(pid, &status, 0);
+            if(something_bad == true){
+                close(fd[i][WRITE_END]);
+                close(file);
+                close(file_null);
+                exit(EXIT_FAILURE);
+            }
             if(WIFEXITED(status)){
                 if(WEXITSTATUS(status) != 0){
+                    close(fd[i][WRITE_END]);
                     something_bad = true;
+                    close(file);
+                    close(file_null);
                     return -1;
                 }
             }
@@ -524,11 +540,7 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
                 close(file);
                 close(file_null);
             }
-            if(something_bad == true){
-                close(file);
-                close(file_null);
-                return -1;
-            }
         }
     }
+    return 0;
 }
