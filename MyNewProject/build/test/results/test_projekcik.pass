@@ -81,6 +81,10 @@
 - 'fun__get_array_of_tasks():'
 - "------------------"
 - '1: No such file or directory'
+- '666: No such file or directory'
+- 'hih: No such file or directory'
+- '666: No such file or directory'
+- 'hih: No such file or directory'
 - '667: No such file or directory'
 - 'In function check_format():'
 - 'Bad format in file - line:0 Usage: <hours>:<minutes>:<code>:<mode>'
@@ -91,5 +95,15 @@
 - ''
 - 'fun__amount_of_pipes():'
 - "------------------"
-- '5'
-:time: 0.03229178099991259
+- '666: No such file or directory'
+- 'hih: No such file or directory'
+- '666: No such file or directory'
+- 'hih: No such file or directory'
+- '666: No such file or directory'
+- 'hih: No such file or directory'
+- 'lk: No such file or directory'
+- 'dkjdk: No such file or directory'
+- 'dkjdk: No such file or directory'
+- 'hihihi: No such file or directory'
+- '6'
+:time: 0.001416996999978437

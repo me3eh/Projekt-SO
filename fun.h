@@ -62,10 +62,11 @@ int comparator_temp(const void *p, const void *q);
 
 void free_space(task_temp * array);
 
-int pipe_fork_stuff(char *** array, int length, char * outfile, int state);
+// int pipe_fork_stuff(char *** array, int length, char * outfile, int state);
 
 char ** string_to_array(char * text, int * size);
 
 int title_in_file(char*original_line_in_file, char*outfile);
 
+int pipe_fork_stuff(char *** array, int length, char * outfile, int state, char*original_line_in_file);
 #endif
