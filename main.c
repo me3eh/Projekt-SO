@@ -31,8 +31,9 @@ int main(int argc, char **argv){
         printf("Minuty:%ld\n", array_of_programs[i].minutes);
         printf("Ilosc:%ld\n", array_of_programs[i].time_to_exec);
         printf("Ilosc snu:%ld\n", array_of_programs[i].time_to_sleep_before_exec);
-        // for(int j=0; j<array_of_programs[i].amount_programs; ++j)
-            // printf("Pupa kupa%s\n\n", array_of_programs[i].program[j]);
+        for(int j=0; j<array_of_programs[i].amount_programs; ++j)
+            for(int a=0; a<array_of_programs[i].how_many_arguments_in_program[j]; ++a)
+                printf("%s\n\n", array_of_programs[i].program[j][a]);
     }
     // for(int i = 0; i < length; ++i){
     //     for(int j=0; j<array_of_programs[i].amount_programs;++j)
