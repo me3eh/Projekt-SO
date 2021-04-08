@@ -3,7 +3,7 @@
 #define GOOD_FORMAT "^((2{0,1}[0-3])|([0-1]{0,1}[0-9])):([0-5]?[0-9]):([a-zA-Z\\|:,. -])*:[0-2]$"
 #define WRITE_END 1
 #define READ_END 0
-bool first_time = true;
+// bool first_time = true;
 int lines_in_file = 0;
 
 int amount_of_arguments(int arg, char* word){
@@ -107,6 +107,12 @@ task_temp * get_array_of_tasks(FILE * file){
     }
     perror("1");
     while(fgets(buffer, size_buffer, file) != NULL){
+        array_task[line].original_command_from_file = (char*)malloc((strlen(buffer)+1)*sizeof(char));
+        if(array_task[line].original_command_from_file == NULL){
+            perror("Hih");
+            return NULL;
+        }
+        strcpy(array_task[line].original_command_from_file, buffer);
 
         length_of_everything = strlen(buffer);
         amount_of_programs = amount_of_pipes(buffer);
@@ -300,6 +306,7 @@ void free_space(task_temp * array){
         }
         free(array[i].how_many_arguments_in_program);
         free(array[i].program);
+        free(array[i].original_command_from_file);
     }
     free(array);
 }
@@ -409,9 +416,9 @@ char ** string_to_array(char * text, int * size){
 //         }
 //     }
 // }
-int title_in_file(char*original_line_in_file, char*outfile){
+int title_in_file(char*original_line_in_file, char*outfile, bool*first_time){
     FILE * file;
-    if(first_time){
+    if(*first_time){
         if((file = fopen(outfile, "w")) == NULL){
             perror("Function title_in_file:");
             return -1;
@@ -423,24 +430,22 @@ int title_in_file(char*original_line_in_file, char*outfile){
             return -1;
         }
     }
-    if(first_time)
-        fprintf(file, "%s\n", original_line_in_file);
+    if(*first_time)
+        fprintf(file, "%s\n----------------------------\n", original_line_in_file);
     else
-        fprintf(file, "\n%s\n", original_line_in_file);
-    first_time = false;
+        fprintf(file, "\n%s\n----------------------------\n", original_line_in_file);
+    *first_time = false;
     fclose(file);
     return 0;
 }
 
-int pipe_fork_stuff(char *** array, int length, char * outfile, int state, char*original_line_in_file){
+
+int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
     
     bool something_bad = false;
     pid_t pid;
     int file, file_null;
     int fd[length-1][2];
-    if(title_in_file(original_line_in_file, outfile) == -1){
-        return -1;
-    }
 
     if((file = open(outfile, O_WRONLY | O_APPEND, 0777)) < 0){
         return -1;
