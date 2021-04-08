@@ -30,7 +30,7 @@ int main(int argc, char **argv){
         printf("Minuty:%ld\n", array_of_programs[i].minutes);
         printf("Ilosc:%ld\n", array_of_programs[i].time_to_exec);
         printf("Ilosc snu:%ld\n", array_of_programs[i].time_to_sleep_before_exec);
-        for(int j=0; j<array_of_programs[i].amount_programs; ++j)
+        for(int j=0; j<array_of_programs[i].no_pipes; ++j)
             for(int a=0; a<array_of_programs[i].how_many_arguments_in_program[j]; ++a)
                 printf("%s\n\n", array_of_programs[i].program[j][a]);
     }
@@ -38,18 +38,18 @@ int main(int argc, char **argv){
     bool first_time =true;
     for(int i = 0; i < length; ++i){
         title_in_file(array_of_programs[i].original_command_from_file, argv[2], first_time);
-        pipe_fork_stuff(array_of_programs[i].program, array_of_programs[i].amount_programs, argv[2], array_of_programs[i].state);
+        pipe_fork_stuff(array_of_programs[i].program, array_of_programs[i].no_pipes, argv[2], array_of_programs[i].state, array_of_programs);
         first_time = false;
     }
-    
+    free_space(array_of_programs);
     // for(int i = 0; i < length; ++i){
-    //     for(int j=0; j<array_of_programs[i].amount_programs;++j)
+    //     for(int j=0; j<array_of_programs[i].no_pipes;++j)
     //         free(array_of_programs[i].program[j]);
     //     free(array_of_programs[i].program);
     // }
     // free(array_of_programs);
     // char *array[] ={"ls -l","grep p"};
     // pipe_fork_stuff(array, 2, "polko.txt");
-    free_space(array_of_programs);
+    // free_space(array_of_programs);
     return 0;
 }

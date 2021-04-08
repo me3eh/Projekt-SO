@@ -8,21 +8,20 @@ lsdp: No such file or directory
 
 20:30:ls -l:2
 ----------------------------
-total 84
--rw-rw-r-- 1 me3eh me3eh 17700 Apr  8 22:52 fun.c
--rw-rw-r-- 1 me3eh me3eh  1972 Apr  8 22:47 fun.h
--rw-rw-r-- 1 me3eh me3eh   205 Apr  8 22:52 lk
--rw-rw-r-- 1 me3eh me3eh  1962 Apr  8 22:49 main.c
+total 80
+-rw-rw-r-- 1 me3eh me3eh 15477 Apr  9 00:21 fun.c
+-rw-rw-r-- 1 me3eh me3eh  1980 Apr  9 00:21 fun.h
+-rw-rw-r-- 1 me3eh me3eh   205 Apr  9 00:22 lk
+-rw-rw-r-- 1 me3eh me3eh  1993 Apr  9 00:22 main.c
 -rw-rw-r-- 1 me3eh me3eh   236 Apr  1 23:08 makefile
--rwxrwxr-x 1 me3eh me3eh 26968 Apr  8 22:52 minicrom
+-rwxrwxr-x 1 me3eh me3eh 26968 Apr  9 00:22 minicrom
 drwxrwxr-x 5 me3eh me3eh  4096 Mar 24 18:23 MyNewProject
 -rw------- 1 me3eh me3eh     0 Apr  3 00:49 polko.txt
 -rw-rw-r-- 1 me3eh me3eh  2735 Apr  8 18:58 pol.txt
 -rw-rw-r-- 1 me3eh me3eh   255 Mar 30 16:21 README.md
--rw-rw-r-- 1 me3eh me3eh    70 Apr  8 22:49 text.txt
+-rw-rw-r-- 1 me3eh me3eh    79 Apr  9 00:19 text.txt
 -rw-rw-r-- 1 me3eh me3eh    18 Mar 24 17:37 wujek.c
 
 
-20:40:ls -l | wc -l:2
+20:40:ls -l | wc -l | grep p:2
 ----------------------------
-13
