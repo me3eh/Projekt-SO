@@ -66,4 +66,6 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state);
 
 char ** string_to_array(char * text, int * size);
 
+int title_in_file(char*original_line_in_file, char*outfile);
+
 #endif
