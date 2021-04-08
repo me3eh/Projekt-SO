@@ -1,6 +1,6 @@
 #include "fun.h"
 
-#define GOOD_FORMAT "^(2[0-3]|[0-1]?[0-9]):([0-5]?[0-9]):[a-zA-Z\\|: -]*:[0-2]$"
+#define GOOD_FORMAT "^((2{0,1}[0-3])|([0-1]{0,1}[0-9])):([0-5]?[0-9]):([a-zA-Z\\|:,. -])*:[0-2]$"
 #define WRITE_END 1
 #define READ_END 0
 bool first_time = true;
@@ -51,7 +51,7 @@ int check_format(FILE * file){
         if(found == 0)
             ++line;
         else if( found == REG_NOMATCH){
-            fprintf(stderr, "In function check_format():\nBad format in file - line:%d Usage: <hours>:<minutes>:<code>:<mode>\n", line);
+            fprintf(stderr, "In function check_format():\nBad format in file - line:%d Usage: <hours>:<minutes>:<code>:<mode>\n", line+1);
             return -1;
         }
         else{
@@ -129,6 +129,8 @@ task_temp * get_array_of_tasks(FILE * file){
         //wczytanie programow oraz alokacja pamieci
         array_task[line].program = (char***)malloc(amount_of_programs * sizeof(char**));
         array_task[line].how_many_arguments_in_program = (int*)malloc(amount_of_programs * sizeof(int));
+        for(int a =0 ; a< amount_of_programs; ++a)
+            array_task[line].how_many_arguments_in_program[a] = 0;
         if(array_task[line].program == NULL){
             perror("In function get_array_of_tasks():");
             return NULL;
@@ -306,7 +308,7 @@ char ** string_to_array(char * text, int * size){
     char * save_text = NULL;
     char * token1 = strtok_r(text, " ", &save_text);
     int i = 0;
-    if(( array[i] = (char*)malloc( (strlen(token1) + 1) * sizeof(char))) == NULL){
+    if(( array[i] = (char*)malloc( (strlen(token1)+1) * sizeof(char))) == NULL){
         perror("In function string_to_array: %s");
         return NULL;
     }
@@ -318,25 +320,25 @@ char ** string_to_array(char * text, int * size){
             fprintf(stderr, "In function string_to_array: %s", strerror(errno));
             return NULL;
         }
-        if(( array[i] = (char*)malloc( (strlen(token1) + 1) * sizeof(char))) == NULL){
+        if(( array[i] = (char*)malloc( (strlen(token1)+1) * sizeof(char))) == NULL){
             fprintf(stderr, "In function string_to_array: %s", strerror(errno));
             return NULL;
         }
         strcpy(array[i], token1);
         token1 =strtok_r(NULL, " ", &save_text);
     }
+    //zwiekszamy, gdyz zwiekszy sie o NULL
     ++i;
     if((array = (char**)realloc( array, (i + 1) * sizeof(char*))) == NULL){
-            fprintf(stderr, "In function string_to_array: %s", strerror(errno));
-            return NULL;
+        fprintf(stderr, "In function string_to_array: %s", strerror(errno));
+        return NULL;
     }
-    if(( array[i] = (char*)malloc( 1 * sizeof(char))) == NULL){
-            fprintf(stderr, "In function string_to_array: %s", strerror(errno));
-            return NULL;
-    }
+    // if(( array[i] = (char*)malloc( 1 * sizeof(char))) == NULL){
+    //         fprintf(stderr, "In function string_to_array: %s", strerror(errno));
+    //         return NULL;
+    // }
     array[i] = NULL;
-    //zwiekszamy, gdyz zwiekszylo sie o NULL
-    //i bylo liczone od 0, dlatego zwracany size + 1
+    // i bylo liczone od 0, dlatego zwracany size + 1
     *size = (i+1);
     return array;
 }
