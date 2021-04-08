@@ -1,8 +1,4 @@
-20:30:code-polk:1
-20:40:disc | lk:0
-10:31:hihi oohoh:2
-13:15:pam | pam :2
-8:10:lko:0
-19:1:ol:1
-5:1:ol:2
-00:50:pol:2
+20:30:ls -l:0
+20:40:wc -l:0
+12:10:firefo:0
+10:30:cod:1

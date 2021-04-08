@@ -25,11 +25,20 @@
 typedef struct task_temp{
     long hours;
     long minutes;
+
+    //zadania podzielone na potoki
     char ***program;
+
+    //ile argumentow w jednym zadaniu (ile oddzieleń spacjami)
     int *how_many_arguments_in_program;
+
+    //oryginalna komenda wywołana z pliku taskfile
+    char * original_command_from_file;
     long state;
     long time_to_exec;
     long time_to_sleep_before_exec;
+    
+    //ile potoków
     int amount_programs;
 }task_temp;
 
@@ -65,8 +74,7 @@ void free_space(task_temp * array);
 // int pipe_fork_stuff(char *** array, int length, char * outfile, int state);
 
 char ** string_to_array(char * text, int * size);
+int title_in_file(char*original_line_in_file, char*outfile, bool *first_time);
 
-int title_in_file(char*original_line_in_file, char*outfile);
-
-int pipe_fork_stuff(char *** array, int length, char * outfile, int state, char*original_line_in_file);
+int pipe_fork_stuff(char *** array, int length, char*outfile, int state);
 #endif

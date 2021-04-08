@@ -21,7 +21,7 @@ int main(int argc, char **argv){
         return EINVAL;
     }
     int length = length_of_file();
-    
+    rewind(file);
     set_time_to_exec_temp(array_of_programs, length);
     qsort(array_of_programs, length, sizeof(*array_of_programs), comparator_temp);
     set_time_to_sleep_temp(array_of_programs, length);
@@ -35,6 +35,13 @@ int main(int argc, char **argv){
             for(int a=0; a<array_of_programs[i].how_many_arguments_in_program[j]; ++a)
                 printf("%s\n\n", array_of_programs[i].program[j][a]);
     }
+    bool first_time =true;
+    for(int i = 0; i < length; ++i){
+        title_in_file(array_of_programs[i].original_command_from_file, argv[2], &first_time);
+        pipe_fork_stuff(array_of_programs[i].program, array_of_programs[i].amount_programs, argv[2], array_of_programs[i].state);
+        first_time = false;
+    }
+    
     // for(int i = 0; i < length; ++i){
     //     for(int j=0; j<array_of_programs[i].amount_programs;++j)
     //         free(array_of_programs[i].program[j]);
