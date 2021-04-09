@@ -14,7 +14,7 @@ int main(int argc, char **argv){
 
     if ((file = checking_file_valid(argv[1])) == NULL)
         return EINVAL;
-    
+
     task_temp * array_of_programs;
 
     if (( array_of_programs = get_array_of_tasks(file) )== NULL){
@@ -25,7 +25,7 @@ int main(int argc, char **argv){
     qsort(array_of_programs, length, sizeof(*array_of_programs), comparator_temp);
     set_time_to_sleep_temp(array_of_programs, length);
 
-    for(int i=0; i< length; ++i){    
+    for(int i=0; i< length; ++i){
         printf("Godz:%ld\n", array_of_programs[i].hours);
         printf("Minuty:%ld\n", array_of_programs[i].minutes);
         printf("Ilosc:%ld\n", array_of_programs[i].time_to_exec);
@@ -33,6 +33,7 @@ int main(int argc, char **argv){
         for(int j=0; j<array_of_programs[i].no_pipes; ++j)
             for(int a=0; a<array_of_programs[i].how_many_arguments_in_program[j]; ++a)
                 printf("%s\n\n", array_of_programs[i].program[j][a]);
+        for(int j = 0; j < array_of_programs[i].time_to_sleep_before_exec; j++) sleep(60);
     }
     fclose(file);
     bool first_time =true;
