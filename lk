@@ -1,0 +1,15 @@
+00:44:ls -l:2
+----------------------------
+total 84
+-rw-rw-r-- 1 me3eh me3eh 16401 Apr 10 00:41 fun.c
+-rw-rw-r-- 1 me3eh me3eh  2259 Apr 10 00:38 fun.h
+-rw-rw-r-- 1 me3eh me3eh    43 Apr 10 00:44 lk
+-rw-rw-r-- 1 me3eh me3eh  1765 Apr 10 00:42 main.c
+-rw-rw-r-- 1 me3eh me3eh   236 Apr  1 23:08 makefile
+-rwxrwxr-x 1 me3eh me3eh 27432 Apr 10 00:43 minicrom
+drwxrwxr-x 5 me3eh me3eh  4096 Mar 24 18:23 MyNewProject
+-rw------- 1 me3eh me3eh     0 Apr  3 00:49 polko.txt
+-rw-rw-r-- 1 me3eh me3eh  3260 Apr 10 00:10 pol.txt
+-rw-rw-r-- 1 me3eh me3eh   255 Mar 30 16:21 README.md
+-rw-rw-r-- 1 me3eh me3eh    13 Apr 10 00:43 text.txt
+-rw-rw-r-- 1 me3eh me3eh    18 Mar 24 17:37 wujek.c

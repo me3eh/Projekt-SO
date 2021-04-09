@@ -1,0 +1,109 @@
+---
+:source:
+  :path: test
+  :file: test_projekcik.c
+:successes:
+- :test: test_projekcik_checkingfunction__amount_of_arguments
+  :line: 15
+  :message: ''
+  :unity_test_time: 0
+- :test: test_projekcik_checkingfunction__checking_file_valid
+  :line: 23
+  :message: ''
+  :unity_test_time: 0
+- :test: test_projekcik_checkingfunction__check_format
+  :line: 31
+  :message: ''
+  :unity_test_time: 0
+- :test: test_projekcik_checking_function__equal_namings
+  :line: 51
+  :message: ''
+  :unity_test_time: 0
+- :test: test_projekcik_checking_function__length_of_file
+  :line: 60
+  :message: ''
+  :unity_test_time: 0
+- :test: test_projekcik__get_array_of_tasks
+  :line: 78
+  :message: ''
+  :unity_test_time: 0
+- :test: test_projekcik__amount_of_pipes
+  :line: 120
+  :message: ''
+  :unity_test_time: 0
+- :test: test_projekcik__string_to_array
+  :line: 127
+  :message: ''
+  :unity_test_time: 0
+:failures: []
+:ignores: []
+:counts:
+  :total: 8
+  :passed: 8
+  :failed: 0
+  :ignored: 0
+:stdout:
+- ''
+- ''
+- 'fun__amount_of_arguments():'
+- "------------------"
+- 'In function amount_of_arguments():'
+- 'Usage: ./minicrom <taskfile> <outfile> '
+- 'In function amount_of_arguments():'
+- 'Usage: ./minicrom <taskfile> <outfile> '
+- ''
+- ''
+- 'fun__checking_file_valid():'
+- "------------------"
+- In function checking_file_valid()
+- ":File error: No such file or directory"
+- ''
+- ''
+- 'fun__check_format():'
+- "------------------"
+- In function checking_file_valid()
+- ":File error: No such file or directory"
+- 'In function check_format: File is not found: No such file or directory'
+- ''
+- ''
+- 'fun__equal_namings():'
+- "------------------"
+- Input and output file cannot have the same namings
+- ''
+- 'fun__length_of_file():'
+- "------------------"
+- 'siusiak: No such file or directory'
+- In function checking_file_valid()
+- ":File error: No such file or directory"
+- 'In function check_format: File is not found: No such file or directory'
+- ''
+- ''
+- 'fun__get_array_of_tasks():'
+- "------------------"
+- '1: No such file or directory'
+- '666: No such file or directory'
+- 'hih: No such file or directory'
+- '666: No such file or directory'
+- 'hih: No such file or directory'
+- '667: No such file or directory'
+- 'In function check_format():'
+- 'Bad format in file - line:0 Usage: <hours>:<minutes>:<code>:<mode>'
+- In function checking_file_valid()
+- ":File error: No such file or directory"
+- 'In function get_array_of_tasks:: No such file or directory'
+- 'In function check_format(): File is empty'
+- ''
+- 'fun__amount_of_pipes():'
+- "------------------"
+- '666: No such file or directory'
+- 'hih: No such file or directory'
+- '666: No such file or directory'
+- 'hih: No such file or directory'
+- '666: No such file or directory'
+- 'hih: No such file or directory'
+- 'lk: No such file or directory'
+- 'dkjdk: No such file or directory'
+- 'dkjdk: No such file or directory'
+- 'hihihi: No such file or directory'
+- '6'
+:time: 0.001416996999978437

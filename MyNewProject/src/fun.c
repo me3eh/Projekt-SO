@@ -3,15 +3,12 @@
 #define GOOD_FORMAT "^((2{0,1}[0-3])|([0-1]{0,1}[0-9])):([0-5]?[0-9]):([a-zA-Z\\|:,. -])*:[0-2]$"
 #define WRITE_END 1
 #define READ_END 0
-// bool first_time = true;
-volatile bool import_from_file = false;
-volatile bool print_to_log = false;
-
+bool first_time = true;
 int lines_in_file = 0;
 
 int amount_of_arguments(int arg, char* word){
     if(arg != 3){
-        fprintf(stderr, "Usage: %s <taskfile> <outfile> \n", word);
+        fprintf(stderr, "In function amount_of_arguments():\nUsage: %s <taskfile> <outfile> \n", word);
         return EINVAL;
     }
     return 0;
@@ -110,12 +107,6 @@ task_temp * get_array_of_tasks(FILE * file){
     }
     perror("1");
     while(fgets(buffer, size_buffer, file) != NULL){
-        array_task[line].original_command_from_file = (char*)malloc((strlen(buffer)+1)*sizeof(char));
-        if(array_task[line].original_command_from_file == NULL){
-            perror("Hih");
-            return NULL;
-        }
-        strcpy(array_task[line].original_command_from_file, buffer);
 
         length_of_everything = strlen(buffer);
         amount_of_programs = amount_of_pipes(buffer);
@@ -148,7 +139,7 @@ task_temp * get_array_of_tasks(FILE * file){
             perror("In function get_array_of_tasks():");
             return NULL;
         }
-        array_task[line].no_pipes = amount_of_programs;
+        array_task[line].amount_programs = amount_of_programs;
         while( i < (amount_of_programs - 1) ){
             token = strtok_r(NULL, "|", &save_buffer);
             strcpy(pol, token);
@@ -302,14 +293,13 @@ int comparator_temp(const void *p, const void *q)
 
 void free_space(task_temp * array){
     for(int i = 0; i < lines_in_file; ++i){
-        for(int j=0; j<array[i].no_pipes;++j){
+        for(int j=0; j<array[i].amount_programs;++j){
             for(int t=0; t<array[i].how_many_arguments_in_program[j]; ++t)
                 free(array[i].program[j][t]);
             free(array[i].program[j]);
         }
         free(array[i].how_many_arguments_in_program);
         free(array[i].program);
-        free(array[i].original_command_from_file);
     }
     free(array);
 }
@@ -343,51 +333,119 @@ char ** string_to_array(char * text, int * size){
         fprintf(stderr, "In function string_to_array: %s", strerror(errno));
         return NULL;
     }
+    // if(( array[i] = (char*)malloc( 1 * sizeof(char))) == NULL){
+    //         fprintf(stderr, "In function string_to_array: %s", strerror(errno));
+    //         return NULL;
+    // }
     array[i] = NULL;
     // i bylo liczone od 0, dlatego zwracany size + 1
     *size = (i+1);
     return array;
 }
-int title_in_file(char*original_line_in_file, char*outfile, bool first_time){
-    int file;
+
+// int pipe_fork_stuff(char *** array, int length, char * outfile, int state){
+//     pid_t pid;
+//     int file;
+//     int fd[length-1][2];
+//     if(first_time){
+//         first_time = false;
+//         if((file = open("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
+//             perror("Error");
+//             return 55;
+//         }
+//     }
+//     else
+//         if((file = open("polko.txt", O_WRONLY | O_APPEND, 0777)) < 0){
+//             perror("Error");
+//             return 55;
+//         }
+//     if( state > 0){
+//         if(dup2(file, STDERR_FILENO) != 0)
+//     }
+//     for(int i = 0 ; i < length-1 ; ++i)
+//         pipe(fd[i]);
+//     for(int i = 0 ; i < length ; ++i){
+//         pid = fork();
+//         if(pid == 0){
+//             if((i == length - 1) && (i == 0)){
+//                 dup2(file, STDOUT_FILENO);
+//                 if(execvp(array[0][0], array[0]) < 0){
+
+//                 }
+//                 close(file);
+//             }
+//             else if(( i == length - 1 ) && ( i != 0 )){
+//                 dup2(fd[i-1][READ_END], STDIN_FILENO);
+//                 if(first_time){
+//                     first_time = false;
+//                     if(file = open("polko.txt", O_WRONLY | O_CREAT | O_TRUNC, 0777) < 0){
+//                         perror("Error");
+//                         return 55;
+//                     }
+//                 }
+//                 dup2(file, STDOUT_FILENO);
+//                 execvp(array[i][0], array[i]);
+//             }
+//             else{
+//                 if(i != 0)
+//                     dup2(fd[i-1][READ_END], STDIN_FILENO);
+
+//                 close(fd[i][READ_END]);
+//                 dup2(fd[i][WRITE_END], STDOUT_FILENO);
+//                 execvp(array[i][0], array[i]);
+//                 return -1;
+//             }
+//         }
+//         else if(pid > 0){
+//             int status;
+//             waitpid(pid, &status, 0);
+//             if(WIFEXITED(status))
+//                 printf("child exited with = %d\n",WEXITSTATUS(status));
+//             if( i != (length-1))
+//                 close(fd[i][WRITE_END]);
+//             if((i == length - 1)){
+//                 close(file);
+//             }
+//         }
+//     }
+// }
+int title_in_file(char*original_line_in_file, char*outfile){
+    FILE * file;
     if(first_time){
-        if((file = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
+        if((file = fopen(outfile, "w")) == NULL){
             perror("Function title_in_file:");
             return -1;
         }
     }
     else{
-        if((file = open(outfile, O_WRONLY | O_APPEND, 0777)) < 0){
+        if((file = fopen(outfile, "a")) == NULL){
             perror("Function title_in_file:");
             return -1;
         }
     }
-    if(first_time){
-        write(file, original_line_in_file, strlen(original_line_in_file));
-        char p [] = "\n----------------------------\n";
-        write(file, p, strlen(p));
-    }
-    else{
-        write(file, "\n\n", 2);
-        write(file, original_line_in_file, strlen(original_line_in_file));
-        char p [] = "----------------------------\n";
-        write(file, p, strlen(p));
-    }
-    close(file);
+    if(first_time)
+        fprintf(file, "%s\n", original_line_in_file);
+    else
+        fprintf(file, "\n%s\n", original_line_in_file);
+    first_time = false;
+    fclose(file);
     return 0;
 }
 
-
-int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_temp*ar){
+int pipe_fork_stuff(char *** array, int length, char * outfile, int state, char*original_line_in_file){
     
     bool something_bad = false;
     pid_t pid;
     int file, file_null;
     int fd[length-1][2];
+    if(title_in_file(original_line_in_file, outfile) == -1){
+        return -1;
+    }
+
     if((file = open(outfile, O_WRONLY | O_APPEND, 0777)) < 0){
         return -1;
     }
-    if((file_null = open("/dev/null", O_WRONLY, 0777)) < 0){
+    if((file_null = open("/dev/null", O_WRONLY)) < 0){
         return -1;
     }
     if(state >= 1)
@@ -407,69 +465,51 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                 if(state == 2)
                     dup2(file, STDOUT_FILENO);
                 
-                execvp(array[0][0], array[0]);
-                fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
-                something_bad = true;
-                //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
-                free_space(ar);
-                exit(EXIT_FAILURE);
+                if(execvp(array[0][0], array[0]) < 0){
+                    fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
+                    something_bad = true;
+                    return -1;
+                }
                 close(file);
-                close(file_null);
             }
             else if(( i == length - 1 ) && ( i != 0 )){
                 dup2(fd[i-1][READ_END], STDIN_FILENO);
                 
                 if(state  == 0){
                     dup2(file, STDOUT_FILENO);
+                    dup2(file_null, STDERR_FILENO);
                 }
                 if(state == 1)
                     dup2(file_null, STDOUT_FILENO);
                 if(state == 2)
                     dup2(file, STDOUT_FILENO);
-                execvp(array[i][0], array[i]);
-                fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
-                something_bad = true;
-                //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
-                free_space(ar);
-                exit(EXIT_FAILURE);
-                close(file);
-                close(file_null);
+
+                if(execvp(array[i][0], array[i]) < 0){
+                    something_bad = true;
+                    return -1;
+                }
             }
             else{
                 if(i != 0)
                     dup2(fd[i-1][READ_END], STDIN_FILENO);
 
-                // close(fd[i][READ_END]);
-                // perror("555");
+                close(fd[i][READ_END]);
                 dup2(fd[i][WRITE_END], STDOUT_FILENO);
                 if(state == 0)
                     dup2(file_null, STDERR_FILENO);
-                execvp(array[i][0], array[i]);
-                // free(array);
-                fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
-                something_bad = true;
-                //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
-                free_space(ar);
-                exit(EXIT_FAILURE);
-                close(file);
-                close(file_null);
+                if(execvp(array[i][0], array[i]) < 0){
+                    something_bad = true;
+                    return -1;
+                }
+                return -1;
             }
         }
         else if(pid > 0){
             int status;
             waitpid(pid, &status, 0);
-            if(something_bad == true){
-                close(fd[i][WRITE_END]);
-                close(file);
-                close(file_null);
-                exit(EXIT_FAILURE);
-            }
             if(WIFEXITED(status)){
                 if(WEXITSTATUS(status) != 0){
-                    close(fd[i][WRITE_END]);
                     something_bad = true;
-                    close(file);
-                    close(file_null);
                     return -1;
                 }
             }
@@ -479,40 +519,11 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                 close(file);
                 close(file_null);
             }
+            if(something_bad == true){
+                close(file);
+                close(file_null);
+                return -1;
+            }
         }
-    }
-    return 0;
-}
-
-bool status_if_import(){
-    return import_from_file;
-}
-void change_status_import_from_file(bool t){
-    import_from_file = t;
-}
-bool status_if_print(){
-    return print_to_log;
-}
-void change_status_print_to_log(bool t){
-    print_to_log = t;
-}
-void handler(int signum){
-    if(signum == 2){
-        syslog(LOG_INFO, "Daemon exited");
-        closelog();
-        exit(EXIT_SUCCESS);
-    }
-    if(signum == 10){
-        import_from_file = true;
-    }
-    if(signum == 12){
-        print_to_log = true;
-    }
-}
-
-void print_to_log_function(task_temp * array, int i, int max_length){
-    while (i != max_length){
-        syslog(LOG_INFO, "%s", array[i].original_command_from_file);
-        ++i;
     }
 }
