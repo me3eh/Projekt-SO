@@ -10,7 +10,7 @@ int main(int argc, char **argv){
     if(equal_namings(argv[1], argv[0]))
         return EINVAL;
     openlog("PROJEKT", LOG_PID|LOG_CONS, LOG_USER);
-    syslog("Witamy w projekcie ")
+    syslog(LOG_INFO, "Daemon wlasnie wystartowal");
     FILE * file;
     task_temp * array_of_programs;
 
