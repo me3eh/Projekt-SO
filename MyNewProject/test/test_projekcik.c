@@ -130,20 +130,19 @@ void test_projekcik__string_to_array(void){
     size_free[0] = 1;
     size_free[1] = 1;
     char ** array = string_to_array(pol, &size_free[0]);
-    perror("lk");
     TEST_ASSERT_TRUE(strcmp(array[0], "never") == 0);
-    perror("dkjdk");
     TEST_ASSERT_TRUE(strcmp(array[1], "gonna") == 0);
     TEST_ASSERT_TRUE(strcmp(array[2], "give") == 0);
     TEST_ASSERT_TRUE(strcmp(array[3], "you") == 0);
     TEST_ASSERT_TRUE(strcmp(array[4], "up") == 0);
-    perror("dkjdk");
     TEST_ASSERT_TRUE(size_free[0] == 6);
-    perror("hihihi");
-    printf("%d",size_free[0]);
     for(int i = 0 ; i < size_free[0]-1 ; ++i)
         free(array[i]);
     free(array);
+}
+
+void test_projekcik__set_time_to_exec_temp(void){
+    task_temp
 }
 
 #endif // TEST

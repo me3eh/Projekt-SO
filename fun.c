@@ -4,11 +4,14 @@
 #define WRITE_END 1
 #define READ_END 0
 // bool first_time = true;
+volatile bool import_from_file = false;
+volatile bool print_to_log = false;
+
 int lines_in_file = 0;
 
 int amount_of_arguments(int arg, char* word){
     if(arg != 3){
-        fprintf(stderr, "In function amount_of_arguments():\nUsage: %s <taskfile> <outfile> \n", word);
+        fprintf(stderr, "Usage: %s <taskfile> <outfile> \n", word);
         return EINVAL;
     }
     return 0;
@@ -407,8 +410,8 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                 execvp(array[0][0], array[0]);
                 fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
                 something_bad = true;
+                //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
                 free_space(ar);
-                // free(array);
                 exit(EXIT_FAILURE);
                 close(file);
                 close(file_null);
@@ -426,7 +429,7 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                 execvp(array[i][0], array[i]);
                 fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
                 something_bad = true;
-                // free(array);
+                //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
                 free_space(ar);
                 exit(EXIT_FAILURE);
                 close(file);
@@ -445,6 +448,7 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                 // free(array);
                 fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
                 something_bad = true;
+                //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
                 free_space(ar);
                 exit(EXIT_FAILURE);
                 close(file);
@@ -478,4 +482,37 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
         }
     }
     return 0;
+}
+
+bool status_if_import(){
+    return import_from_file;
+}
+void change_status_import_from_file(bool t){
+    import_from_file = t;
+}
+bool status_if_print(){
+    return print_to_log;
+}
+void change_status_print_to_log(bool t){
+    print_to_log = t;
+}
+void handler(int signum){
+    if(signum == 2){
+        syslog(LOG_INFO, "Daemon exited");
+        closelog();
+        exit(EXIT_SUCCESS);
+    }
+    if(signum == 10){
+        import_from_file = true;
+    }
+    if(signum == 12){
+        print_to_log = true;
+    }
+}
+
+void print_to_log_function(task_temp * array, int i, int max_length){
+    while (i != max_length){
+        syslog(LOG_INFO, "%s", array[i].original_command_from_file);
+        ++i;
+    }
 }
