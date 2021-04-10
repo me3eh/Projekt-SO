@@ -1,5 +1,5 @@
 20:30:ls -l:2
-20:40:ls -l | wc -l | grep p:2
-20:40:ls -l | wc -c | grep p:2
-12:10:lsdp -ldfd:2
-10:30:codxsad:2
+20:40:ls -l | wc -l | grep p:1
+20:40:ls -l | wc -c | grep p:1
+12:10:lsdp -ldfd:1
+10:30:codxsad:1

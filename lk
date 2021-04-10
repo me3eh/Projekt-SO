@@ -1,36 +1,9 @@
-10:30:codxsad:2
+10:30:codxsad:1
 ----------------------------
 codxsad: No such file or directory
-codxsad: Success
+Interrupted system call
 
-12:10:lsdp -ldfd:2
+12:10:lsdp -ldfd:1
 ----------------------------
 lsdp: No such file or directory
-lsdp: Bad file descriptor
-
-20:30:ls -l:2
-----------------------------
-total 88
--rw-rw-r-- 1 me3eh me3eh 17398 Apr 10 23:16 fun.c
--rw-rw-r-- 1 me3eh me3eh  2386 Apr 10 22:38 fun.h
--rw--w---- 1 me3eh me3eh   248 Apr 10 23:17 lk
--rw-rw-r-- 1 me3eh me3eh  3012 Apr 10 23:01 main.c
--rw-rw-r-- 1 me3eh me3eh   312 Apr 10 20:22 makefile
--rwxrwxr-x 1 me3eh me3eh 31816 Apr 10 23:16 minicron
-drwxrwxr-x 5 me3eh me3eh  4096 Apr 10 00:57 MyNewProject
--rw-rw-r-- 1 me3eh me3eh     0 Apr 10 00:57 polko.txt
--rw-rw-r-- 1 me3eh me3eh  3260 Apr 10 00:57 pol.txt
--rw-rw-r-- 1 me3eh me3eh   255 Apr 10 00:57 README.md
--rw-rw-r-- 1 me3eh me3eh   110 Apr 10 22:54 text.txt
--rw-rw-r-- 1 me3eh me3eh    18 Mar 24 17:37 wujek.c
-
-
-20:40:ls -l | wc -l | grep p:2
-----------------------------
-
-ls: Bad file descriptor
-
-20:40:ls -l | wc -c | grep p:2
-----------------------------
-
-ls: Bad file descriptor
+Bad file descriptor

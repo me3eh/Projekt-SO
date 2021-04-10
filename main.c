@@ -25,7 +25,7 @@ int main(int argc, char **argv){
     if(pid > 0){
         exit(EXIT_SUCCESS);
     }
-    umask(111);
+    umask(0);
     openlog("PROJEKT", LOG_PID|LOG_CONS, LOG_USER);
     syslog(LOG_INFO, "Welcome in our lil project");
     sid = setsid();
@@ -41,20 +41,16 @@ int main(int argc, char **argv){
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
-
-    syslog(LOG_INFO, "luzno, zyje i gram");
     
     RESTART:
 
     rewind(file);
     if (( array_of_programs = get_array_of_tasks(file) )== NULL)
         return EINVAL;
-    syslog(LOG_INFO, "masno, lecimy");
     int length = length_of_file();
     set_time_to_exec_temp(array_of_programs, length);
     qsort(array_of_programs, length, sizeof(*array_of_programs), comparator_temp);
     set_time_to_sleep_temp(array_of_programs, length);
-    fclose(file);
     bool first_time =true;
     for(int i = 0; i<length ; ++i){
         // for(int j=0; j<array_of_programs[i].time_to_sleep_before_exec; ++j){
