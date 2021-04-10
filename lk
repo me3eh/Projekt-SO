@@ -1,15 +1,36 @@
-00:44:ls -l:2
+10:30:codxsad:2
 ----------------------------
-total 84
--rw-rw-r-- 1 me3eh me3eh 16401 Apr 10 00:41 fun.c
--rw-rw-r-- 1 me3eh me3eh  2259 Apr 10 00:38 fun.h
--rw-rw-r-- 1 me3eh me3eh    43 Apr 10 00:44 lk
--rw-rw-r-- 1 me3eh me3eh  1765 Apr 10 00:42 main.c
--rw-rw-r-- 1 me3eh me3eh   236 Apr  1 23:08 makefile
--rwxrwxr-x 1 me3eh me3eh 27432 Apr 10 00:43 minicrom
-drwxrwxr-x 5 me3eh me3eh  4096 Mar 24 18:23 MyNewProject
--rw------- 1 me3eh me3eh     0 Apr  3 00:49 polko.txt
--rw-rw-r-- 1 me3eh me3eh  3260 Apr 10 00:10 pol.txt
--rw-rw-r-- 1 me3eh me3eh   255 Mar 30 16:21 README.md
--rw-rw-r-- 1 me3eh me3eh    13 Apr 10 00:43 text.txt
+codxsad: No such file or directory
+codxsad: Success
+
+12:10:lsdp -ldfd:2
+----------------------------
+lsdp: No such file or directory
+lsdp: Bad file descriptor
+
+20:30:ls -l:2
+----------------------------
+total 88
+-rw-rw-r-- 1 me3eh me3eh 17398 Apr 10 23:16 fun.c
+-rw-rw-r-- 1 me3eh me3eh  2386 Apr 10 22:38 fun.h
+-rw--w---- 1 me3eh me3eh   248 Apr 10 23:17 lk
+-rw-rw-r-- 1 me3eh me3eh  3012 Apr 10 23:01 main.c
+-rw-rw-r-- 1 me3eh me3eh   312 Apr 10 20:22 makefile
+-rwxrwxr-x 1 me3eh me3eh 31816 Apr 10 23:16 minicron
+drwxrwxr-x 5 me3eh me3eh  4096 Apr 10 00:57 MyNewProject
+-rw-rw-r-- 1 me3eh me3eh     0 Apr 10 00:57 polko.txt
+-rw-rw-r-- 1 me3eh me3eh  3260 Apr 10 00:57 pol.txt
+-rw-rw-r-- 1 me3eh me3eh   255 Apr 10 00:57 README.md
+-rw-rw-r-- 1 me3eh me3eh   110 Apr 10 22:54 text.txt
 -rw-rw-r-- 1 me3eh me3eh    18 Mar 24 17:37 wujek.c
+
+
+20:40:ls -l | wc -l | grep p:2
+----------------------------
+
+ls: Bad file descriptor
+
+20:40:ls -l | wc -c | grep p:2
+----------------------------
+
+ls: Bad file descriptor

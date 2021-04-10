@@ -6,6 +6,7 @@
 // bool first_time = true;
 volatile bool import_from_file = false;
 volatile bool print_to_log = false;
+volatile bool is_abort = false;
 
 int lines_in_file = 0;
 
@@ -28,13 +29,13 @@ bool equal_namings(char* naming_input, char* naming_output){
 FILE* checking_file_valid(char * naming){
     FILE * file = fopen(naming, "r");
     if(file == NULL)
-        perror("In function checking_file_valid()\n:File error");
+        fprintf(stderr, "%s:%s", naming, strerror(errno));
     return file;
 }
 
 int check_format(FILE * file){
     if(file == NULL){
-        perror("In function check_format: File is not found");
+        syslog(LOG_ERR,"In function check_format():%s",strerror(errno));
         return -1;
     }
     int size_buffer = 200;
@@ -45,7 +46,7 @@ int check_format(FILE * file){
 
     int to_find = regcomp(&regex, GOOD_FORMAT, REG_EXTENDED|REG_NEWLINE);
     if(to_find != 0){
-        perror("In function check_format():\nRegex error:");
+        syslog(LOG_ERR,"In function check_format():%s",strerror(errno));
         return -1;
     }
 
@@ -54,11 +55,11 @@ int check_format(FILE * file){
         if(found == 0)
             ++line;
         else if( found == REG_NOMATCH){
-            fprintf(stderr, "In function check_format():\nBad format in file - line:%d Usage: <hours>:<minutes>:<code>:<mode>\n", line+1);
+            syslog(LOG_ERR,"In function check_format():\nBad format in file - line:%d Usage: <hours>:<minutes>:<code>:<mode>\n", line+1);
             return -1;
         }
         else{
-            fprintf(stderr, "In function check_format():\nAn error occured with regex occured:%s\n", strerror(errno));
+            syslog(LOG_ERR,"In function check_format():%s",strerror(errno));
             return -1;
         }
     }
@@ -68,7 +69,7 @@ int check_format(FILE * file){
     //powrot do poczatku pliku
     rewind(file);
     if(line == 0){
-        fprintf(stderr,"In function check_format(): File is empty");
+        syslog(LOG_ERR, "In function check_format(): File is empty");
         return -1;
     }
     //przypisanie do globalnej zmiennej
@@ -83,7 +84,7 @@ int length_of_file(){
 
 task_temp * get_array_of_tasks(FILE * file){
     if(file == NULL){
-        perror("In function get_array_of_tasks:");
+        syslog(LOG_ERR,"In function get_array_of_tasks():%s",strerror(errno));
         return NULL;
     }
     int line = 0;
@@ -105,14 +106,13 @@ task_temp * get_array_of_tasks(FILE * file){
     task_temp *array_task = (task_temp*)malloc(columns * sizeof(task_temp));
 
     if(array_task == NULL){
-        perror("In function get_array_of_tasks():\nAllocation memory:");
+        syslog(LOG_ERR,"In function get_array_of_tasks():%s",strerror(errno));
         return NULL;
     }
-    perror("1");
     while(fgets(buffer, size_buffer, file) != NULL){
         array_task[line].original_command_from_file = (char*)malloc((strlen(buffer)+1)*sizeof(char));
         if(array_task[line].original_command_from_file == NULL){
-            perror("Hih");
+            syslog(LOG_ERR,"In function get_array_of_tasks():%s",strerror(errno));
             return NULL;
         }
         strcpy(array_task[line].original_command_from_file, buffer);
@@ -121,17 +121,17 @@ task_temp * get_array_of_tasks(FILE * file){
         amount_of_programs = amount_of_pipes(buffer);
         //wczytanie godziny o ktorej uruchomić polecenie
         token = strtok_r(buffer, ":", &save_buffer);
-        if(token == NULL){
-            perror("Sprawdzenie");
-            return NULL;
-        }
+        // if(token == NULL){
+        //     perror("Sprawdzenie");
+        //     return NULL;
+        // }
         length_of_everything -= (strlen(token) + 1);
         array_task[line].hours = strtol(token, &lil_buffa, 10);
         token = strtok_r(NULL, ":", &save_buffer);
-        if(token == NULL){
-            perror("Sprawdzenie");
-            return NULL;
-        }
+        // if(token == NULL){
+        //     perror("Sprawdzenie");
+        //     return NULL;
+        // }
         length_of_everything -= (strlen(token) + 1);
         array_task[line].minutes = strtol(token, &lil_buffa, 10);
 
@@ -141,11 +141,11 @@ task_temp * get_array_of_tasks(FILE * file){
         for(int a =0 ; a< amount_of_programs; ++a)
             array_task[line].how_many_arguments_in_program[a] = 0;
         if(array_task[line].program == NULL){
-            perror("In function get_array_of_tasks():");
+            syslog(LOG_ERR,"In function get_array_of_tasks():%s",strerror(errno));
             return NULL;
         }
         if(array_task[line].how_many_arguments_in_program == NULL){
-            perror("In function get_array_of_tasks():");
+            syslog(LOG_ERR,"In function get_array_of_tasks():%s",strerror(errno));
             return NULL;
         }
         array_task[line].no_pipes = amount_of_programs;
@@ -164,14 +164,14 @@ task_temp * get_array_of_tasks(FILE * file){
                 }
                 token = strtok_r(NULL, "|", &save_buffer);
             }
-            if(token == NULL){
-                fprintf(stderr, "In function get_array_of_tasks():\nSomething went wrong with function strtok. Line:%d", line);
-                return NULL;
-            }
+            // if(token == NULL){
+            //     fprintf(stderr, "In function get_array_of_tasks():\nSomething went wrong with function strtok. Line:%d", line);
+            //     return NULL;
+            // }
 
             array_task[line].program[i] = string_to_array(pol, &array_task[line].how_many_arguments_in_program[i]);
             if(array_task[line].program[i] == NULL){
-                perror("In function get_array_of_tasks():");
+                syslog(LOG_ERR,"In function get_array_of_tasks():%s",strerror(errno));
                 return NULL;
             }
             length_of_everything -= (strlen(pol) + 1);
@@ -190,21 +190,21 @@ task_temp * get_array_of_tasks(FILE * file){
             token = strtok_r(NULL, ":", &save_buffer);
             strcat(pol, token);
         }
-        if(token == NULL){
-            perror("Something goes wrong");
-            return NULL;
-        }
+        // if(token == NULL){
+            // perror("Something goes wrong");
+            // return NULL;
+        // }
 
         array_task[line].program[i]= string_to_array(pol, &array_task[line].how_many_arguments_in_program[i]);
         if(array_task[line].program[i] == NULL){
-            perror("In function get_array_of_tasks():\n");
+            syslog(LOG_ERR,"In function get_array_of_tasks():%s",strerror(errno));
             return NULL;
         }
         token = strtok_r(NULL, ":", &save_buffer);
-        if(token == NULL){
-            perror("Something goes wrong");
-            return NULL;
-        }
+        // if(token == NULL){
+        //     perror("Something goes wrong");
+        //     return NULL;
+        // }
         array_task[line].state = strtol(token, &lil_buffa, 10);
         ++line;
         i = 0;
@@ -220,10 +220,9 @@ int amount_of_pipes(char* pol){
     char * p = pol;
     int value = regcomp(&regex, "[a-zA-Z.,: -][|]", REG_EXTENDED|REG_NEWLINE);
     if(value != 0){
-        fprintf(stderr, "In function amount_of_pipes():\n");
+        syslog(LOG_ERR,"In function amount_of_pipes():%s",strerror(errno));
         return -1;
     }
-    perror("666");
     while (1) {
         int i = 0;
         int nomatch = regexec (&regex, p, n_matches, m, 0);
@@ -240,11 +239,10 @@ int amount_of_pipes(char* pol){
             p += m[0].rm_eo;
         }
         else{
-            fprintf(stderr, "In function amount_of_pipes():\n");
+            syslog(LOG_ERR,"In function amount_of_pipes():%s",strerror(errno));
             return -1;
         }
     }
-    perror("hih");
     regfree(&regex);
     return no_of_pipes;
 }
@@ -319,7 +317,7 @@ char ** string_to_array(char * text, int * size){
     char * token1 = strtok_r(text, " ", &save_text);
     int i = 0;
     if(( array[i] = (char*)malloc( (strlen(token1)+1) * sizeof(char))) == NULL){
-        perror("In function string_to_array: %s");
+        syslog(LOG_ERR,"In function string_to_array():%s",strerror(errno));
         return NULL;
     }
     strcpy(array[i], token1);
@@ -327,11 +325,11 @@ char ** string_to_array(char * text, int * size){
     while(token1 != NULL){
         ++i;
         if((array = (char**)realloc( array, (i + 1) * sizeof(char*))) == NULL){
-            fprintf(stderr, "In function string_to_array: %s", strerror(errno));
+            syslog(LOG_ERR,"In function string_to_array():%s",strerror(errno));
             return NULL;
         }
         if(( array[i] = (char*)malloc( (strlen(token1)+1) * sizeof(char))) == NULL){
-            fprintf(stderr, "In function string_to_array: %s", strerror(errno));
+            syslog(LOG_ERR,"In function string_to_array():%s",strerror(errno));
             return NULL;
         }
         strcpy(array[i], token1);
@@ -340,7 +338,7 @@ char ** string_to_array(char * text, int * size){
     //zwiekszamy, gdyz zwiekszy sie o NULL
     ++i;
     if((array = (char**)realloc( array, (i + 1) * sizeof(char*))) == NULL){
-        fprintf(stderr, "In function string_to_array: %s", strerror(errno));
+        syslog(LOG_ERR,"In function string_to_array():%s",strerror(errno));
         return NULL;
     }
     array[i] = NULL;
@@ -348,17 +346,21 @@ char ** string_to_array(char * text, int * size){
     *size = (i+1);
     return array;
 }
-int title_in_file(char*original_line_in_file, char*outfile, bool first_time){
+int title_in_file(char*original_line_in_file, char*outfile, bool first_time, char * PATH){
     int file;
+    char temp [300];
+    strcpy(temp, PATH);
+    strcat(temp, "/");
+    strcat(temp, outfile);
     if(first_time){
-        if((file = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
-            perror("Function title_in_file:");
+        if((file = open(temp, O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
+            syslog(LOG_ERR,"In function title_in_file():%s",strerror(errno));
             return -1;
         }
     }
     else{
-        if((file = open(outfile, O_WRONLY | O_APPEND, 0777)) < 0){
-            perror("Function title_in_file:");
+        if((file = open(temp, O_WRONLY | O_APPEND, 0777)) < 0){
+            syslog(LOG_ERR,"In function title_in_file():%s",strerror(errno));
             return -1;
         }
     }
@@ -378,16 +380,21 @@ int title_in_file(char*original_line_in_file, char*outfile, bool first_time){
 }
 
 
-int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_temp*ar){
+int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_temp*ar, char*original_command_from_file, char*PATH){
     
     bool something_bad = false;
     pid_t pid;
     int file, file_null;
     int fd[length-1][2];
-    if((file = open(outfile, O_WRONLY | O_APPEND, 0777)) < 0){
+    char temp [300];
+    strcpy(temp, PATH);
+    strcat(temp, "/");
+    strcat(temp, outfile);
+    chdir(PATH);
+    if((file = open(temp, O_WRONLY | O_APPEND,S_IRUSR | S_IWUSR, 0666)) < 0){
         return -1;
     }
-    if((file_null = open("/dev/null", O_WRONLY, 0777)) < 0){
+    if((file_null = open("/dev/null", O_WRONLY, S_IRUSR | S_IWUSR, 0666)) < 0){
         return -1;
     }
     if(state >= 1)
@@ -458,14 +465,17 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
         else if(pid > 0){
             int status;
             waitpid(pid, &status, 0);
-            if(something_bad == true){
-                close(fd[i][WRITE_END]);
-                close(file);
-                close(file_null);
-                exit(EXIT_FAILURE);
-            }
+            // if(something_bad == true){
+            //     close(fd[i][WRITE_END]);
+            //     close(file);
+            //     close(file_null);
+            //     exit(EXIT_FAILURE);
+            // }
             if(WIFEXITED(status)){
+                if(i == (length - 1))
+                    syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, status);
                 if(WEXITSTATUS(status) != 0){
+                    fprintf(stderr, "\n%s: %s", array[0][0],strerror(errno));
                     close(fd[i][WRITE_END]);
                     something_bad = true;
                     close(file);
@@ -493,14 +503,15 @@ void change_status_import_from_file(bool t){
 bool status_if_print(){
     return print_to_log;
 }
+bool status_abort(){
+    return is_abort;
+}
 void change_status_print_to_log(bool t){
     print_to_log = t;
 }
 void handler(int signum){
     if(signum == 2){
-        syslog(LOG_INFO, "Daemon exited");
-        closelog();
-        exit(EXIT_SUCCESS);
+        is_abort =true;
     }
     if(signum == 10){
         import_from_file = true;
@@ -511,8 +522,11 @@ void handler(int signum){
 }
 
 void print_to_log_function(task_temp * array, int i, int max_length){
+    syslog(LOG_INFO, "Tasks to do:");
+    syslog(LOG_INFO, "---------------------------------------------");
     while (i != max_length){
         syslog(LOG_INFO, "%s", array[i].original_command_from_file);
         ++i;
     }
+    syslog(LOG_INFO, "---------------------------------------------");
 }
