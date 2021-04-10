@@ -348,18 +348,18 @@ char ** string_to_array(char * text, int * size){
 }
 int title_in_file(char*original_line_in_file, char*outfile, bool first_time, char * PATH){
     int file;
-    char temp [300];
-    strcpy(temp, PATH);
-    strcat(temp, "/");
-    strcat(temp, outfile);
+    if(chdir(PATH) < 0){
+        syslog(LOG_ERR, "In function title_in_file():%s", strerror(errno));
+        return -1;
+    }
     if(first_time){
-        if((file = open(temp, O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
+        if((file = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
             syslog(LOG_ERR,"In function title_in_file():%s",strerror(errno));
             return -1;
         }
     }
     else{
-        if((file = open(temp, O_WRONLY | O_APPEND, 0777)) < 0){
+        if((file = open(outfile, O_WRONLY | O_APPEND, 0777)) < 0){
             syslog(LOG_ERR,"In function title_in_file():%s",strerror(errno));
             return -1;
         }
@@ -386,15 +386,16 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
     pid_t pid;
     int file, file_null;
     int fd[length-1][2];
-    char temp [300];
-    strcpy(temp, PATH);
-    strcat(temp, "/");
-    strcat(temp, outfile);
-    chdir(PATH);
-    if((file = open(temp, O_WRONLY | O_APPEND,S_IRUSR | S_IWUSR, 0666)) < 0){
+    if(chdir(PATH) < 0){
+        syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+        return -1;
+    }
+    if((file = open(outfile, O_WRONLY | O_APPEND,S_IRUSR | S_IWUSR, 0666)) < 0){
+        syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
         return -1;
     }
     if((file_null = open("/dev/null", O_WRONLY, S_IRUSR | S_IWUSR, 0666)) < 0){
+        syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
         return -1;
     }
     if(state >= 1)
@@ -447,12 +448,10 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                     dup2(fd[i-1][READ_END], STDIN_FILENO);
 
                 // close(fd[i][READ_END]);
-                // perror("555");
                 dup2(fd[i][WRITE_END], STDOUT_FILENO);
                 if(state == 0)
                     dup2(file_null, STDERR_FILENO);
                 execvp(array[i][0], array[i]);
-                // free(array);
                 fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
                 something_bad = true;
                 //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
@@ -465,23 +464,18 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
         else if(pid > 0){
             int status;
             waitpid(pid, &status, 0);
-            // if(something_bad == true){
-            //     close(fd[i][WRITE_END]);
-            //     close(file);
-            //     close(file_null);
-            //     exit(EXIT_FAILURE);
-            // }
             if(WIFEXITED(status)){
-                if(i == (length - 1))
-                    syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, status);
                 if(WEXITSTATUS(status) != 0){
-                    fprintf(stderr, "\n%s: %s", array[0][0],strerror(errno));
+                    fprintf(stderr, "\n%s",strerror(errno));
+                    syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, status);
                     close(fd[i][WRITE_END]);
                     something_bad = true;
                     close(file);
                     close(file_null);
                     return -1;
                 }
+                if(i == (length - 1))
+                    syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, status);
             }
             if( i != (length-1))
                 close(fd[i][WRITE_END]);
@@ -522,7 +516,7 @@ void handler(int signum){
 }
 
 void print_to_log_function(task_temp * array, int i, int max_length){
-    syslog(LOG_INFO, "Tasks to do:");
+    syslog(LOG_INFO, "\nTasks to do:");
     syslog(LOG_INFO, "---------------------------------------------");
     while (i != max_length){
         syslog(LOG_INFO, "%s", array[i].original_command_from_file);
