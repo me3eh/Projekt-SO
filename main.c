@@ -27,7 +27,7 @@ int main(int argc, char **argv){
     }
     umask(0);
     openlog("PROJEKT", LOG_PID|LOG_CONS, LOG_USER);
-    syslog(LOG_INFO, "Welcome in our lil project");
+    syslog(LOG_INFO, "Welcome to our lil project");
     sid = setsid();
     if(sid < 0){
         syslog(LOG_ERR, "During initialization session id:%s", strerror(errno));
@@ -41,7 +41,7 @@ int main(int argc, char **argv){
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
-    
+
     RESTART:
 
     rewind(file);

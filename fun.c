@@ -20,7 +20,7 @@ int amount_of_arguments(int arg, char* word){
 
 bool equal_namings(char* naming_input, char* naming_output){
     if(strcmp(naming_input, naming_output) == 0){
-        fprintf(stderr,"Input and output file cannot have the same namings");
+        fprintf(stderr,"Input and output file cannot have the same name");
         return true;
     }
     return false;
@@ -381,7 +381,7 @@ int title_in_file(char*original_line_in_file, char*outfile, bool first_time, cha
 
 
 int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_temp*ar, char*original_command_from_file, char*PATH){
-    
+
     bool something_bad = false;
     pid_t pid;
     int file, file_null;
@@ -414,7 +414,7 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                     dup2(file_null, STDOUT_FILENO);
                 if(state == 2)
                     dup2(file, STDOUT_FILENO);
-                
+
                 execvp(array[0][0], array[0]);
                 fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
                 something_bad = true;
@@ -426,7 +426,7 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
             }
             else if(( i == length - 1 ) && ( i != 0 )){
                 dup2(fd[i-1][READ_END], STDIN_FILENO);
-                
+
                 if(state  == 0){
                     dup2(file, STDOUT_FILENO);
                 }
@@ -516,7 +516,7 @@ void handler(int signum){
 }
 
 void print_to_log_function(task_temp * array, int i, int max_length){
-    syslog(LOG_INFO, "\nTasks to do:");
+    syslog(LOG_INFO, "\nTasks to complete:");
     syslog(LOG_INFO, "---------------------------------------------");
     while (i != max_length){
         syslog(LOG_INFO, "%s", array[i].original_command_from_file);
