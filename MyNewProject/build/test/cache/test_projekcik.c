@@ -379,32 +379,84 @@ void test_projekcik__string_to_array(void){
 
     char ** array = string_to_array(pol, &size_free[0]);
 
-    perror("lk");
+    do {if ((strcmp(array[0], "never") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(133)));}} while(0);
 
-    do {if ((strcmp(array[0], "never") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(134)));}} while(0);
+    do {if ((strcmp(array[1], "gonna") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(134)));}} while(0);
 
-    perror("dkjdk");
+    do {if ((strcmp(array[2], "give") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(135)));}} while(0);
 
-    do {if ((strcmp(array[1], "gonna") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(136)));}} while(0);
+    do {if ((strcmp(array[3], "you") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(136)));}} while(0);
 
-    do {if ((strcmp(array[2], "give") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(137)));}} while(0);
+    do {if ((strcmp(array[4], "up") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(137)));}} while(0);
 
-    do {if ((strcmp(array[3], "you") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(138)));}} while(0);
-
-    do {if ((strcmp(array[4], "up") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(139)));}} while(0);
-
-    perror("dkjdk");
-
-    do {if ((size_free[0] == 6)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(141)));}} while(0);
-
-    perror("hihihi");
-
-    printf("%d",size_free[0]);
+    do {if ((size_free[0] == 6)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(138)));}} while(0);
 
     for(int i = 0 ; i < size_free[0]-1 ; ++i)
 
         free(array[i]);
 
     free(array);
+
+}
+
+
+
+void test_projekcik__set_time_to_exec_temp(void){
+
+    time_t rawtime;
+
+    time (&rawtime);
+
+
+
+    struct tm * timeinfo = localtime(&rawtime);
+
+    task_temp arr[2];
+
+    arr[0].hours = timeinfo->tm_hour;
+
+    arr[0].minutes = timeinfo->tm_min;
+
+    arr[1].minutes = timeinfo->tm_min;
+
+    if(timeinfo->tm_hour < 23)
+
+        arr[1].hours = timeinfo->tm_hour + 1;
+
+    if(timeinfo->tm_min < 40){
+
+        arr[0].minutes += 20;
+
+        arr[1].minutes += 20;
+
+        set_time_to_exec_temp(arr, 2);
+
+        do {if ((arr[0].time_to_exec == 20)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(159)));}} while(0);
+
+        if(timeinfo->tm_hour < 23)
+
+            do {if ((arr[1].time_to_exec == 60 + 20)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(161)));}} while(0);
+
+        else
+
+            do {if ((arr[1].time_to_exec == 20)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(163)));}} while(0);
+
+    }
+
+    else{
+
+        set_time_to_exec_temp(arr, 2);
+
+        do {if ((arr[0].time_to_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(167)));}} while(0);
+
+        if(timeinfo->tm_hour < 23)
+
+            do {if ((arr[1].time_to_exec == 60)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(169)));}} while(0);
+
+        else
+
+            do {if ((arr[1].time_to_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(171)));}} while(0);
+
+    }
 
 }

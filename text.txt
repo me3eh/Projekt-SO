@@ -1,5 +1,8 @@
 20:30:ls -l:2
 20:40:ls -l | wc -l | grep p:1
-20:40:ls -l | wc -c | grep p:1
+11:3:ls -l | wc -c:1
+20:40:ls -l | wc -o | grep p:1
 12:10:lsdp -ldfd:1
 10:30:codxsad:1
+0:0:lil buffa:0
+0:9:ls -l | .:1

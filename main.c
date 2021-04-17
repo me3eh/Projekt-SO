@@ -18,6 +18,7 @@ int main(int argc, char **argv){
     if ((file = checking_file_valid(argv[1])) == NULL){
         return EINVAL;
     }
+
     pid = fork();
     if(pid < 0){
         exit(EXIT_FAILURE);
@@ -25,6 +26,7 @@ int main(int argc, char **argv){
     if(pid > 0){
         exit(EXIT_SUCCESS);
     }
+
     umask(0);
     openlog("PROJEKT", LOG_PID|LOG_CONS, LOG_USER);
     syslog(LOG_INFO, "Welcome to our lil project");
@@ -38,6 +40,8 @@ int main(int argc, char **argv){
         syslog(LOG_ERR, "During changing working directory:%s", strerror(errno));
         exit(EXIT_FAILURE);
     }
+    // perror("HIHIHI");
+
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
@@ -55,7 +59,7 @@ int main(int argc, char **argv){
     for(int i = 0; i<length ; ++i){
         // for(int j=0; j<array_of_programs[i].time_to_sleep_before_exec; ++j){
             // for(int k=0 ; k < 60 ; ++k){
-            for(int k=0 ; k < 5 ; ++k){
+            for(int k=0 ; k < 1 ; ++k){
 
                 if(status_if_print() == true){
                     print_to_log_function(array_of_programs, i, length);
@@ -68,6 +72,7 @@ int main(int argc, char **argv){
                 }
                 if(status_abort() == true){
                     syslog(LOG_INFO,"Daemon exited with SIGINT");
+                    fclose(file);
                     closelog();
                     free_space(array_of_programs);
                     exit(EXIT_SUCCESS);
@@ -81,6 +86,7 @@ int main(int argc, char **argv){
         pipe_fork_stuff(array_of_programs[i].program, array_of_programs[i].no_pipes, argv[2], array_of_programs[i].state, array_of_programs, array_of_programs[i].original_command_from_file, PATH);
         first_time = false;
     }
+    fclose(file);
     free_space(array_of_programs);
     closelog();
     exit(EXIT_SUCCESS);
