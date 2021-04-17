@@ -8,6 +8,6 @@ copy: main.c fun.c fun.h
 test:
 	cd MyNewProject && 	ceedling test:all
 log: 
-	cat /var/log/syslog | tail -n $(num)
+	cat /var/log/syslog | tail -n $(n)
 kill:
-	killall minicron -$(num)
+	killall minicron -$(n)
