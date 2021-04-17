@@ -160,7 +160,7 @@ void test_projekcik__set_time_to_exec_temp(void){
         TEST_ASSERT_TRUE(arr[0].time_to_exec == 20);
         if(timeinfo->tm_hour < 23){
             TEST_ASSERT_TRUE(arr[1].time_to_exec == 60 + 20);
-            TEST_ASSERT_TRUE(arr[1].time_to_sleep == 60);
+            TEST_ASSERT_TRUE(arr[1].time_to_sleep_before_exec == 60);
         }
         else{
             TEST_ASSERT_TRUE(arr[1].time_to_exec == 20);
@@ -171,27 +171,27 @@ void test_projekcik__set_time_to_exec_temp(void){
         set_time_to_exec_temp(arr, 2);
         set_time_to_sleep_temp(arr, 2);
         TEST_ASSERT_TRUE(arr[0].time_to_exec == 0);
-        TEST_ASSERT_TRUE(arr[0].time_to_sleep == 0);
+        TEST_ASSERT_TRUE(arr[0].time_to_sleep_before_exec == 0);
         if(timeinfo->tm_hour < 23){
             //time_to_Exec
             TEST_ASSERT_TRUE(arr[1].time_to_exec == 60);
             //time_to_sleep
-            TEST_ASSERT_TRUE(arr[1].time_to_sleep == 60);
+            TEST_ASSERT_TRUE(arr[1].time_to_sleep_before_exec == 60);
         }
         else{
             //time_to_Exec
             TEST_ASSERT_TRUE(arr[1].time_to_exec == 0);
             //time_to_sleep
-            TEST_ASSERT_TRUE(arr[1].time_to_sleep == 0);
+            TEST_ASSERT_TRUE(arr[1].time_to_sleep_before_exec == 0);
         }
 
     }
 }
 
-void test_projekcik__title_in_file(void){
-    char* strin = "test_just_to_check";
-    title_in_file(strin, "title_in_file.txt", true, "./test");
-    file 
-}
+// void test_projekcik__title_in_file(void){
+    // char* strin = "test_just_to_check";
+    // title_in_file(strin, "title_in_file.txt", true, "./test");
+    // file 
+// }
 
 #endif // TEST

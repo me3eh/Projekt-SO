@@ -9,5 +9,5 @@ test:
 	cd MyNewProject && 	ceedling test:all
 log: 
 	cat /var/log/syslog | tail -n $(n)
-kill:
+make kill:
 	killall minicron -$(n)

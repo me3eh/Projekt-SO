@@ -431,15 +431,25 @@ void test_projekcik__set_time_to_exec_temp(void){
 
         set_time_to_exec_temp(arr, 2);
 
-        do {if ((arr[0].time_to_exec == 20)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(159)));}} while(0);
+        set_time_to_sleep_temp(arr, 2);
 
-        if(timeinfo->tm_hour < 23)
+        do {if ((arr[0].time_to_exec == 20)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(160)));}} while(0);
 
-            do {if ((arr[1].time_to_exec == 60 + 20)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(161)));}} while(0);
+        if(timeinfo->tm_hour < 23){
 
-        else
+            do {if ((arr[1].time_to_exec == 60 + 20)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(162)));}} while(0);
 
-            do {if ((arr[1].time_to_exec == 20)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(163)));}} while(0);
+            do {if ((arr[1].time_to_sleep_before_exec == 60)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(163)));}} while(0);
+
+        }
+
+        else{
+
+            do {if ((arr[1].time_to_exec == 20)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(166)));}} while(0);
+
+            do {if ((arr[1].time_to_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(167)));}} while(0);
+
+        }
 
     }
 
@@ -447,15 +457,37 @@ void test_projekcik__set_time_to_exec_temp(void){
 
         set_time_to_exec_temp(arr, 2);
 
-        do {if ((arr[0].time_to_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(167)));}} while(0);
+        set_time_to_sleep_temp(arr, 2);
 
-        if(timeinfo->tm_hour < 23)
+        do {if ((arr[0].time_to_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(173)));}} while(0);
 
-            do {if ((arr[1].time_to_exec == 60)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(169)));}} while(0);
+        do {if ((arr[0].time_to_sleep_before_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(174)));}} while(0);
 
-        else
+        if(timeinfo->tm_hour < 23){
 
-            do {if ((arr[1].time_to_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(171)));}} while(0);
+
+
+            do {if ((arr[1].time_to_exec == 60)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(177)));}} while(0);
+
+
+
+            do {if ((arr[1].time_to_sleep_before_exec == 60)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(179)));}} while(0);
+
+        }
+
+        else{
+
+
+
+            do {if ((arr[1].time_to_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(183)));}} while(0);
+
+
+
+            do {if ((arr[1].time_to_sleep_before_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(185)));}} while(0);
+
+        }
+
+
 
     }
 

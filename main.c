@@ -15,10 +15,10 @@ int main(int argc, char **argv){
 
     if(equal_namings(argv[1], argv[0]))
         exit(EXIT_FAILURE);
-    if ((file = checking_file_valid(argv[1])) == NULL){
+    if ((file = checking_file_valid(argv[1], PATH)) == NULL){
         return EINVAL;
     }
-
+    fclose(file);
     pid = fork();
     if(pid < 0){
         exit(EXIT_FAILURE);
@@ -29,11 +29,10 @@ int main(int argc, char **argv){
 
     umask(0);
     openlog("PROJEKT", LOG_PID|LOG_CONS, LOG_USER);
-    syslog(LOG_INFO, "Welcome in our lil project");
+    syslog(LOG_INFO, "Welcome to our lil project");
     sid = setsid();
     if(sid < 0){
         syslog(LOG_ERR, "During initialization session id:%s", strerror(errno));
-        perror("HIHIHI");
         exit(EXIT_FAILURE);
     }
     if((chdir("/")) < 0){
@@ -42,20 +41,22 @@ int main(int argc, char **argv){
     }
     // perror("HIHIHI");
 
-    close(STDIN_FILENO);
-    close(STDOUT_FILENO);
-    close(STDERR_FILENO);
-    
+    // close(STDIN_FILENO);
+    // close(STDOUT_FILENO);
+    // close(STDERR_FILENO);
     RESTART:
-
-    rewind(file);
-    if (( array_of_programs = get_array_of_tasks(file) )== NULL)
+    if ((file = checking_file_valid(argv[1], PATH)) == NULL){
+        return EINVAL;
+    }
+    syslog(LOG_INFO, "Welcome to our lil proje123ct");
+    if (( array_of_programs = get_array_of_tasks(file) ) == NULL)
         return EINVAL;
     int length = length_of_file();
     set_time_to_exec_temp(array_of_programs, length);
     qsort(array_of_programs, length, sizeof(*array_of_programs), comparator_temp);
     set_time_to_sleep_temp(array_of_programs, length);
     bool first_time =true;
+    fclose(file);
     for(int i = 0; i<length ; ++i){
         // for(int j=0; j<array_of_programs[i].time_to_sleep_before_exec; ++j){
             // for(int k=0 ; k < 60 ; ++k){
@@ -72,7 +73,6 @@ int main(int argc, char **argv){
                 }
                 if(status_abort() == true){
                     syslog(LOG_INFO,"Daemon exited with SIGINT");
-                    fclose(file);
                     closelog();
                     free_space(array_of_programs);
                     exit(EXIT_SUCCESS);
@@ -86,7 +86,7 @@ int main(int argc, char **argv){
         pipe_fork_stuff(array_of_programs[i].program, array_of_programs[i].no_pipes, argv[2], array_of_programs[i].state, array_of_programs, array_of_programs[i].original_command_from_file, PATH);
         first_time = false;
     }
-    fclose(file);
+    // fclose(file);
     free_space(array_of_programs);
     closelog();
     exit(EXIT_SUCCESS);

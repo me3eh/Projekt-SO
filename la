@@ -7,7 +7,7 @@ lsdp: No such file or directory
 
 15:58:ls -l | wc -l:2
 ----------------------------
-26
+14
 
 
 20:40:ls -l | wc -l | grep p:1

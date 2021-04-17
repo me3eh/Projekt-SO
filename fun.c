@@ -1,8 +1,12 @@
 #include "fun.h"
 
-#define GOOD_FORMAT "^((2{0,1}[0-3])|([0-1]{0,1}[0-9])):([0-5]?[0-9]):([a-zA-Z\\|:,. -])*:[0-2]$"
+#define GOOD_FORMAT "^((2{0,1}[0-3])|([0-1]{0,1}[0-9])):([0-5]?[0-9]):([a-zA-Z0-9\\|:,. -])*:[0-2]$"
 #define WRITE_END 1
 #define READ_END 0
+//wielkosc sciezki dostepowej
+#define SIZE_PATH 300
+//wielkosc bufora
+#define SIZE 200
 // bool first_time = true;
 volatile bool import_from_file = false;
 volatile bool print_to_log = false;
@@ -20,16 +24,23 @@ int amount_of_arguments(int arg, char* word){
 
 bool equal_namings(char* naming_input, char* naming_output){
     if(strcmp(naming_input, naming_output) == 0){
-        fprintf(stderr,"Input and output file cannot have the same namings");
+        fprintf(stderr,"Input and output file cannot have the same name");
         return true;
     }
     return false;
 }
 
-FILE* checking_file_valid(char * naming){
-    FILE * file = fopen(naming, "r");
-    if(file == NULL)
+FILE* checking_file_valid(char * naming, char*PATH){
+    char temp[SIZE_PATH+100];
+    strcpy(temp, PATH);
+    if(naming[0] != '/')
+        strcat(temp, "/");
+    strcat(temp, naming);
+    FILE * file = fopen(temp, "r");
+    if(file == NULL){
         fprintf(stderr, "%s:%s", naming, strerror(errno));
+        syslog(LOG_INFO,"%s:%s", naming, strerror(errno));
+    }
     return file;
 }
 
@@ -38,8 +49,7 @@ int check_format(FILE * file){
         syslog(LOG_ERR,"In function check_format():%s",strerror(errno));
         return -1;
     }
-    int size_buffer = 200;
-    char buffer[size_buffer];
+    char buffer[SIZE];
     int line = 0;
     char * token;
     regex_t regex;
@@ -50,7 +60,7 @@ int check_format(FILE * file){
         return -1;
     }
 
-    while(fgets(buffer, size_buffer, file) != NULL){
+    while(fgets(buffer, SIZE, file) != NULL){
     	int found = regexec(&regex, buffer, 0, NULL, 0);
         if(found == 0)
             ++line;
@@ -88,8 +98,7 @@ task_temp * get_array_of_tasks(FILE * file){
         return NULL;
     }
     int line = 0;
-    int size_buffer = 200;
-    char buffer[size_buffer];
+    char buffer[SIZE];
     int length_of_everything = 0;
     char *token, *lil_buffa;
     char pol[200] = "";
@@ -109,7 +118,7 @@ task_temp * get_array_of_tasks(FILE * file){
         syslog(LOG_ERR,"In function get_array_of_tasks():%s",strerror(errno));
         return NULL;
     }
-    while(fgets(buffer, size_buffer, file) != NULL){
+    while(fgets(buffer, SIZE, file) != NULL){
         array_task[line].original_command_from_file = (char*)malloc((strlen(buffer)+1)*sizeof(char));
         if(array_task[line].original_command_from_file == NULL){
             syslog(LOG_ERR,"In function get_array_of_tasks():%s",strerror(errno));
@@ -348,18 +357,23 @@ char ** string_to_array(char * text, int * size){
 }
 int title_in_file(char*original_line_in_file, char*outfile, bool first_time, char * PATH){
     int file;
-    if(chdir(PATH) < 0){
-        syslog(LOG_ERR, "In function title_in_file():%s", strerror(errno));
-        return -1;
-    }
+    char temp [SIZE + 100];
+    strcpy(temp, PATH);
+    if(outfile[0] != '/')
+        strcat(temp, "/");
+    strcat(temp, outfile);
+    // if(chdir(PATH) < 0){
+        // syslog(LOG_ERR, "In function title_in_file():%s", strerror(errno));
+        // return -1;
+    // }
     if(first_time){
-        if((file = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
+        if((file = open(temp, O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
             syslog(LOG_ERR,"In function title_in_file():%s",strerror(errno));
             return -1;
         }
     }
     else{
-        if((file = open(outfile, O_WRONLY | O_APPEND, 0777)) < 0){
+        if((file = open(temp, O_WRONLY | O_APPEND, 0777)) < 0){
             syslog(LOG_ERR,"In function title_in_file():%s",strerror(errno));
             return -1;
         }
@@ -381,26 +395,30 @@ int title_in_file(char*original_line_in_file, char*outfile, bool first_time, cha
 
 
 int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_temp*ar, char*original_command_from_file, char*PATH){
-    
-    bool something_bad = false;
+
     pid_t pid;
     int file, file_null;
-    int fd[length-1][2];
-    if(chdir(PATH) < 0){
+    int fd[length][2];
+    // if(chdir(PATH) < 0){
+        // syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+        // return -1;/
+    // }
+    char temp [SIZE_PATH];
+    strcpy(temp, PATH);
+    if(outfile[0] != '/')
+        strcat(temp, "/");
+    strcat(temp, outfile);
+    if((file = open(temp, O_WRONLY | O_APPEND)) < 0){
         syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
         return -1;
     }
-    if((file = open(outfile, O_WRONLY | O_APPEND,S_IRUSR | S_IWUSR, 0666)) < 0){
-        syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
-        return -1;
-    }
-    if((file_null = open("/dev/null", O_WRONLY, S_IRUSR | S_IWUSR, 0666)) < 0){
+    if((file_null = open("/dev/null", O_WRONLY)) < 0){
         syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
         return -1;
     }
     if(state >= 1)
         dup2(file, STDERR_FILENO);
-    for(int i = 0 ; i < length-1 ; ++i)
+    for(int i = 0 ; i < length; ++i)
         pipe(fd[i]);
     for(int i = 0 ; i < length ; ++i){
         pid = fork();
@@ -414,10 +432,9 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                     dup2(file_null, STDOUT_FILENO);
                 if(state == 2)
                     dup2(file, STDOUT_FILENO);
-                
+
                 execvp(array[0][0], array[0]);
                 fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
-                something_bad = true;
                 //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
                 free_space(ar);
                 exit(EXIT_FAILURE);
@@ -425,18 +442,19 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                 close(file_null);
             }
             else if(( i == length - 1 ) && ( i != 0 )){
+                // close(fd[i-1][WRITE_END]);
                 dup2(fd[i-1][READ_END], STDIN_FILENO);
                 
-                if(state  == 0){
+                if(state == 0){
                     dup2(file, STDOUT_FILENO);
+                    dup2(file_null, STDERR_FILENO);
                 }
                 if(state == 1)
                     dup2(file_null, STDOUT_FILENO);
                 if(state == 2)
                     dup2(file, STDOUT_FILENO);
                 execvp(array[i][0], array[i]);
-                fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
-                something_bad = true;
+                fprintf(stderr, "%s: %s", array[i][0],strerror(errno));
                 //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
                 free_space(ar);
                 exit(EXIT_FAILURE);
@@ -444,16 +462,19 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                 close(file_null);
             }
             else{
-                if(i != 0)
+                if(i != 0){
+                    // close(fd[i-1][WRITE_END]);
                     dup2(fd[i-1][READ_END], STDIN_FILENO);
+                }
 
-                // close(fd[i][READ_END]);
+                close(fd[i][READ_END]);
+                
                 dup2(fd[i][WRITE_END], STDOUT_FILENO);
                 if(state == 0)
-                    dup2(file_null, STDERR_FILENO);
+                    close(STDERR_FILENO);
+
                 execvp(array[i][0], array[i]);
-                fprintf(stderr, "%s: %s\n", array[0][0],strerror(errno));
-                something_bad = true;
+                fprintf(stderr, "%s: %s\n", array[i][0],strerror(errno));
                 //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
                 free_space(ar);
                 exit(EXIT_FAILURE);
@@ -466,24 +487,23 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
             int exit_status;
             waitpid(pid, &status, 0);
             if(WIFEXITED(status)){
-                exit_status = WEXITSTATUS(status);
-                if( exit_status != 0){
+                if( (exit_status = WEXITSTATUS(status)) != 0){
                     // fprintf(stderr, "\n%d ",exit_status);
-                    syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, exit_status);
                     close(fd[i][WRITE_END]);
-                    something_bad = true;
                     close(file);
                     close(file_null);
+                    syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, exit_status);
                     return 0;
                 }
-                if(i == (length - 1))
-                    syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, exit_status);
             }
-            if( i != (length-1))
-                close(fd[i][WRITE_END]);
+            close(fd[i][WRITE_END]);
+            if( i != 0)
+
+            close(fd[i-1][READ_END]);
             if((i == length - 1)){
                 close(file);
                 close(file_null);
+                syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, exit_status);
             }
         }
     }
@@ -518,7 +538,7 @@ void handler(int signum){
 }
 
 void print_to_log_function(task_temp * array, int i, int max_length){
-    syslog(LOG_INFO, "\nTasks to do:");
+    syslog(LOG_INFO, "\nTasks to complete:");
     syslog(LOG_INFO, "---------------------------------------------");
     while (i != max_length){
         syslog(LOG_INFO, "%s", array[i].original_command_from_file);
