@@ -44,6 +44,9 @@ int main(int argc, char **argv){
     // close(STDIN_FILENO);
     // close(STDOUT_FILENO);
     // close(STDERR_FILENO);
+
+
+
     RESTART:
     if ((file = checking_file_valid(argv[1], PATH)) == NULL){
         return EINVAL;

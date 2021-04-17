@@ -396,6 +396,7 @@ int title_in_file(char*original_line_in_file, char*outfile, bool first_time, cha
 
 int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_temp*ar, char*original_command_from_file, char*PATH){
 
+
     pid_t pid;
     int file, file_null;
     int fd[length][2];
@@ -444,6 +445,7 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
             else if(( i == length - 1 ) && ( i != 0 )){
                 // close(fd[i-1][WRITE_END]);
                 dup2(fd[i-1][READ_END], STDIN_FILENO);
+
                 
                 if(state == 0){
                     dup2(file, STDOUT_FILENO);
