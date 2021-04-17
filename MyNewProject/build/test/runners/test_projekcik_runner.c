@@ -18,6 +18,7 @@ extern void test_projekcik_checking_function__length_of_file(void);
 extern void test_projekcik__get_array_of_tasks(void);
 extern void test_projekcik__amount_of_pipes(void);
 extern void test_projekcik__string_to_array(void);
+extern void test_projekcik__set_time_to_exec_temp(void);
 
 
 /*=======Mock Management=====*/
@@ -90,6 +91,7 @@ int main(void)
   run_test(test_projekcik__get_array_of_tasks, "test_projekcik__get_array_of_tasks", 78);
   run_test(test_projekcik__amount_of_pipes, "test_projekcik__amount_of_pipes", 120);
   run_test(test_projekcik__string_to_array, "test_projekcik__string_to_array", 127);
+  run_test(test_projekcik__set_time_to_exec_temp, "test_projekcik__set_time_to_exec_temp", 144);
 
   return UnityEnd();
 }

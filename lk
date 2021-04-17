@@ -1,9 +1,45 @@
+20:30:ls -l:2
+----------------------------
+total 88
+-rw-rw-r-- 1 me3eh me3eh 17502 Apr 11 12:46 fun.c
+-rw-rw-r-- 1 me3eh me3eh  2386 Apr 11 12:42 fun.h
+-rw--w---- 1 me3eh me3eh    43 Apr 17 15:36 lk
+-rw-rw-r-- 1 me3eh me3eh  2988 Apr 17 15:30 main.c
+-rw-rw-r-- 1 me3eh me3eh   308 Apr 11 00:25 makefile
+-rwxrwxr-x 1 me3eh me3eh 31816 Apr 17 15:36 minicron
+drwxrwxr-x 5 me3eh me3eh  4096 Apr 10 00:57 MyNewProject
+-rw-rw-r-- 1 me3eh me3eh     0 Apr 10 00:57 polko.txt
+-rw-rw-r-- 1 me3eh me3eh  3260 Apr 10 00:57 pol.txt
+-rw-rw-r-- 1 me3eh me3eh   255 Apr 10 00:57 README.md
+-rw-rw-r-- 1 me3eh me3eh   163 Apr 17 15:35 text.txt
+-rw-rw-r-- 1 me3eh me3eh    18 Mar 24 17:37 wujek.c
+
+
+20:40:ls -l | wc -l | grep p:1
+----------------------------
+
+
+20:40:ls -l | wc -o | grep p:1
+----------------------------
+wc: invalid option -- 'o'
+Try 'wc --help' for more information.
+
+
+0:0:lil buffa:0
+----------------------------
+lil: No such file or directory
+
+0:9:ls -l | .:1----------------------------
+ls: Permission denied
+
 10:30:codxsad:1
 ----------------------------
 codxsad: No such file or directory
-Interrupted system call
+
+11:3:ls -l | wc -c:1
+----------------------------
+
 
 12:10:lsdp -ldfd:1
 ----------------------------
 lsdp: No such file or directory
-Bad file descriptor

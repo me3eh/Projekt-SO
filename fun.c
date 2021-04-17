@@ -366,7 +366,7 @@ int title_in_file(char*original_line_in_file, char*outfile, bool first_time, cha
     }
     if(first_time){
         write(file, original_line_in_file, strlen(original_line_in_file));
-        char p [] = "\n----------------------------\n";
+        char p [] = "----------------------------\n";
         write(file, p, strlen(p));
     }
     else{
@@ -452,7 +452,7 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                 if(state == 0)
                     dup2(file_null, STDERR_FILENO);
                 execvp(array[i][0], array[i]);
-                fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
+                fprintf(stderr, "%s: %s\n", array[0][0],strerror(errno));
                 something_bad = true;
                 //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
                 free_space(ar);
@@ -463,19 +463,21 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
         }
         else if(pid > 0){
             int status;
+            int exit_status;
             waitpid(pid, &status, 0);
             if(WIFEXITED(status)){
-                if(WEXITSTATUS(status) != 0){
-                    fprintf(stderr, "\n%s",strerror(errno));
-                    syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, status);
+                exit_status = WEXITSTATUS(status);
+                if( exit_status != 0){
+                    // fprintf(stderr, "\n%d ",exit_status);
+                    syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, exit_status);
                     close(fd[i][WRITE_END]);
                     something_bad = true;
                     close(file);
                     close(file_null);
-                    return -1;
+                    return 0;
                 }
                 if(i == (length - 1))
-                    syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, status);
+                    syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, exit_status);
             }
             if( i != (length-1))
                 close(fd[i][WRITE_END]);

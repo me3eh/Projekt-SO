@@ -35,11 +35,15 @@
   :line: 127
   :message: ''
   :unity_test_time: 0
+- :test: test_projekcik__set_time_to_exec_temp
+  :line: 144
+  :message: ''
+  :unity_test_time: 0
 :failures: []
 :ignores: []
 :counts:
-  :total: 8
-  :passed: 8
+  :total: 9
+  :passed: 9
   :failed: 0
   :ignored: 0
 :stdout:
@@ -47,24 +51,17 @@
 - ''
 - 'fun__amount_of_arguments():'
 - "------------------"
-- 'In function amount_of_arguments():'
 - 'Usage: ./minicrom <taskfile> <outfile> '
-- 'In function amount_of_arguments():'
 - 'Usage: ./minicrom <taskfile> <outfile> '
 - ''
 - ''
 - 'fun__checking_file_valid():'
 - "------------------"
-- In function checking_file_valid()
-- ":File error: No such file or directory"
-- ''
+- "./test/text123.txt:No such file or directory"
 - ''
 - 'fun__check_format():'
 - "------------------"
-- In function checking_file_valid()
-- ":File error: No such file or directory"
-- 'In function check_format: File is not found: No such file or directory'
-- ''
+- "./test/text.tx:No such file or directory"
 - ''
 - 'fun__equal_namings():'
 - "------------------"
@@ -73,37 +70,13 @@
 - 'fun__length_of_file():'
 - "------------------"
 - 'siusiak: No such file or directory'
-- In function checking_file_valid()
-- ":File error: No such file or directory"
-- 'In function check_format: File is not found: No such file or directory'
-- ''
+- "./test/text.tx:No such file or directory"
 - ''
 - 'fun__get_array_of_tasks():'
 - "------------------"
-- '1: No such file or directory'
-- '666: No such file or directory'
-- 'hih: No such file or directory'
-- '666: No such file or directory'
-- 'hih: No such file or directory'
 - '667: No such file or directory'
-- 'In function check_format():'
-- 'Bad format in file - line:0 Usage: <hours>:<minutes>:<code>:<mode>'
-- In function checking_file_valid()
-- ":File error: No such file or directory"
-- 'In function get_array_of_tasks:: No such file or directory'
-- 'In function check_format(): File is empty'
+- "./test/text.tx:No such file or directory"
 - ''
 - 'fun__amount_of_pipes():'
 - "------------------"
-- '666: No such file or directory'
-- 'hih: No such file or directory'
-- '666: No such file or directory'
-- 'hih: No such file or directory'
-- '666: No such file or directory'
-- 'hih: No such file or directory'
-- 'lk: No such file or directory'
-- 'dkjdk: No such file or directory'
-- 'dkjdk: No such file or directory'
-- 'hihihi: No such file or directory'
-- '6'
-:time: 0.001416996999978437
+:time: 0.033699004000027344
