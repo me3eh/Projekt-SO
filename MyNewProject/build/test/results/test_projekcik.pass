@@ -39,11 +39,15 @@
   :line: 144
   :message: ''
   :unity_test_time: 0
+- :test: test_projekcik__preventing_pipe_at_end
+  :line: 197
+  :message: ''
+  :unity_test_time: 0
 :failures: []
 :ignores: []
 :counts:
-  :total: 9
-  :passed: 9
+  :total: 10
+  :passed: 10
   :failed: 0
   :ignored: 0
 :stdout:
@@ -65,18 +69,18 @@
 - ''
 - 'fun__equal_namings():'
 - "------------------"
-- Input and output file cannot have the same namings
+- Input and output file cannot have the same name
 - ''
 - 'fun__length_of_file():'
 - "------------------"
 - 'siusiak: No such file or directory'
-- "./test/text.tx:No such file or directory"
+- text.tx:No such file or directory
 - ''
 - 'fun__get_array_of_tasks():'
 - "------------------"
 - '667: No such file or directory'
-- "./test/text.tx:No such file or directory"
+- text.tx:No such file or directory
 - ''
 - 'fun__amount_of_pipes():'
 - "------------------"
-:time: 0.0024893019999581156
+:time: 0.0040586200000234385

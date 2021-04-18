@@ -55,13 +55,13 @@ void test_projekcik_checkingfunction__checking_file_valid(void){
 
 
 
-    do {if ((checking_file_valid("./test/text.txt") != 
+    do {if ((checking_file_valid("./test/text.txt", "NULL|||") != 
 
    ((void *)0)
 
    )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(27)));}} while(0);
 
-    do {if ((checking_file_valid("./test/text123.txt") == 
+    do {if ((checking_file_valid("./test/text123.txt", "NULL|||") == 
 
    ((void *)0)
 
@@ -83,7 +83,7 @@ void test_projekcik_checkingfunction__check_format(void){
 
 
 
-    FILE * file = checking_file_valid("./test/text.tx");
+    FILE * file = checking_file_valid("./test/text.tx", "NULL|||");
 
     do {if ((check_format(file) == -1)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(36)));}} while(0);
 
@@ -97,7 +97,7 @@ void test_projekcik_checkingfunction__check_format(void){
 
 
 
-    FILE * test_file = checking_file_valid("./test/perfect.txt");
+    FILE * test_file = checking_file_valid("./test/perfect.txt", "NULL|||");
 
     do {if ((check_format(test_file) > 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(41)));}} while(0);
 
@@ -111,7 +111,7 @@ void test_projekcik_checkingfunction__check_format(void){
 
 
 
-    FILE * test_file2 = checking_file_valid("./test/perfect.txt");
+    FILE * test_file2 = checking_file_valid("./test/perfect.txt", "NULL|||");
 
     do {if ((check_format(test_file2) == 2)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(46)));}} while(0);
 
@@ -161,7 +161,7 @@ void test_projekcik_checking_function__length_of_file(void){
 
 
 
-    FILE * test_file2 = checking_file_valid("./test/perfect.txt");
+    FILE * test_file2 = checking_file_valid("perfect.txt", "./test/");
 
     do {if ((check_format(test_file2) == 2)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(65)));}} while(0);
 
@@ -179,7 +179,7 @@ void test_projekcik_checking_function__length_of_file(void){
 
 
 
-    FILE * file = checking_file_valid("./test/text.tx");
+    FILE * file = checking_file_valid("text.tx","./test/");
 
     do {if ((check_format(file) == -1)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(72)));}} while(0);
 
@@ -209,7 +209,7 @@ void test_projekcik__get_array_of_tasks(void){
 
 
 
-    FILE * test_file2 = checking_file_valid("./test/perfect.txt");
+    FILE * test_file2 = checking_file_valid("perfect.txt", "./test/");
 
     do {if ((test_file2 != 
 
@@ -247,7 +247,7 @@ void test_projekcik__get_array_of_tasks(void){
 
 
 
-    FILE * test_file1 = checking_file_valid("./test/text.txt");
+    FILE * test_file1 = checking_file_valid("text.txt", "./test/");
 
     do {if ((test_file1 != 
 
@@ -281,7 +281,7 @@ void test_projekcik__get_array_of_tasks(void){
 
 
 
-    FILE * test_file4 = checking_file_valid("./test/text.tx");
+    FILE * test_file4 = checking_file_valid("text.tx", "./test/");
 
     do {if ((test_file4 == 
 
@@ -315,7 +315,7 @@ void test_projekcik__get_array_of_tasks(void){
 
 
 
-    FILE * test_file3 = checking_file_valid("./test/bad.txt");
+    FILE * test_file3 = checking_file_valid("./test/bad.txt", "NULL|||");
 
     do {if ((test_file3 != 
 
@@ -490,5 +490,29 @@ void test_projekcik__set_time_to_exec_temp(void){
 
 
     }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void test_projekcik__preventing_pipe_at_end(void){
+
+    do {if ((preventing_pipe_at_end("20:15:ls -l | wc -c |:2") == -1)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(198)));}} while(0);
+
+    do {if ((preventing_pipe_at_end("20:15:ls -l | wc -c |.:2") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(199)));}} while(0);
+
+
 
 }

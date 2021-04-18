@@ -24,25 +24,25 @@ void test_projekcik_checkingfunction__checking_file_valid(void){
     
     fprintf(stderr, "\n\nfun__checking_file_valid():\n------------------\n");
     
-    TEST_ASSERT_TRUE(checking_file_valid("./test/text.txt") != NULL);
-    TEST_ASSERT_TRUE(checking_file_valid("./test/text123.txt") == NULL);
+    TEST_ASSERT_TRUE(checking_file_valid("./test/text.txt", "NULL|||") != NULL);
+    TEST_ASSERT_TRUE(checking_file_valid("./test/text123.txt", "NULL|||") == NULL);
 
 }
 void test_projekcik_checkingfunction__check_format(void){
     
     fprintf(stderr, "\n\nfun__check_format():\n------------------\n");
     
-    FILE * file = checking_file_valid("./test/text.tx");
+    FILE * file = checking_file_valid("./test/text.tx", "NULL|||");
     TEST_ASSERT_TRUE(check_format(file) == -1);
     if(file != NULL)
         fclose(file);
 
-    FILE * test_file = checking_file_valid("./test/perfect.txt");
+    FILE * test_file = checking_file_valid("./test/perfect.txt", "NULL|||");
     TEST_ASSERT_TRUE(check_format(test_file) > 0);
     if(test_file !=NULL)
         fclose(test_file);
     
-    FILE * test_file2 = checking_file_valid("./test/perfect.txt");
+    FILE * test_file2 = checking_file_valid("./test/perfect.txt", "NULL|||");
     TEST_ASSERT_TRUE(check_format(test_file2) == 2);
     if(test_file2 !=NULL)
         fclose(test_file2);
@@ -61,14 +61,14 @@ void test_projekcik_checking_function__length_of_file(void){
     
     fprintf(stderr, "\n\nfun__length_of_file():\n------------------\n");
     
-    FILE * test_file2 = checking_file_valid("./test/perfect.txt");
+    FILE * test_file2 = checking_file_valid("perfect.txt", "./test/");
     TEST_ASSERT_TRUE(check_format(test_file2) == 2);
     TEST_ASSERT_TRUE(length_of_file(test_file2) == 2);
     perror("siusiak");
     if(test_file2 != NULL)
         fclose(test_file2);
    
-    FILE * file = checking_file_valid("./test/text.tx");
+    FILE * file = checking_file_valid("text.tx","./test/");
     TEST_ASSERT_TRUE(check_format(file) == -1);
     TEST_ASSERT_FALSE(length_of_file(file) == -1);
     if(file != NULL)
@@ -79,7 +79,7 @@ void test_projekcik__get_array_of_tasks(void){
     
     fprintf(stderr, "\n\nfun__get_array_of_tasks():\n------------------\n");
     
-    FILE * test_file2 = checking_file_valid("./test/perfect.txt");
+    FILE * test_file2 = checking_file_valid("perfect.txt", "./test/");
     TEST_ASSERT_TRUE(test_file2 != NULL);
     task_temp * array;
     // perror("666");
@@ -90,7 +90,7 @@ void test_projekcik__get_array_of_tasks(void){
     if(test_file2 != NULL)
         fclose(test_file2);
     
-    FILE * test_file1 = checking_file_valid("./test/text.txt");
+    FILE * test_file1 = checking_file_valid("text.txt", "./test/");
     TEST_ASSERT_TRUE(test_file1 != NULL);
     task_temp * array2;
     TEST_ASSERT_TRUE((array2 = get_array_of_tasks(test_file1)) == NULL);
@@ -99,7 +99,7 @@ void test_projekcik__get_array_of_tasks(void){
     if(test_file1 != NULL)
         fclose(test_file1);
 
-    FILE * test_file4 = checking_file_valid("./test/text.tx");
+    FILE * test_file4 = checking_file_valid("text.tx", "./test/");
     TEST_ASSERT_TRUE(test_file4 == NULL);
     task_temp * array4;
     TEST_ASSERT_TRUE((array4 = get_array_of_tasks(test_file4)) == NULL);
@@ -108,7 +108,7 @@ void test_projekcik__get_array_of_tasks(void){
     if(test_file4 != NULL)
         fclose(test_file4);
     
-    FILE * test_file3 = checking_file_valid("./test/bad.txt");
+    FILE * test_file3 = checking_file_valid("./test/bad.txt", "NULL|||");
     TEST_ASSERT_TRUE(test_file3 != NULL);
     task_temp * array3;
     TEST_ASSERT_TRUE((array3 = get_array_of_tasks(test_file3)) == NULL);
@@ -194,4 +194,9 @@ void test_projekcik__set_time_to_exec_temp(void){
     // file 
 // }
 
+void test_projekcik__preventing_pipe_at_end(void){
+    TEST_ASSERT_TRUE(preventing_pipe_at_end("20:15:ls -l | wc -c |:2") == -1);
+    TEST_ASSERT_TRUE(preventing_pipe_at_end("20:15:ls -l | wc -c |.:2") == 0);
+
+}
 #endif // TEST

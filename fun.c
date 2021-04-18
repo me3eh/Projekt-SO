@@ -32,10 +32,14 @@ bool equal_namings(char* naming_input, char* naming_output){
 
 FILE* checking_file_valid(char * naming, char*PATH){
     char temp[SIZE_PATH+100];
-    strcpy(temp, PATH);
-    if(naming[0] != '/')
-        strcat(temp, "/");
-    strcat(temp, naming);
+    if(strcmp(PATH, "NULL|||")){
+        strcpy(temp, PATH);
+        if(naming[0] != '/' || temp[strlen(temp)-1]!='/')
+            strcat(temp, "/");
+        strcat(temp, naming);
+    }
+    else
+        strcpy(temp, naming);
     FILE * file = fopen(temp, "r");
     if(file == NULL){
         fprintf(stderr, "%s:%s", naming, strerror(errno));
@@ -72,6 +76,8 @@ int check_format(FILE * file){
             syslog(LOG_ERR,"In function check_format():%s",strerror(errno));
             return -1;
         }
+        if(preventing_pipe_at_end(buffer) == -1)
+            return -1;
     }
 
     regfree(&regex);
@@ -359,7 +365,7 @@ int title_in_file(char*original_line_in_file, char*outfile, bool first_time, cha
     int file;
     char temp [SIZE + 100];
     strcpy(temp, PATH);
-    if(outfile[0] != '/')
+    if(outfile[0] != '/' || temp[strlen(temp)-1]!='/')
         strcat(temp, "/");
     strcat(temp, outfile);
     // if(chdir(PATH) < 0){
@@ -405,7 +411,7 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
     // }
     char temp [SIZE_PATH];
     strcpy(temp, PATH);
-    if(outfile[0] != '/')
+    if(outfile[0] != '/' || temp[strlen(temp)-1]!='/')
         strcat(temp, "/");
     strcat(temp, outfile);
     if((file = open(temp, O_WRONLY | O_APPEND)) < 0){
@@ -545,4 +551,28 @@ void print_to_log_function(task_temp * array, int i, int max_length){
         ++i;
     }
     syslog(LOG_INFO, "---------------------------------------------");
+}
+int preventing_pipe_at_end(char* pol){
+
+    regex_t regex2;
+    int to_find = regcomp(&regex2, "[|][ ]*:[0-2]$", REG_EXTENDED|REG_NEWLINE);
+    if(to_find != 0){
+        syslog(LOG_ERR,"Inside function check_format() -> In function preventing_pipe_at_end():%s",strerror(errno));
+        return -1;
+    }
+    int found = regexec(&regex2, pol, 0, NULL, 0);
+        if(found == 0){
+            syslog(LOG_ERR, "Inside function check_format() -> In function preventing_pipe_at_end(): character of pipe at the end of line");
+            regfree(&regex2);
+            return -1;
+        }
+        else if( found == REG_NOMATCH){
+            regfree(&regex2);
+            return 0;
+        }
+        else{
+            syslog(LOG_ERR,"Inside function check_format() -> In function preventing_pipe_at_end():%s",strerror(errno));
+            return -1;
+        }
+    return -1;
 }

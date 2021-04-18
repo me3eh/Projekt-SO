@@ -49,7 +49,8 @@ typedef struct task_temp{
 
 int amount_of_arguments(int arg, char*word);
 
-FILE* checking_file_valid(char * naming);
+// FILE* checking_file_valid(char * naming);
+FILE* checking_file_valid(char * naming, char*PATH);
 
 //nie jest uzywana samodzielnie. Jest czescia funkcji get_array_of_tasks
 //zwracana dlugosc pliku
@@ -98,4 +99,5 @@ void handler(int signum);
 
 void print_to_log_function(task_temp * array, int i, int max_length);
 
+int preventing_pipe_at_end(char* pol);
 #endif
