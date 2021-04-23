@@ -100,4 +100,7 @@ void handler(int signum);
 void print_to_log_function(task_temp * array, int i, int max_length);
 
 int preventing_pipe_at_end(char* pol);
+
+int checking_file_access(char * naming, char*PATH);
+
 #endif

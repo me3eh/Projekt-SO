@@ -23,9 +23,17 @@ void tearDown(void)
 
 
 
-void test_projekcik_checkingfunction__amount_of_arguments(void)
+void test_projekcik__checking_file_access(void){
 
-{
+    chmod("./test/cant_open.txt", 0333);
+
+    do {if ((checking_file_access("cant_open.txt", "./test") == -1)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(17)));}} while(0);
+
+}
+
+
+
+void test_projekcik__amount_of_arguments(void){
 
     fprintf(
 
@@ -33,17 +41,17 @@ void test_projekcik_checkingfunction__amount_of_arguments(void)
 
                  , "\n\nfun__amount_of_arguments():\n------------------\n");
 
-    do {if (!(amount_of_arguments(4, "./minicrom") == 0)) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(18)));}} while(0);
+    do {if (!(amount_of_arguments(4, "./minicrom") == 0)) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(22)));}} while(0);
 
-    do {if ((amount_of_arguments(1, "./minicrom") != 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(19)));}} while(0);
+    do {if ((amount_of_arguments(1, "./minicrom") != 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(23)));}} while(0);
 
-    do {if ((amount_of_arguments(3, "./minicrom") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(20)));}} while(0);
+    do {if ((amount_of_arguments(3, "./minicrom") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(24)));}} while(0);
 
 
 
 }
 
-void test_projekcik_checkingfunction__checking_file_valid(void){
+void test_projekcik__checking_file_valid(void){
 
 
 
@@ -59,19 +67,19 @@ void test_projekcik_checkingfunction__checking_file_valid(void){
 
    ((void *)0)
 
-   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(27)));}} while(0);
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(31)));}} while(0);
 
     do {if ((checking_file_valid("./test/text123.txt", "NULL|||") == 
 
    ((void *)0)
 
-   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(28)));}} while(0);
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(32)));}} while(0);
 
 
 
 }
 
-void test_projekcik_checkingfunction__check_format(void){
+void test_projekcik__check_format(void){
 
 
 
@@ -85,7 +93,7 @@ void test_projekcik_checkingfunction__check_format(void){
 
     FILE * file = checking_file_valid("./test/text.tx", "NULL|||");
 
-    do {if ((check_format(file) == -1)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(36)));}} while(0);
+    do {if ((check_format(file) == -1)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(40)));}} while(0);
 
     if(file != 
 
@@ -99,7 +107,7 @@ void test_projekcik_checkingfunction__check_format(void){
 
     FILE * test_file = checking_file_valid("./test/perfect.txt", "NULL|||");
 
-    do {if ((check_format(test_file) > 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(41)));}} while(0);
+    do {if ((check_format(test_file) > 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(45)));}} while(0);
 
     if(test_file !=
 
@@ -113,7 +121,7 @@ void test_projekcik_checkingfunction__check_format(void){
 
     FILE * test_file2 = checking_file_valid("./test/perfect.txt", "NULL|||");
 
-    do {if ((check_format(test_file2) == 2)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(46)));}} while(0);
+    do {if ((check_format(test_file2) == 2)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(50)));}} while(0);
 
     if(test_file2 !=
 
@@ -127,7 +135,7 @@ void test_projekcik_checkingfunction__check_format(void){
 
 }
 
-void test_projekcik_checking_function__equal_namings(void){
+void test_projekcik__equal_namings(void){
 
 
 
@@ -139,17 +147,17 @@ void test_projekcik_checking_function__equal_namings(void){
 
 
 
-    do {if ((equal_namings("pol", "pol"))) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(55)));}} while(0);
+    do {if ((equal_namings("pol", "pol"))) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(59)));}} while(0);
 
-    do {if (!(equal_namings("epicki", "polak"))) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(56)));}} while(0);
+    do {if (!(equal_namings("epicki", "polak"))) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(60)));}} while(0);
 
-    do {if (!(equal_namings("poIak", "polak"))) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(57)));}} while(0);
+    do {if (!(equal_namings("poIak", "polak"))) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(61)));}} while(0);
 
 
 
 }
 
-void test_projekcik_checking_function__length_of_file(void){
+void test_projekcik__length_of_file(void){
 
 
 
@@ -163,11 +171,9 @@ void test_projekcik_checking_function__length_of_file(void){
 
     FILE * test_file2 = checking_file_valid("perfect.txt", "./test/");
 
-    do {if ((check_format(test_file2) == 2)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(65)));}} while(0);
+    do {if ((check_format(test_file2) == 2)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(69)));}} while(0);
 
-    do {if ((length_of_file(test_file2) == 2)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(66)));}} while(0);
-
-    perror("siusiak");
+    do {if ((length_of_file(test_file2) == 2)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(70)));}} while(0);
 
     if(test_file2 != 
 
@@ -181,9 +187,9 @@ void test_projekcik_checking_function__length_of_file(void){
 
     FILE * file = checking_file_valid("text.tx","./test/");
 
-    do {if ((check_format(file) == -1)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(72)));}} while(0);
+    do {if ((check_format(file) == -1)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(75)));}} while(0);
 
-    do {if (!(length_of_file(file) == -1)) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(73)));}} while(0);
+    do {if (!(length_of_file(file) == -1)) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(76)));}} while(0);
 
     if(file != 
 
@@ -215,17 +221,15 @@ void test_projekcik__get_array_of_tasks(void){
 
    ((void *)0)
 
-   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(83)));}} while(0);
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(86)));}} while(0);
 
     task_temp * array;
-
-
 
     do {if (((array = get_array_of_tasks(test_file2)) != 
 
    ((void *)0)
 
-   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(86)));}} while(0);
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(88)));}} while(0);
 
     if(array != 
 
@@ -234,8 +238,6 @@ void test_projekcik__get_array_of_tasks(void){
                    )
 
         free_space(array);
-
-    perror("667");
 
     if(test_file2 != 
 
@@ -253,7 +255,7 @@ void test_projekcik__get_array_of_tasks(void){
 
    ((void *)0)
 
-   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(94)));}} while(0);
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(95)));}} while(0);
 
     task_temp * array2;
 
@@ -261,7 +263,7 @@ void test_projekcik__get_array_of_tasks(void){
 
    ((void *)0)
 
-   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(96)));}} while(0);
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(97)));}} while(0);
 
     if(array2 != 
 
@@ -287,7 +289,7 @@ void test_projekcik__get_array_of_tasks(void){
 
    ((void *)0)
 
-   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(103)));}} while(0);
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(104)));}} while(0);
 
     task_temp * array4;
 
@@ -295,7 +297,7 @@ void test_projekcik__get_array_of_tasks(void){
 
    ((void *)0)
 
-   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(105)));}} while(0);
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(106)));}} while(0);
 
     if(array4 != 
 
@@ -321,7 +323,7 @@ void test_projekcik__get_array_of_tasks(void){
 
    ((void *)0)
 
-   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(112)));}} while(0);
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(113)));}} while(0);
 
     task_temp * array3;
 
@@ -329,7 +331,7 @@ void test_projekcik__get_array_of_tasks(void){
 
    ((void *)0)
 
-   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(114)));}} while(0);
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(115)));}} while(0);
 
     if(array3 != 
 
@@ -359,11 +361,11 @@ void test_projekcik__amount_of_pipes(void){
 
 
 
-    do {if ((amount_of_pipes(" pol | lkok") == 2)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(123)));}} while(0);
+    do {if ((amount_of_pipes(" pol | lkok") == 2)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(124)));}} while(0);
 
-    do {if (!(amount_of_pipes(" pol \\| lkok") == 4)) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(124)));}} while(0);
+    do {if (!(amount_of_pipes(" pol \\| lkok") == 4)) {} else {UnityFail( ((" Expected FALSE Was TRUE")), (UNITY_UINT)((UNITY_UINT)(125)));}} while(0);
 
-    do {if ((amount_of_pipes("lk | grep \\| | hihi") == 3)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(125)));}} while(0);
+    do {if ((amount_of_pipes("lk | grep \\| | hihi") == 3)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(126)));}} while(0);
 
 }
 
@@ -379,17 +381,17 @@ void test_projekcik__string_to_array(void){
 
     char ** array = string_to_array(pol, &size_free[0]);
 
-    do {if ((strcmp(array[0], "never") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(133)));}} while(0);
+    do {if ((strcmp(array[0], "never") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(134)));}} while(0);
 
-    do {if ((strcmp(array[1], "gonna") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(134)));}} while(0);
+    do {if ((strcmp(array[1], "gonna") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(135)));}} while(0);
 
-    do {if ((strcmp(array[2], "give") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(135)));}} while(0);
+    do {if ((strcmp(array[2], "give") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(136)));}} while(0);
 
-    do {if ((strcmp(array[3], "you") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(136)));}} while(0);
+    do {if ((strcmp(array[3], "you") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(137)));}} while(0);
 
-    do {if ((strcmp(array[4], "up") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(137)));}} while(0);
+    do {if ((strcmp(array[4], "up") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(138)));}} while(0);
 
-    do {if ((size_free[0] == 6)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(138)));}} while(0);
+    do {if ((size_free[0] == 6)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(139)));}} while(0);
 
     for(int i = 0 ; i < size_free[0]-1 ; ++i)
 
@@ -399,119 +401,95 @@ void test_projekcik__string_to_array(void){
 
 }
 
+void test_projekcik__preventing_pipe_at_end(void){
 
+    do {if ((preventing_pipe_at_end("20:15:ls -l | wc -c |:2") == -1)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(200)));}} while(0);
 
-void test_projekcik__set_time_to_exec_temp(void){
+    do {if ((preventing_pipe_at_end("20:15:ls -l | wc -c |.:2") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(201)));}} while(0);
 
-    time_t rawtime;
+    
 
-    time (&rawtime);
+   (*__errno_location ())
 
-
-
-    struct tm * timeinfo = localtime(&rawtime);
-
-    task_temp arr[2];
-
-    arr[0].hours = timeinfo->tm_hour;
-
-    arr[0].minutes = timeinfo->tm_min;
-
-    arr[1].minutes = timeinfo->tm_min;
-
-    if(timeinfo->tm_hour < 23)
-
-        arr[1].hours = timeinfo->tm_hour + 1;
-
-    if(timeinfo->tm_min < 40){
-
-        arr[0].minutes += 20;
-
-        arr[1].minutes += 20;
-
-        set_time_to_exec_temp(arr, 2);
-
-        set_time_to_sleep_temp(arr, 2);
-
-        do {if ((arr[0].time_to_exec == 20)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(160)));}} while(0);
-
-        if(timeinfo->tm_hour < 23){
-
-            do {if ((arr[1].time_to_exec == 60 + 20)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(162)));}} while(0);
-
-            do {if ((arr[1].time_to_sleep_before_exec == 60)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(163)));}} while(0);
-
-        }
-
-        else{
-
-            do {if ((arr[1].time_to_exec == 20)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(166)));}} while(0);
-
-            do {if ((arr[1].time_to_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(167)));}} while(0);
-
-        }
-
-    }
-
-    else{
-
-        set_time_to_exec_temp(arr, 2);
-
-        set_time_to_sleep_temp(arr, 2);
-
-        do {if ((arr[0].time_to_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(173)));}} while(0);
-
-        do {if ((arr[0].time_to_sleep_before_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(174)));}} while(0);
-
-        if(timeinfo->tm_hour < 23){
-
-
-
-            do {if ((arr[1].time_to_exec == 60)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(177)));}} while(0);
-
-
-
-            do {if ((arr[1].time_to_sleep_before_exec == 60)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(179)));}} while(0);
-
-        }
-
-        else{
-
-
-
-            do {if ((arr[1].time_to_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(183)));}} while(0);
-
-
-
-            do {if ((arr[1].time_to_sleep_before_exec == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(185)));}} while(0);
-
-        }
-
-
-
-    }
+        =0;
 
 }
 
 
 
+void test_projekcik__general_test(void){
+
+    syslog(
+
+          6
+
+                  ,"Pizdeczka");
+
+    FILE * file = checking_file_valid("perfect.txt", "./test/");
+
+    perror("555");
+
+    do {if ((file != 
+
+   ((void *)0)
+
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(209)));}} while(0);
+
+    task_temp *ar;
+
+    ar = get_array_of_tasks(file);
+
+    do {if ((ar != 
+
+   ((void *)0)
+
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(212)));}} while(0);
+
+    int length = length_of_file();
+
+    printf("%d\n\n", length);
+
+    set_time_to_exec_temp(ar, length);
+
+    qsort(ar, length, sizeof(*ar), comparator_temp);
+
+    set_time_to_sleep_temp(ar, length);
+
+    
+
+   _Bool 
+
+        first_time =
+
+                    1
+
+                        ;
+
+    fclose(file);
+
+
+
+    for(int i = 0; i < length ; ++i){
+
+        perror("#33");
 
 
 
 
 
+        pipe_fork_stuff(ar[i].program, ar[i].no_pipes, "output.txt", ar[i].state, ar, ar[i].original_command_from_file, "./test/");
 
+        perror("666;");
 
+        first_time = 
 
+                    0
 
+                         ;
 
+    }
 
-
-void test_projekcik__preventing_pipe_at_end(void){
-
-    do {if ((preventing_pipe_at_end("20:15:ls -l | wc -c |:2") == -1)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(198)));}} while(0);
-
-    do {if ((preventing_pipe_at_end("20:15:ls -l | wc -c |.:2") == 0)) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(199)));}} while(0);
+    free_space(ar);
 
 
 

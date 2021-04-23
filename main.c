@@ -1,6 +1,5 @@
 #include "fun.h"
 int main(int argc, char **argv){
-    // signal(SIGINT, handler);
     signal(SIGUSR1, handler);
     signal(SIGINT, handler);
     signal(SIGUSR2, handler);
@@ -15,10 +14,9 @@ int main(int argc, char **argv){
 
     if(equal_namings(argv[1], argv[0]))
         exit(EXIT_FAILURE);
-    if ((file = checking_file_valid(argv[1], PATH)) == NULL){
+    if ((checking_file_access(argv[1], PATH)) != 0){
         return EINVAL;
     }
-    fclose(file);
     pid = fork();
     if(pid < 0){
         exit(EXIT_FAILURE);
@@ -39,7 +37,6 @@ int main(int argc, char **argv){
         syslog(LOG_ERR, "During changing working directory:%s", strerror(errno));
         exit(EXIT_FAILURE);
     }
-    // perror("HIHIHI");
 
     // close(STDIN_FILENO);
     // close(STDOUT_FILENO);
@@ -48,7 +45,6 @@ int main(int argc, char **argv){
     if ((file = checking_file_valid(argv[1], PATH)) == NULL){
         return EINVAL;
     }
-    syslog(LOG_INFO, "Welcome to our lil proje123ct");
     if (( array_of_programs = get_array_of_tasks(file) ) == NULL)
         return EINVAL;
     int length = length_of_file();
@@ -57,10 +53,9 @@ int main(int argc, char **argv){
     set_time_to_sleep_temp(array_of_programs, length);
     bool first_time =true;
     fclose(file);
-    for(int i = 0; i<length ; ++i){
-        // for(int j=0; j<array_of_programs[i].time_to_sleep_before_exec; ++j){
-            // for(int k=0 ; k < 60 ; ++k){
-            for(int k=0 ; k < 1 ; ++k){
+    for(int i = 0; i < length ; ++i){
+        // for(int j = 0; j < array_of_programs[i].time_to_sleep_before_exec ; ++j){
+            for(int k = 0 ; k < 1 ; ++k){
 
                 if(status_if_print() == true){
                     print_to_log_function(array_of_programs, i, length);
@@ -79,15 +74,14 @@ int main(int argc, char **argv){
                 }
                 sleep(1);
             }
-        // }
         if((title_in_file(array_of_programs[i].original_command_from_file, argv[2], first_time, PATH)) == -1){
             exit(EXIT_FAILURE);
         }
         pipe_fork_stuff(array_of_programs[i].program, array_of_programs[i].no_pipes, argv[2], array_of_programs[i].state, array_of_programs, array_of_programs[i].original_command_from_file, PATH);
         first_time = false;
     }
-    // fclose(file);
     free_space(array_of_programs);
+    syslog(LOG_INFO,"Daemon exited doing everything he could. Bye bye");
     closelog();
     exit(EXIT_SUCCESS);
 }

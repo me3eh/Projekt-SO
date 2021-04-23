@@ -10,16 +10,17 @@ char* GlobalOrderError;
 /*=======External Functions This Runner Calls=====*/
 extern void setUp(void);
 extern void tearDown(void);
-extern void test_projekcik_checkingfunction__amount_of_arguments(void);
-extern void test_projekcik_checkingfunction__checking_file_valid(void);
-extern void test_projekcik_checkingfunction__check_format(void);
-extern void test_projekcik_checking_function__equal_namings(void);
-extern void test_projekcik_checking_function__length_of_file(void);
+extern void test_projekcik__checking_file_access(void);
+extern void test_projekcik__amount_of_arguments(void);
+extern void test_projekcik__checking_file_valid(void);
+extern void test_projekcik__check_format(void);
+extern void test_projekcik__equal_namings(void);
+extern void test_projekcik__length_of_file(void);
 extern void test_projekcik__get_array_of_tasks(void);
 extern void test_projekcik__amount_of_pipes(void);
 extern void test_projekcik__string_to_array(void);
-extern void test_projekcik__set_time_to_exec_temp(void);
 extern void test_projekcik__preventing_pipe_at_end(void);
+extern void test_projekcik__general_test(void);
 
 
 /*=======Mock Management=====*/
@@ -84,16 +85,17 @@ static void run_test(UnityTestFunction func, const char* name, UNITY_LINE_TYPE l
 int main(void)
 {
   UnityBegin("test_projekcik.c");
-  run_test(test_projekcik_checkingfunction__amount_of_arguments, "test_projekcik_checkingfunction__amount_of_arguments", 15);
-  run_test(test_projekcik_checkingfunction__checking_file_valid, "test_projekcik_checkingfunction__checking_file_valid", 23);
-  run_test(test_projekcik_checkingfunction__check_format, "test_projekcik_checkingfunction__check_format", 31);
-  run_test(test_projekcik_checking_function__equal_namings, "test_projekcik_checking_function__equal_namings", 51);
-  run_test(test_projekcik_checking_function__length_of_file, "test_projekcik_checking_function__length_of_file", 60);
-  run_test(test_projekcik__get_array_of_tasks, "test_projekcik__get_array_of_tasks", 78);
-  run_test(test_projekcik__amount_of_pipes, "test_projekcik__amount_of_pipes", 120);
-  run_test(test_projekcik__string_to_array, "test_projekcik__string_to_array", 127);
-  run_test(test_projekcik__set_time_to_exec_temp, "test_projekcik__set_time_to_exec_temp", 144);
-  run_test(test_projekcik__preventing_pipe_at_end, "test_projekcik__preventing_pipe_at_end", 197);
+  run_test(test_projekcik__checking_file_access, "test_projekcik__checking_file_access", 15);
+  run_test(test_projekcik__amount_of_arguments, "test_projekcik__amount_of_arguments", 20);
+  run_test(test_projekcik__checking_file_valid, "test_projekcik__checking_file_valid", 27);
+  run_test(test_projekcik__check_format, "test_projekcik__check_format", 35);
+  run_test(test_projekcik__equal_namings, "test_projekcik__equal_namings", 55);
+  run_test(test_projekcik__length_of_file, "test_projekcik__length_of_file", 64);
+  run_test(test_projekcik__get_array_of_tasks, "test_projekcik__get_array_of_tasks", 81);
+  run_test(test_projekcik__amount_of_pipes, "test_projekcik__amount_of_pipes", 121);
+  run_test(test_projekcik__string_to_array, "test_projekcik__string_to_array", 128);
+  run_test(test_projekcik__preventing_pipe_at_end, "test_projekcik__preventing_pipe_at_end", 199);
+  run_test(test_projekcik__general_test, "test_projekcik__general_test", 205);
 
   return UnityEnd();
 }

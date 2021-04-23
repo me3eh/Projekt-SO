@@ -3,54 +3,59 @@
   :path: test
   :file: test_projekcik.c
 :successes:
-- :test: test_projekcik_checkingfunction__amount_of_arguments
+- :test: test_projekcik__checking_file_access
   :line: 15
   :message: ''
   :unity_test_time: 0
-- :test: test_projekcik_checkingfunction__checking_file_valid
-  :line: 23
+- :test: test_projekcik__amount_of_arguments
+  :line: 20
   :message: ''
   :unity_test_time: 0
-- :test: test_projekcik_checkingfunction__check_format
-  :line: 31
+- :test: test_projekcik__checking_file_valid
+  :line: 27
   :message: ''
   :unity_test_time: 0
-- :test: test_projekcik_checking_function__equal_namings
-  :line: 51
+- :test: test_projekcik__check_format
+  :line: 35
   :message: ''
   :unity_test_time: 0
-- :test: test_projekcik_checking_function__length_of_file
-  :line: 60
+- :test: test_projekcik__equal_namings
+  :line: 55
+  :message: ''
+  :unity_test_time: 0
+- :test: test_projekcik__length_of_file
+  :line: 64
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__get_array_of_tasks
-  :line: 78
+  :line: 81
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__amount_of_pipes
-  :line: 120
+  :line: 121
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__string_to_array
-  :line: 127
-  :message: ''
-  :unity_test_time: 0
-- :test: test_projekcik__set_time_to_exec_temp
-  :line: 144
+  :line: 128
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__preventing_pipe_at_end
-  :line: 197
+  :line: 199
+  :message: ''
+  :unity_test_time: 0
+- :test: test_projekcik__general_test
+  :line: 205
   :message: ''
   :unity_test_time: 0
 :failures: []
 :ignores: []
 :counts:
-  :total: 10
-  :passed: 10
+  :total: 11
+  :passed: 11
   :failed: 0
   :ignored: 0
 :stdout:
+- File do not exist or do not have a permission to read.
 - ''
 - ''
 - 'fun__amount_of_arguments():'
@@ -73,14 +78,19 @@
 - ''
 - 'fun__length_of_file():'
 - "------------------"
-- 'siusiak: No such file or directory'
 - text.tx:No such file or directory
 - ''
 - 'fun__get_array_of_tasks():'
 - "------------------"
-- '667: No such file or directory'
 - text.tx:No such file or directory
 - ''
 - 'fun__amount_of_pipes():'
 - "------------------"
-:time: 0.0040586200000234385
+- '555: Success'
+- "#33: Success"
+- '666;: No such file or directory'
+- "#33: No such file or directory"
+- '666;: No such file or directory'
+- '2'
+- ''
+:time: 0.010353657999985444

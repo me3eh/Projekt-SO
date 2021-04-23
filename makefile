@@ -1,5 +1,5 @@
 compile: main.c fun.c fun.h
-	gcc main.c fun.c fun.h -o minicron
+	gcc main.c fun.c fun.h -o minicron -Wall
 
 #kopiowanie do pliku testowego 
 copy: main.c fun.c fun.h

@@ -12,15 +12,19 @@ void tearDown(void)
 {
 }
 
-void test_projekcik_checkingfunction__amount_of_arguments(void)
-{
+void test_projekcik__checking_file_access(void){
+    chmod("./test/cant_open.txt", 0333);
+    TEST_ASSERT_TRUE(checking_file_access("cant_open.txt", "./test") == -1);
+}
+
+void test_projekcik__amount_of_arguments(void){
     fprintf(stderr, "\n\nfun__amount_of_arguments():\n------------------\n");
     TEST_ASSERT_FALSE(amount_of_arguments(4, "./minicrom") == 0); 
     TEST_ASSERT_TRUE(amount_of_arguments(1, "./minicrom") != 0);
     TEST_ASSERT_TRUE(amount_of_arguments(3, "./minicrom") == 0);
 
 }
-void test_projekcik_checkingfunction__checking_file_valid(void){
+void test_projekcik__checking_file_valid(void){
     
     fprintf(stderr, "\n\nfun__checking_file_valid():\n------------------\n");
     
@@ -28,7 +32,7 @@ void test_projekcik_checkingfunction__checking_file_valid(void){
     TEST_ASSERT_TRUE(checking_file_valid("./test/text123.txt", "NULL|||") == NULL);
 
 }
-void test_projekcik_checkingfunction__check_format(void){
+void test_projekcik__check_format(void){
     
     fprintf(stderr, "\n\nfun__check_format():\n------------------\n");
     
@@ -48,7 +52,7 @@ void test_projekcik_checkingfunction__check_format(void){
         fclose(test_file2);
 
 }
-void test_projekcik_checking_function__equal_namings(void){
+void test_projekcik__equal_namings(void){
     
     fprintf(stderr, "\n\nfun__equal_namings():\n------------------\n");
     
@@ -57,14 +61,13 @@ void test_projekcik_checking_function__equal_namings(void){
     TEST_ASSERT_FALSE( equal_namings("poIak", "polak"));
 
 }
-void test_projekcik_checking_function__length_of_file(void){
+void test_projekcik__length_of_file(void){
     
     fprintf(stderr, "\n\nfun__length_of_file():\n------------------\n");
     
     FILE * test_file2 = checking_file_valid("perfect.txt", "./test/");
     TEST_ASSERT_TRUE(check_format(test_file2) == 2);
     TEST_ASSERT_TRUE(length_of_file(test_file2) == 2);
-    perror("siusiak");
     if(test_file2 != NULL)
         fclose(test_file2);
    
@@ -82,11 +85,9 @@ void test_projekcik__get_array_of_tasks(void){
     FILE * test_file2 = checking_file_valid("perfect.txt", "./test/");
     TEST_ASSERT_TRUE(test_file2 != NULL);
     task_temp * array;
-    // perror("666");
     TEST_ASSERT_TRUE((array = get_array_of_tasks(test_file2)) != NULL);
     if(array != NULL)
         free_space(array);
-    perror("667");
     if(test_file2 != NULL)
         fclose(test_file2);
     
@@ -141,62 +142,91 @@ void test_projekcik__string_to_array(void){
     free(array);
 }
 
-void test_projekcik__set_time_to_exec_temp(void){
-    time_t rawtime;
-    time (&rawtime);
+// void test_projekcik__set_time_to_exec_temp__AND__set_time_to_sleep_before_exec(void){
+//     time_t rawtime;
+//     time (&rawtime);
 
-    struct tm * timeinfo = localtime(&rawtime);
-    task_temp arr[2];
-    arr[0].hours = timeinfo->tm_hour;
-    arr[0].minutes = timeinfo->tm_min;
-    arr[1].minutes = timeinfo->tm_min;
-    if(timeinfo->tm_hour < 23)
-        arr[1].hours = timeinfo->tm_hour + 1;
-    if(timeinfo->tm_min < 40){
-        arr[0].minutes += 20;
-        arr[1].minutes += 20;
-        set_time_to_exec_temp(arr, 2);
-        set_time_to_sleep_temp(arr, 2);
-        TEST_ASSERT_TRUE(arr[0].time_to_exec == 20);
-        if(timeinfo->tm_hour < 23){
-            TEST_ASSERT_TRUE(arr[1].time_to_exec == 60 + 20);
-            TEST_ASSERT_TRUE(arr[1].time_to_sleep_before_exec == 60);
-        }
-        else{
-            TEST_ASSERT_TRUE(arr[1].time_to_exec == 20);
-            TEST_ASSERT_TRUE(arr[1].time_to_exec == 0);
-        }
-    }
-    else{
-        set_time_to_exec_temp(arr, 2);
-        set_time_to_sleep_temp(arr, 2);
-        TEST_ASSERT_TRUE(arr[0].time_to_exec == 0);
-        TEST_ASSERT_TRUE(arr[0].time_to_sleep_before_exec == 0);
-        if(timeinfo->tm_hour < 23){
-            //time_to_Exec
-            TEST_ASSERT_TRUE(arr[1].time_to_exec == 60);
-            //time_to_sleep
-            TEST_ASSERT_TRUE(arr[1].time_to_sleep_before_exec == 60);
-        }
-        else{
-            //time_to_Exec
-            TEST_ASSERT_TRUE(arr[1].time_to_exec == 0);
-            //time_to_sleep
-            TEST_ASSERT_TRUE(arr[1].time_to_sleep_before_exec == 0);
-        }
+//     struct tm * timeinfo = localtime(&rawtime);
+//     task_temp arr[2];
+//     arr[0].hours = timeinfo->tm_hour;
+//     arr[1].hours = timeinfo->tm_hour;
 
-    }
-}
+//     arr[0].minutes = timeinfo->tm_min;
+//     arr[1].minutes = timeinfo->tm_min;
+//     if(timeinfo->tm_hour < 23)
+//         ++arr[1].hours;
 
-// void test_projekcik__title_in_file(void){
-    // char* strin = "test_just_to_check";
-    // title_in_file(strin, "title_in_file.txt", true, "./test");
-    // file 
+//     if(timeinfo->tm_min < 40){
+//         arr[0].minutes += 20;
+//         arr[1].minutes += 20;
+//         set_time_to_exec_temp(arr, 2);
+//         set_time_to_sleep_temp(arr, 2);
+//         printf("\n\n----\nMinutes:%ld\n", arr[0].minutes);
+//         printf("----Time_to_exec%ld", arr[0].time_to_exec);
+//         TEST_ASSERT_TRUE(arr[0].time_to_exec <= 20*60 + timeinfo->tm_sec);
+//         if(timeinfo->tm_hour < 23){
+//             TEST_ASSERT_TRUE(arr[1].time_to_exec == 3600 + 60*20  - timeinfo->tm_sec);
+//             TEST_ASSERT_TRUE(arr[1].time_to_sleep_before_exec <= 60 * 60 - timeinfo->tm_sec);
+//         }
+//         else{
+//             TEST_ASSERT_TRUE(arr[1].time_to_exec == 20 * 60 - timeinfo->tm_sec);
+//             TEST_ASSERT_TRUE(arr[1].time_to_exec == 0 + timeinfo->tm_sec);
+//         }
+//     }
+//     else{
+//         set_time_to_exec_temp(arr, 2);
+//         set_time_to_sleep_temp(arr, 2);
+//         TEST_ASSERT_TRUE(arr[0].time_to_exec == 0);
+//         TEST_ASSERT_TRUE(arr[0].time_to_sleep_before_exec == 0);
+//         if(timeinfo->tm_hour < 23){
+//             //time_to_Exec
+//             printf("MM:0-:::%d\n", timeinfo->tm_sec);
+//             printf("GG:::::%ld", arr[1].time_to_exec);
+//             TEST_ASSERT_TRUE(arr[1].time_to_exec == 60 * 60 - timeinfo->tm_sec);
+//             //time_to_sleep
+//             TEST_ASSERT_TRUE(arr[1].time_to_sleep_before_exec <= 60 * 60 - timeinfo->tm_sec);
+//         }
+//         else{
+//             //time_to_Exec
+//             TEST_ASSERT_TRUE(arr[1].time_to_exec == 0);
+//             //time_to_sleep
+//             TEST_ASSERT_TRUE(arr[1].time_to_sleep_before_exec == 0);
+//         }
+//     }
 // }
+
 
 void test_projekcik__preventing_pipe_at_end(void){
     TEST_ASSERT_TRUE(preventing_pipe_at_end("20:15:ls -l | wc -c |:2") == -1);
     TEST_ASSERT_TRUE(preventing_pipe_at_end("20:15:ls -l | wc -c |.:2") == 0);
+    errno=0;
+}
 
+void test_projekcik__general_test(void){
+    syslog(LOG_INFO,"Pizdeczka");
+    FILE * file = checking_file_valid("perfect.txt", "./test/");
+    perror("555");
+    TEST_ASSERT_TRUE(file != NULL);
+    task_temp *ar;
+    ar = get_array_of_tasks(file);
+    TEST_ASSERT_TRUE(ar != NULL);
+    int length = length_of_file();
+    printf("%d\n\n", length);
+    set_time_to_exec_temp(ar, length);
+    qsort(ar, length, sizeof(*ar), comparator_temp);
+    set_time_to_sleep_temp(ar, length);
+    bool first_time =true;
+    fclose(file);
+    // chdir("/");
+    for(int i = 0; i < length ; ++i){
+        perror("#33");
+        // if((title_in_file(ar[i].original_command_from_file, "output.txt", first_time, "./test")) == -1)
+            // exit(EXIT_FAILURE);
+        pipe_fork_stuff(ar[i].program, ar[i].no_pipes, "output.txt", ar[i].state, ar, ar[i].original_command_from_file, "./test/");
+        perror("666;");
+        first_time = false;
+    }
+    free_space(ar);
+    // TEST_ASSERT_TRUE(ar == NULL);
 }
 #endif // TEST

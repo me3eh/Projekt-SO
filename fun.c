@@ -55,7 +55,6 @@ int check_format(FILE * file){
     }
     char buffer[SIZE];
     int line = 0;
-    char * token;
     regex_t regex;
 
     int to_find = regcomp(&regex, GOOD_FORMAT, REG_EXTENDED|REG_NEWLINE);
@@ -112,7 +111,6 @@ task_temp * get_array_of_tasks(FILE * file){
     char *save_buffer = NULL;
     int amount_of_programs = 0;
     int i = 0;
-    int j = 0;
     bool in = false;
     int columns = check_format(file);
     if(columns == -1)
@@ -136,17 +134,11 @@ task_temp * get_array_of_tasks(FILE * file){
         amount_of_programs = amount_of_pipes(buffer);
         //wczytanie godziny o ktorej uruchomić polecenie
         token = strtok_r(buffer, ":", &save_buffer);
-        // if(token == NULL){
-        //     perror("Sprawdzenie");
-        //     return NULL;
-        // }
+        
         length_of_everything -= (strlen(token) + 1);
         array_task[line].hours = strtol(token, &lil_buffa, 10);
         token = strtok_r(NULL, ":", &save_buffer);
-        // if(token == NULL){
-        //     perror("Sprawdzenie");
-        //     return NULL;
-        // }
+
         length_of_everything -= (strlen(token) + 1);
         array_task[line].minutes = strtol(token, &lil_buffa, 10);
 
@@ -179,10 +171,7 @@ task_temp * get_array_of_tasks(FILE * file){
                 }
                 token = strtok_r(NULL, "|", &save_buffer);
             }
-            // if(token == NULL){
-            //     fprintf(stderr, "In function get_array_of_tasks():\nSomething went wrong with function strtok. Line:%d", line);
-            //     return NULL;
-            // }
+            
 
             array_task[line].program[i] = string_to_array(pol, &array_task[line].how_many_arguments_in_program[i]);
             if(array_task[line].program[i] == NULL){
@@ -192,7 +181,7 @@ task_temp * get_array_of_tasks(FILE * file){
             length_of_everything -= (strlen(pol) + 1);
             ++i;
         };
-        //usuiecie jednego dwukropka rozdzielajacego polecenia/polecenie od stanu
+        //usuniecie jednego dwukropka rozdzielajacego polecenia/polecenie od stanu
         length_of_everything -= 1;
         //usuniecie znaku nowej linii, jezeli nie jest to ostatnia linia
         if((lines_in_file - 1) != line )
@@ -205,10 +194,6 @@ task_temp * get_array_of_tasks(FILE * file){
             token = strtok_r(NULL, ":", &save_buffer);
             strcat(pol, token);
         }
-        // if(token == NULL){
-            // perror("Something goes wrong");
-            // return NULL;
-        // }
 
         array_task[line].program[i]= string_to_array(pol, &array_task[line].how_many_arguments_in_program[i]);
         if(array_task[line].program[i] == NULL){
@@ -216,10 +201,7 @@ task_temp * get_array_of_tasks(FILE * file){
             return NULL;
         }
         token = strtok_r(NULL, ":", &save_buffer);
-        // if(token == NULL){
-        //     perror("Something goes wrong");
-        //     return NULL;
-        // }
+        
         array_task[line].state = strtol(token, &lil_buffa, 10);
         ++line;
         i = 0;
@@ -281,15 +263,19 @@ void set_time_to_exec_temp(task_temp * array, int length){
     time (&rawtime);
 
     struct tm * timeinfo = localtime(&rawtime);
-
+    
     for (int i =0; i< length; ++i){
         array[i].time_to_exec = 0;
+        if( timeinfo->tm_hour == array[i].hours && timeinfo->tm_min == array[i].minutes )
+            // array[i].time_to_exec = 0;
+            continue;
+        else{
+            if( timeinfo->tm_hour > array[i].hours || ( timeinfo->tm_hour == array[i].hours && timeinfo->tm_min > array[i].minutes ) )
+                array[i].time_to_exec += 24 * 3600;
 
-        if(timeinfo->tm_hour > array[i].hours || (timeinfo->tm_hour == array[i].hours && timeinfo->tm_min > array[i].minutes))
-            array[i].time_to_exec += 24*60;
-
-        array[i].time_to_exec += (array[i].hours * 60 + array[i].minutes);
-        array[i].time_to_exec -= (timeinfo->tm_hour * 60 + timeinfo->tm_min);
+            array[i].time_to_exec += (array[i].hours * 3600 + array[i].minutes * 60);
+            array[i].time_to_exec -= (timeinfo->tm_hour * 3600 + timeinfo->tm_min * 60 + timeinfo->tm_sec );
+        }
     }
 }
 
@@ -305,7 +291,7 @@ int comparator_temp(const void *p, const void *q)
 {
     task_temp *l = (task_temp* )p;
     task_temp *r = (task_temp *)q;
-    if( l->time_to_exec > r->time_to_exec)
+    if( l->time_to_exec > r->time_to_exec )
         return +1;
     else if( l->time_to_exec < r->time_to_exec)
         return -1;
@@ -363,23 +349,23 @@ char ** string_to_array(char * text, int * size){
 }
 int title_in_file(char*original_line_in_file, char*outfile, bool first_time, char * PATH){
     int file;
-    char temp [SIZE + 100];
-    strcpy(temp, PATH);
-    if(outfile[0] != '/' || temp[strlen(temp)-1]!='/')
-        strcat(temp, "/");
-    strcat(temp, outfile);
-    // if(chdir(PATH) < 0){
-        // syslog(LOG_ERR, "In function title_in_file():%s", strerror(errno));
-        // return -1;
-    // }
+    // char temp [SIZE + 100];
+    // strcpy(temp, PATH);
+    // if(outfile[0] != '/' || temp[strlen(temp)-1]!='/')
+    //     strcat(temp, "/");
+    // strcat(temp, outfile);
+    if(chdir(PATH) < 0){
+        syslog(LOG_ERR, "In function title_in_file():%s", strerror(errno));
+        return -1;
+    }
     if(first_time){
-        if((file = open(temp, O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
+        if((file = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0777)) < 0){
             syslog(LOG_ERR,"In function title_in_file():%s",strerror(errno));
             return -1;
         }
     }
     else{
-        if((file = open(temp, O_WRONLY | O_APPEND, 0777)) < 0){
+        if((file = open(outfile, O_WRONLY | O_APPEND, 0777)) < 0){
             syslog(LOG_ERR,"In function title_in_file():%s",strerror(errno));
             return -1;
         }
@@ -405,15 +391,15 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
     pid_t pid;
     int file, file_null;
     int fd[length][2];
-    // if(chdir(PATH) < 0){
-        // syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
-        // return -1;/
-    // }
     char temp [SIZE_PATH];
     strcpy(temp, PATH);
     if(outfile[0] != '/' || temp[strlen(temp)-1]!='/')
         strcat(temp, "/");
     strcat(temp, outfile);
+    if(chdir(PATH) < 0){
+        syslog(LOG_ERR, "In function title_in_file():%s", strerror(errno));
+        return -1;
+    }
     if((file = open(temp, O_WRONLY | O_APPEND)) < 0){
         syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
         return -1;
@@ -423,27 +409,45 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
         return -1;
     }
     if(state >= 1)
-        dup2(file, STDERR_FILENO);
+        if( dup2(file, STDERR_FILENO) == -1 ){
+            syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+            return -1;
+        }
     for(int i = 0 ; i < length; ++i)
-        pipe(fd[i]);
+        if( pipe(fd[i]) != 0){
+            syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+            return -1;
+        }
     for(int i = 0 ; i < length ; ++i){
         pid = fork();
         if(pid == 0){
             if((i == length - 1) && (i == 0)){
                 if(state  == 0){
-                    dup2(file, STDOUT_FILENO);
-                    dup2(file_null, STDERR_FILENO);
+                    if( dup2(file, STDOUT_FILENO) == -1){
+                        syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+                        return -1;
+                    }
+                    if( dup2(file_null, STDERR_FILENO) == -1){
+                        syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+                        return -1;
+                    }
                 }
                 if(state == 1)
-                    dup2(file_null, STDOUT_FILENO);
+                    if( dup2(file_null, STDOUT_FILENO) == -1){
+                        syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+                        return -1;
+                    }
                 if(state == 2)
-                    dup2(file, STDOUT_FILENO);
+                    if( dup2(file, STDOUT_FILENO) == -1){
+                        syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+                        return -1;
+                    }
 
                 execvp(array[0][0], array[0]);
                 fprintf(stderr, "%s: %s", array[0][0],strerror(errno));
                 //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
                 free_space(ar);
-                exit(EXIT_FAILURE);
+                exit(errno);
                 close(file);
                 close(file_null);
             }
@@ -463,9 +467,7 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                 fprintf(stderr, "%s: %s", array[i][0],strerror(errno));
                 //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
                 free_space(ar);
-                exit(EXIT_FAILURE);
-                close(file);
-                close(file_null);
+                exit(errno);
             }
             else{
                 if(i != 0){
@@ -473,9 +475,15 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                     dup2(fd[i-1][READ_END], STDIN_FILENO);
                 }
 
-                close(fd[i][READ_END]);
+                if( close(fd[i][READ_END]) == -1 ){
+                    syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+                    return -1;
+                }
                 
-                dup2(fd[i][WRITE_END], STDOUT_FILENO);
+                if( dup2(fd[i][WRITE_END], STDOUT_FILENO) == -1){ 
+                    syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+                    return -1;
+                }
                 if(state == 0)
                     close(STDERR_FILENO);
 
@@ -483,9 +491,7 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                 fprintf(stderr, "%s: %s\n", array[i][0],strerror(errno));
                 //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
                 free_space(ar);
-                exit(EXIT_FAILURE);
-                close(file);
-                close(file_null);
+                exit(errno);
             }
         }
         else if(pid > 0){
@@ -494,21 +500,40 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
             waitpid(pid, &status, 0);
             if(WIFEXITED(status)){
                 if( (exit_status = WEXITSTATUS(status)) != 0){
-                    // fprintf(stderr, "\n%d ",exit_status);
-                    close(fd[i][WRITE_END]);
-                    close(file);
-                    close(file_null);
+                    if( close(fd[i][WRITE_END]) == -1 ){
+                        syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+                        return -1;
+                    }
+                    if( close(file) == -1 ){
+                        syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+                        return -1;
+                    }
+                    if( close(file_null) == -1 ){
+                        syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+                        return -1;
+                    }
                     syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, exit_status);
                     return 0;
                 }
             }
-            close(fd[i][WRITE_END]);
+            if( close(fd[i][WRITE_END]) == -1){
+                syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+                return -1;
+            }
             if( i != 0)
-
-            close(fd[i-1][READ_END]);
+                if( close(fd[i-1][READ_END]) == -1 ){
+                    syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+                    return -1;
+                }
             if((i == length - 1)){
-                close(file);
-                close(file_null);
+                if( close(file) == -1 ){
+                    syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+                    return -1;
+                }
+                if( close(file_null) == -1 ){
+                    syslog(LOG_ERR, "In function pipe_fork_stuff():%s", strerror(errno));
+                    return -1;
+                }
                 syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, exit_status);
             }
         }
@@ -575,4 +600,21 @@ int preventing_pipe_at_end(char* pol){
             return -1;
         }
     return -1;
+}
+
+int checking_file_access(char * naming, char*PATH){
+    char temp[SIZE_PATH+100];
+    if(strcmp(PATH, "NULL|||")){
+        strcpy(temp, PATH);
+        if(naming[0] != '/' || temp[strlen(temp)-1]!='/')
+            strcat(temp, "/");
+        strcat(temp, naming);
+    }
+    else
+        strcpy(temp, naming);
+    int return_value;
+    if( ( return_value = access(temp, R_OK) ) != 0 ){
+        fprintf(stderr, "File do not exist or do not have a permission to read.\n");
+    }
+    return return_value;
 }
