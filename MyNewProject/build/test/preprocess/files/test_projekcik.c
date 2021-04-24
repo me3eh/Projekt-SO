@@ -419,13 +419,19 @@ void test_projekcik__preventing_pipe_at_end(void){
 
 void test_projekcik__general_test(void){
 
+    
+
+   (*__errno_location ()) 
+
+         = 0;
+
     syslog(
 
           6
 
                   ,"Pizdeczka");
 
-    FILE * file = checking_file_valid("perfect.txt", "./test/");
+    FILE * file = checking_file_valid("perfect.txt", "./test");
 
     perror("555");
 
@@ -433,7 +439,7 @@ void test_projekcik__general_test(void){
 
    ((void *)0)
 
-   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(209)));}} while(0);
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(210)));}} while(0);
 
     task_temp *ar;
 
@@ -443,7 +449,7 @@ void test_projekcik__general_test(void){
 
    ((void *)0)
 
-   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(212)));}} while(0);
+   )) {} else {UnityFail( ((" Expected TRUE Was FALSE")), (UNITY_UINT)((UNITY_UINT)(213)));}} while(0);
 
     int length = length_of_file();
 
@@ -467,19 +473,23 @@ void test_projekcik__general_test(void){
 
     fclose(file);
 
+    char p [200];
+
+    getcwd(p, sizeof(p));
+
+    strcat(p, "/test");
+
+
+
 
 
     for(int i = 0; i < length ; ++i){
 
-        perror("#33");
 
 
 
 
-
-        pipe_fork_stuff(ar[i].program, ar[i].no_pipes, "output.txt", ar[i].state, ar, ar[i].original_command_from_file, "./test/");
-
-        perror("666;");
+        pipe_fork_stuff(ar[i].program, ar[i].no_pipes, "output.txt", ar[i].state, ar, ar[i].original_command_from_file, p);
 
         first_time = 
 

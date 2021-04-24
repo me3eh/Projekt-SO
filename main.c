@@ -77,7 +77,9 @@ int main(int argc, char **argv){
         if((title_in_file(array_of_programs[i].original_command_from_file, argv[2], first_time, PATH)) == -1){
             exit(EXIT_FAILURE);
         }
-        pipe_fork_stuff(array_of_programs[i].program, array_of_programs[i].no_pipes, argv[2], array_of_programs[i].state, array_of_programs, array_of_programs[i].original_command_from_file, PATH);
+        if( pipe_fork_stuff(array_of_programs[i].program, array_of_programs[i].no_pipes, argv[2], array_of_programs[i].state, array_of_programs, array_of_programs[i].original_command_from_file, PATH ) == -1){
+            exit(EXIT_FAILURE);
+        }
         first_time = false;
     }
     free_space(array_of_programs);

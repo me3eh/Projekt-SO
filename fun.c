@@ -391,13 +391,8 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
     pid_t pid;
     int file, file_null;
     int fd[length][2];
-    char temp [SIZE_PATH];
-    strcpy(temp, PATH);
-    if(outfile[0] != '/' || temp[strlen(temp)-1]!='/')
-        strcat(temp, "/");
-    strcat(temp, outfile);
     if(chdir(PATH) < 0){
-        syslog(LOG_ERR, "In function title_in_file():%s", strerror(errno));
+        syslog(LOG_ERR, "In function pipe_for_stuff():%s", strerror(errno));
         return -1;
     }
     if((file = open(temp, O_WRONLY | O_APPEND)) < 0){
@@ -448,8 +443,6 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                 //zwalnianie pamieci wedlug valgrinda nie doprowadza do wyciekow
                 free_space(ar);
                 exit(errno);
-                close(file);
-                close(file_null);
             }
             else if(( i == length - 1 ) && ( i != 0 )){
                 // close(fd[i-1][WRITE_END]);
@@ -513,6 +506,9 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                         return -1;
                     }
                     syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, exit_status);
+                    if(chdir("/") < 0){
+                        syslog(LOG_ERR, "In function pipe_fork_stuff during changing directory:", strerror(errno));
+                    }
                     return 0;
                 }
             }
@@ -537,6 +533,9 @@ int pipe_fork_stuff(char *** array, int length, char * outfile, int state, task_
                 syslog(LOG_INFO, "Exit status of %s --> %d", original_command_from_file, exit_status);
             }
         }
+    }
+    if(chdir("/") < 0){
+        syslog(LOG_ERR, "In function pipe_fork_stuff during changing directory:", strerror(errno));
     }
     return 0;
 }

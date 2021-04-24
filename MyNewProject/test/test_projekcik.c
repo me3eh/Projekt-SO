@@ -203,8 +203,9 @@ void test_projekcik__preventing_pipe_at_end(void){
 }
 
 void test_projekcik__general_test(void){
+    errno = 0;
     syslog(LOG_INFO,"Pizdeczka");
-    FILE * file = checking_file_valid("perfect.txt", "./test/");
+    FILE * file = checking_file_valid("perfect.txt", "./test");
     perror("555");
     TEST_ASSERT_TRUE(file != NULL);
     task_temp *ar;
@@ -217,13 +218,15 @@ void test_projekcik__general_test(void){
     set_time_to_sleep_temp(ar, length);
     bool first_time =true;
     fclose(file);
+    char p [200];
+    getcwd(p, sizeof(p));
+    strcat(p, "/test");
     // chdir("/");
+    // execlp("ls", "ls", NULL);
     for(int i = 0; i < length ; ++i){
-        perror("#33");
         // if((title_in_file(ar[i].original_command_from_file, "output.txt", first_time, "./test")) == -1)
             // exit(EXIT_FAILURE);
-        pipe_fork_stuff(ar[i].program, ar[i].no_pipes, "output.txt", ar[i].state, ar, ar[i].original_command_from_file, "./test/");
-        perror("666;");
+        pipe_fork_stuff(ar[i].program, ar[i].no_pipes, "output.txt", ar[i].state, ar, ar[i].original_command_from_file, p);
         first_time = false;
     }
     free_space(ar);
