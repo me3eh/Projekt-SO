@@ -204,9 +204,7 @@ void test_projekcik__preventing_pipe_at_end(void){
 
 void test_projekcik__general_test(void){
     errno = 0;
-    syslog(LOG_INFO,"Pizdeczka");
     FILE * file = checking_file_valid("perfect.txt", "./test");
-    perror("555");
     TEST_ASSERT_TRUE(file != NULL);
     task_temp *ar;
     ar = get_array_of_tasks(file);

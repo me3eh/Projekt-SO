@@ -55,7 +55,7 @@ int main(int argc, char **argv){
     fclose(file);
     for(int i = 0; i < length ; ++i){
         // for(int j = 0; j < array_of_programs[i].time_to_sleep_before_exec ; ++j){
-            for(int k = 0 ; k < 1 ; ++k){
+            for(int k = 0 ; k < 10 ; ++k){
 
                 if(status_if_print() == true){
                     print_to_log_function(array_of_programs, i, length);
@@ -73,7 +73,7 @@ int main(int argc, char **argv){
                     exit(EXIT_SUCCESS);
                 }
                 sleep(1);
-            }
+        }
         if((title_in_file(array_of_programs[i].original_command_from_file, argv[2], first_time, PATH)) == -1){
             exit(EXIT_FAILURE);
         }
