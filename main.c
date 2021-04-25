@@ -37,10 +37,17 @@ int main(int argc, char **argv){
         syslog(LOG_ERR, "During changing working directory:%s", strerror(errno));
         exit(EXIT_FAILURE);
     }
+    int a[3];
+    a[0] = dup(STDIN_FILENO);
+    a[1] = dup(STDOUT_FILENO);
+    a[2] = dup(STDERR_FILENO);
 
-    // close(STDIN_FILENO);
-    // close(STDOUT_FILENO);
-    // close(STDERR_FILENO);
+    close(STDIN_FILENO);
+    close(STDOUT_FILENO);
+    close(STDERR_FILENO);
+    for(int s=0; s<3; ++s){
+        dup2(a[s], s);
+    }
     RESTART:
     if ((file = checking_file_valid(argv[1], PATH)) == NULL){
         return EINVAL;
@@ -55,7 +62,7 @@ int main(int argc, char **argv){
     fclose(file);
     for(int i = 0; i < length ; ++i){
         // for(int j = 0; j < array_of_programs[i].time_to_sleep_before_exec ; ++j){
-            for(int k = 0 ; k < 10 ; ++k){
+            for(int k = 0 ; k < 1 ; ++k){
 
                 if(status_if_print() == true){
                     print_to_log_function(array_of_programs, i, length);
