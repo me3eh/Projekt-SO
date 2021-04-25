@@ -3,52 +3,63 @@
 #include "unity.h"
 #include "fun.h"
 #include "projekcik.h"
-
+char PATH[200];
+// getcwd(PATH, sizeof(PATH));
+// strcat(PATH, "/test");
+bool first_time = true;
 void setUp(void)
 {
+    if(first_time){
+        getcwd(PATH, sizeof(PATH));
+        strcat(PATH, "/test");
+    first_time = false;
+    }
 }
 
 void tearDown(void)
 {
 }
 
-void test_projekcik_checkingfunction__amount_of_arguments(void)
-{
+void test_projekcik__checking_file_access(void){
+    chmod("./test/cant_open.txt", 0333);
+    TEST_ASSERT_TRUE(checking_file_access("cant_open.txt", "./test") == -1);
+}
+
+void test_projekcik__amount_of_arguments(void){
     fprintf(stderr, "\n\nfun__amount_of_arguments():\n------------------\n");
     TEST_ASSERT_FALSE(amount_of_arguments(4, "./minicrom") == 0); 
     TEST_ASSERT_TRUE(amount_of_arguments(1, "./minicrom") != 0);
     TEST_ASSERT_TRUE(amount_of_arguments(3, "./minicrom") == 0);
 
 }
-void test_projekcik_checkingfunction__checking_file_valid(void){
+void test_projekcik__checking_file_valid(void){
     
     fprintf(stderr, "\n\nfun__checking_file_valid():\n------------------\n");
-    
-    TEST_ASSERT_TRUE(checking_file_valid("./test/text.txt") != NULL);
-    TEST_ASSERT_TRUE(checking_file_valid("./test/text123.txt") == NULL);
+    TEST_ASSERT_TRUE(checking_file_valid("text.txt", PATH) != NULL);
+    TEST_ASSERT_TRUE(checking_file_valid("text123.txt", PATH) == NULL);
 
 }
-void test_projekcik_checkingfunction__check_format(void){
+void test_projekcik__check_format(void){
     
     fprintf(stderr, "\n\nfun__check_format():\n------------------\n");
     
-    FILE * file = checking_file_valid("./test/text.tx");
+    FILE * file = checking_file_valid("text.tx", PATH);
     TEST_ASSERT_TRUE(check_format(file) == -1);
     if(file != NULL)
         fclose(file);
 
-    FILE * test_file = checking_file_valid("./test/perfect.txt");
+    FILE * test_file = checking_file_valid("perfect.txt", PATH);
     TEST_ASSERT_TRUE(check_format(test_file) > 0);
     if(test_file !=NULL)
         fclose(test_file);
     
-    FILE * test_file2 = checking_file_valid("./test/perfect.txt");
+    FILE * test_file2 = checking_file_valid("perfect.txt", PATH);
     TEST_ASSERT_TRUE(check_format(test_file2) == 2);
     if(test_file2 !=NULL)
         fclose(test_file2);
 
 }
-void test_projekcik_checking_function__equal_namings(void){
+void test_projekcik__equal_namings(void){
     
     fprintf(stderr, "\n\nfun__equal_namings():\n------------------\n");
     
@@ -57,18 +68,17 @@ void test_projekcik_checking_function__equal_namings(void){
     TEST_ASSERT_FALSE( equal_namings("poIak", "polak"));
 
 }
-void test_projekcik_checking_function__length_of_file(void){
+void test_projekcik__length_of_file(void){
     
     fprintf(stderr, "\n\nfun__length_of_file():\n------------------\n");
     
-    FILE * test_file2 = checking_file_valid("./test/perfect.txt");
+    FILE * test_file2 = checking_file_valid("perfect.txt", PATH);
     TEST_ASSERT_TRUE(check_format(test_file2) == 2);
     TEST_ASSERT_TRUE(length_of_file(test_file2) == 2);
-    perror("siusiak");
     if(test_file2 != NULL)
         fclose(test_file2);
    
-    FILE * file = checking_file_valid("./test/text.tx");
+    FILE * file = checking_file_valid("text.tx",PATH);
     TEST_ASSERT_TRUE(check_format(file) == -1);
     TEST_ASSERT_FALSE(length_of_file(file) == -1);
     if(file != NULL)
@@ -79,18 +89,16 @@ void test_projekcik__get_array_of_tasks(void){
     
     fprintf(stderr, "\n\nfun__get_array_of_tasks():\n------------------\n");
     
-    FILE * test_file2 = checking_file_valid("./test/perfect.txt");
+    FILE * test_file2 = checking_file_valid("perfect.txt", PATH);
     TEST_ASSERT_TRUE(test_file2 != NULL);
     task_temp * array;
-    // perror("666");
     TEST_ASSERT_TRUE((array = get_array_of_tasks(test_file2)) != NULL);
     if(array != NULL)
         free_space(array);
-    perror("667");
     if(test_file2 != NULL)
         fclose(test_file2);
     
-    FILE * test_file1 = checking_file_valid("./test/text.txt");
+    FILE * test_file1 = checking_file_valid("text.txt", PATH);
     TEST_ASSERT_TRUE(test_file1 != NULL);
     task_temp * array2;
     TEST_ASSERT_TRUE((array2 = get_array_of_tasks(test_file1)) == NULL);
@@ -99,7 +107,7 @@ void test_projekcik__get_array_of_tasks(void){
     if(test_file1 != NULL)
         fclose(test_file1);
 
-    FILE * test_file4 = checking_file_valid("./test/text.tx");
+    FILE * test_file4 = checking_file_valid("text.tx", PATH);
     TEST_ASSERT_TRUE(test_file4 == NULL);
     task_temp * array4;
     TEST_ASSERT_TRUE((array4 = get_array_of_tasks(test_file4)) == NULL);
@@ -108,7 +116,7 @@ void test_projekcik__get_array_of_tasks(void){
     if(test_file4 != NULL)
         fclose(test_file4);
     
-    FILE * test_file3 = checking_file_valid("./test/bad.txt");
+    FILE * test_file3 = checking_file_valid("bad.txt", PATH);
     TEST_ASSERT_TRUE(test_file3 != NULL);
     task_temp * array3;
     TEST_ASSERT_TRUE((array3 = get_array_of_tasks(test_file3)) == NULL);
@@ -141,8 +149,89 @@ void test_projekcik__string_to_array(void){
     free(array);
 }
 
-void test_projekcik__set_time_to_exec_temp(void){
-    task_temp
+// void test_projekcik__set_time_to_exec_temp__AND__set_time_to_sleep_before_exec(void){
+//     time_t rawtime;
+//     time (&rawtime);
+
+//     struct tm * timeinfo = localtime(&rawtime);
+//     task_temp arr[2];
+//     arr[0].hours = timeinfo->tm_hour;
+//     arr[1].hours = timeinfo->tm_hour;
+
+//     arr[0].minutes = timeinfo->tm_min;
+//     arr[1].minutes = timeinfo->tm_min;
+//     if(timeinfo->tm_hour < 23)
+//         ++arr[1].hours;
+
+//     if(timeinfo->tm_min < 40){
+//         arr[0].minutes += 20;
+//         arr[1].minutes += 20;
+//         set_time_to_exec_temp(arr, 2);
+//         set_time_to_sleep_temp(arr, 2);
+//         printf("\n\n----\nMinutes:%ld\n", arr[0].minutes);
+//         printf("----Time_to_exec%ld", arr[0].time_to_exec);
+//         TEST_ASSERT_TRUE(arr[0].time_to_exec <= 20*60 + timeinfo->tm_sec);
+//         if(timeinfo->tm_hour < 23){
+//             TEST_ASSERT_TRUE(arr[1].time_to_exec == 3600 + 60*20  - timeinfo->tm_sec);
+//             TEST_ASSERT_TRUE(arr[1].time_to_sleep_before_exec <= 60 * 60 - timeinfo->tm_sec);
+//         }
+//         else{
+//             TEST_ASSERT_TRUE(arr[1].time_to_exec == 20 * 60 - timeinfo->tm_sec);
+//             TEST_ASSERT_TRUE(arr[1].time_to_exec == 0 + timeinfo->tm_sec);
+//         }
+//     }
+//     else{
+//         set_time_to_exec_temp(arr, 2);
+//         set_time_to_sleep_temp(arr, 2);
+//         TEST_ASSERT_TRUE(arr[0].time_to_exec == 0);
+//         TEST_ASSERT_TRUE(arr[0].time_to_sleep_before_exec == 0);
+//         if(timeinfo->tm_hour < 23){
+//             //time_to_Exec
+//             printf("MM:0-:::%d\n", timeinfo->tm_sec);
+//             printf("GG:::::%ld", arr[1].time_to_exec);
+//             TEST_ASSERT_TRUE(arr[1].time_to_exec == 60 * 60 - timeinfo->tm_sec);
+//             //time_to_sleep
+//             TEST_ASSERT_TRUE(arr[1].time_to_sleep_before_exec <= 60 * 60 - timeinfo->tm_sec);
+//         }
+//         else{
+//             //time_to_Exec
+//             TEST_ASSERT_TRUE(arr[1].time_to_exec == 0);
+//             //time_to_sleep
+//             TEST_ASSERT_TRUE(arr[1].time_to_sleep_before_exec == 0);
+//         }
+//     }
+// }
+
+
+void test_projekcik__preventing_pipe_at_end(void){
+    TEST_ASSERT_TRUE(preventing_pipe_at_end("20:15:ls -l | wc -c |:2") == -1);
+    TEST_ASSERT_TRUE(preventing_pipe_at_end("20:15:ls -l | wc -c |.:2") == 0);
+    errno=0;
 }
 
+void test_projekcik__general_test(void){
+    // char p [200];
+    // getcwd(p, sizeof(p));
+    // strcat(p, "/test");
+    errno = 0;
+    FILE * file = checking_file_valid("perfect.txt", PATH);
+    TEST_ASSERT_TRUE(file != NULL);
+    task_temp *ar;
+    ar = get_array_of_tasks(file);
+    TEST_ASSERT_TRUE(ar != NULL);
+    int length = length_of_file();
+    printf("%d\n\n", length);
+    set_time_to_exec_temp(ar, length);
+    qsort(ar, length, sizeof(*ar), comparator_temp);
+    set_time_to_sleep_temp(ar, length);
+    bool first_time =true;
+    fclose(file);
+    for(int i = 0; i < length ; ++i){
+        if((title_in_file(ar[i].original_command_from_file, "output.txt", first_time, PATH)) == -1)
+            exit(EXIT_FAILURE);
+        pipe_fork_stuff(ar[i].program, ar[i].no_pipes, "output.txt", ar[i].state, ar, ar[i].original_command_from_file, PATH);
+        first_time = false;
+    }
+    free_space(ar);
+}
 #endif // TEST

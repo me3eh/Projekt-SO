@@ -2,6 +2,8 @@
 
 #define _fun_h
 
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
@@ -47,7 +49,8 @@ typedef struct task_temp{
 
 int amount_of_arguments(int arg, char*word);
 
-FILE* checking_file_valid(char * naming);
+// FILE* checking_file_valid(char * naming);
+FILE* checking_file_valid(char * naming, char*PATH);
 
 //nie jest uzywana samodzielnie. Jest czescia funkcji get_array_of_tasks
 //zwracana dlugosc pliku
@@ -77,9 +80,10 @@ void free_space(task_temp * array);
 // int pipe_fork_stuff(char *** array, int length, char * outfile, int state);
 
 char ** string_to_array(char * text, int * size);
-int title_in_file(char*original_line_in_file, char*outfile, bool first_time);
 
-int pipe_fork_stuff(char *** array, int length, char*outfile, int state, task_temp *ar);
+int title_in_file(char*original_line_in_file, char*outfile, bool first_time, char * PATH);
+
+int pipe_fork_stuff(char *** array, int length, char*outfile, int state, task_temp *ar, char* original_command_from_file, char *PATH);
 
 bool status_if_import();
 
@@ -89,8 +93,14 @@ bool status_if_print();
 
 void change_status_print_to_log(bool t);
 
+bool status_abort();
+
 void handler(int signum);
 
 void print_to_log_function(task_temp * array, int i, int max_length);
+
+int preventing_pipe_at_end(char* pol);
+
+int checking_file_access(char * naming, char*PATH);
 
 #endif
