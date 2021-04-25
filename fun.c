@@ -348,7 +348,7 @@ char ** string_to_array(char * text, int * size){
     *size = (i+1);
     return array;
 }
-int title_in_file(char*original_line_in_file, char*outfile, bool first_time, char * PATH){
+int title_in_file(char*original_line_in_file, char*outfile, bool first_time, char * PATH, int * a){
     int file;
 
     if(chdir(PATH) < 0){
@@ -357,6 +357,9 @@ int title_in_file(char*original_line_in_file, char*outfile, bool first_time, cha
     }
 
     if(first_time){
+        for(int s=0; s<3; ++s){
+            dup2(a[s], s);
+        }
         if((file = open(outfile, O_WRONLY | O_CREAT | O_TRUNC, 0666)) < 0){
             syslog(LOG_ERR,"In function title_in_file():%s",strerror(errno));
             return -1;
