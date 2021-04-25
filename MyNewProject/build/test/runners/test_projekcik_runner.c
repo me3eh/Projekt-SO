@@ -85,17 +85,17 @@ static void run_test(UnityTestFunction func, const char* name, UNITY_LINE_TYPE l
 int main(void)
 {
   UnityBegin("test_projekcik.c");
-  run_test(test_projekcik__checking_file_access, "test_projekcik__checking_file_access", 15);
-  run_test(test_projekcik__amount_of_arguments, "test_projekcik__amount_of_arguments", 20);
-  run_test(test_projekcik__checking_file_valid, "test_projekcik__checking_file_valid", 27);
-  run_test(test_projekcik__check_format, "test_projekcik__check_format", 35);
-  run_test(test_projekcik__equal_namings, "test_projekcik__equal_namings", 55);
-  run_test(test_projekcik__length_of_file, "test_projekcik__length_of_file", 64);
-  run_test(test_projekcik__get_array_of_tasks, "test_projekcik__get_array_of_tasks", 81);
-  run_test(test_projekcik__amount_of_pipes, "test_projekcik__amount_of_pipes", 121);
-  run_test(test_projekcik__string_to_array, "test_projekcik__string_to_array", 128);
-  run_test(test_projekcik__preventing_pipe_at_end, "test_projekcik__preventing_pipe_at_end", 199);
-  run_test(test_projekcik__general_test, "test_projekcik__general_test", 205);
+  run_test(test_projekcik__checking_file_access, "test_projekcik__checking_file_access", 23);
+  run_test(test_projekcik__amount_of_arguments, "test_projekcik__amount_of_arguments", 28);
+  run_test(test_projekcik__checking_file_valid, "test_projekcik__checking_file_valid", 35);
+  run_test(test_projekcik__check_format, "test_projekcik__check_format", 42);
+  run_test(test_projekcik__equal_namings, "test_projekcik__equal_namings", 62);
+  run_test(test_projekcik__length_of_file, "test_projekcik__length_of_file", 71);
+  run_test(test_projekcik__get_array_of_tasks, "test_projekcik__get_array_of_tasks", 88);
+  run_test(test_projekcik__amount_of_pipes, "test_projekcik__amount_of_pipes", 128);
+  run_test(test_projekcik__string_to_array, "test_projekcik__string_to_array", 135);
+  run_test(test_projekcik__preventing_pipe_at_end, "test_projekcik__preventing_pipe_at_end", 206);
+  run_test(test_projekcik__general_test, "test_projekcik__general_test", 212);
 
   return UnityEnd();
 }

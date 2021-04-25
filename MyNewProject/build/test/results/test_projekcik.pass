@@ -4,47 +4,47 @@
   :file: test_projekcik.c
 :successes:
 - :test: test_projekcik__checking_file_access
-  :line: 15
+  :line: 23
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__amount_of_arguments
-  :line: 20
+  :line: 28
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__checking_file_valid
-  :line: 27
-  :message: ''
-  :unity_test_time: 0
-- :test: test_projekcik__check_format
   :line: 35
   :message: ''
   :unity_test_time: 0
+- :test: test_projekcik__check_format
+  :line: 42
+  :message: ''
+  :unity_test_time: 0
 - :test: test_projekcik__equal_namings
-  :line: 55
+  :line: 62
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__length_of_file
-  :line: 64
+  :line: 71
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__get_array_of_tasks
-  :line: 81
+  :line: 88
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__amount_of_pipes
-  :line: 121
-  :message: ''
-  :unity_test_time: 0
-- :test: test_projekcik__string_to_array
   :line: 128
   :message: ''
   :unity_test_time: 0
+- :test: test_projekcik__string_to_array
+  :line: 135
+  :message: ''
+  :unity_test_time: 0
 - :test: test_projekcik__preventing_pipe_at_end
-  :line: 199
+  :line: 206
   :message: ''
   :unity_test_time: 0
 - :test: test_projekcik__general_test
-  :line: 205
+  :line: 212
   :message: ''
   :unity_test_time: 0
 :failures: []
@@ -66,11 +66,11 @@
 - ''
 - 'fun__checking_file_valid():'
 - "------------------"
-- "./test/text123.txt:No such file or directory"
+- ''
 - ''
 - 'fun__check_format():'
 - "------------------"
-- "./test/text.tx:No such file or directory"
+- ''
 - ''
 - 'fun__equal_namings():'
 - "------------------"
@@ -78,15 +78,14 @@
 - ''
 - 'fun__length_of_file():'
 - "------------------"
-- text.tx:No such file or directory
+- ''
 - ''
 - 'fun__get_array_of_tasks():'
 - "------------------"
-- text.tx:No such file or directory
+- ''
 - ''
 - 'fun__amount_of_pipes():'
 - "------------------"
-- '555: Success'
 - '2'
 - ''
-:time: 0.02743282200003705
+:time: 0.05088139799954661

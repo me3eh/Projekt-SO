@@ -1,27 +1,17 @@
-666;: Success
-#33: Success
-lk: No such file or directorytest_projekcik.c:15:test_projekcik__checking_file_access:PASS
-test_projekcik.c:20:test_projekcik__amount_of_arguments:PASS
-test_projekcik.c:27:test_projekcik__checking_file_valid:PASS
-test_projekcik.c:35:test_projekcik__check_format:PASS
-test_projekcik.c:55:test_projekcik__equal_namings:PASS
-test_projekcik.c:64:test_projekcik__length_of_file:PASS
-test_projekcik.c:81:test_projekcik__get_array_of_tasks:PASS
-test_projekcik.c:121:test_projekcik__amount_of_pipes:PASS
-test_projekcik.c:128:test_projekcik__string_to_array:PASS
-test_projekcik.c:199:test_projekcik__preventing_pipe_at_end:PASS
-2
+20:11:ls -l | wc -w:1
+----------------------------
 
-666;: Success
-lk: No such file or directorytest_projekcik.c:15:test_projekcik__checking_file_access:PASS
-test_projekcik.c:20:test_projekcik__amount_of_arguments:PASS
-test_projekcik.c:27:test_projekcik__checking_file_valid:PASS
-test_projekcik.c:35:test_projekcik__check_format:PASS
-test_projekcik.c:55:test_projekcik__equal_namings:PASS
-test_projekcik.c:64:test_projekcik__length_of_file:PASS
-test_projekcik.c:81:test_projekcik__get_array_of_tasks:PASS
-test_projekcik.c:121:test_projekcik__amount_of_pipes:PASS
-test_projekcik.c:128:test_projekcik__string_to_array:PASS
-test_projekcik.c:199:test_projekcik__preventing_pipe_at_end:PASS
+
+21:20:lk:2----------------------------
+lk: No such file or directorytest_projekcik.c:23:test_projekcik__checking_file_access:PASS
+test_projekcik.c:28:test_projekcik__amount_of_arguments:PASS
+test_projekcik.c:35:test_projekcik__checking_file_valid:PASS
+test_projekcik.c:42:test_projekcik__check_format:PASS
+test_projekcik.c:62:test_projekcik__equal_namings:PASS
+test_projekcik.c:71:test_projekcik__length_of_file:PASS
+test_projekcik.c:88:test_projekcik__get_array_of_tasks:PASS
+test_projekcik.c:128:test_projekcik__amount_of_pipes:PASS
+test_projekcik.c:135:test_projekcik__string_to_array:PASS
+test_projekcik.c:206:test_projekcik__preventing_pipe_at_end:PASS
 2
 

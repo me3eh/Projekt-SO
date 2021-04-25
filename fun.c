@@ -33,7 +33,9 @@ bool equal_namings(char* naming_input, char* naming_output){
 FILE* checking_file_valid(char * naming, char*PATH){
     
     if(chdir(PATH) < 0){
-        syslog(LOG_ERR, "In function pipe_for_stuff():%s", strerror(errno));
+        // syslog(LOG_ERR, "In function pipe_for_stuff():%s", strerror(errno));
+        printf("In function pipe_for_stuff():%s", strerror(errno));
+        
         return NULL;
     }
 
