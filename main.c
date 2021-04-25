@@ -45,9 +45,9 @@ int main(int argc, char **argv){
     close(STDIN_FILENO);
     close(STDOUT_FILENO);
     close(STDERR_FILENO);
-    for(int s=0; s<3; ++s){
-        dup2(a[s], s);
-    }
+    // for(int s=0; s<3; ++s){
+    //     dup2(a[s], s);
+    // }
     RESTART:
     if ((file = checking_file_valid(argv[1], PATH)) == NULL){
         return EINVAL;
@@ -81,7 +81,7 @@ int main(int argc, char **argv){
                 }
                 sleep(1);
         }
-        if((title_in_file(array_of_programs[i].original_command_from_file, argv[2], first_time, PATH)) == -1){
+        if((title_in_file(array_of_programs[i].original_command_from_file, argv[2], first_time, PATH, a)) == -1){
             exit(EXIT_FAILURE);
         }
         if( pipe_fork_stuff(array_of_programs[i].program, array_of_programs[i].no_pipes, argv[2], array_of_programs[i].state, array_of_programs, array_of_programs[i].original_command_from_file, PATH ) == -1){

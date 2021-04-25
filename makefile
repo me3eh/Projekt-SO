@@ -9,5 +9,7 @@ test:
 	cd MyNewProject && 	ceedling test:all
 log: 
 	cat /var/log/syslog | tail -n $(n)
-make kill:
+kill:
 	killall minicron -$(n)
+read:
+	chmod 777 ./MyNewProject/text.txt
